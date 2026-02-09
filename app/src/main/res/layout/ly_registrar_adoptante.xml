@@ -57,6 +57,7 @@
                     android:id="@+id/rj_text_adopt_nombre"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_rounded"
                     android:inputType="textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -73,7 +74,8 @@
                     android:id="@+id/rj_text_adopt_telefono"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="phone"
+
+                    android:background="@drawable/bg_input_rounded"                    android:inputType="phone"
                     android:maxLength="9" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -99,6 +101,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
+                        android:background="@drawable/bg_input_rounded"
                         android:maxLength="3" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -127,6 +130,7 @@
                         android:id="@+id/rj_combo_adopt_sexo"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:background="@drawable/bg_input_rounded"
                         android:paddingHorizontal="8dp" />
                 </LinearLayout>
             </LinearLayout>
@@ -136,6 +140,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
+                android:background="@drawable/bg_input_rounded"
                 android:hint="\t\t\t\tCorreo"
                 app:boxStrokeColor="@color/marronPrimario"
                 app:startIconDrawable="@drawable/rj_correo"
@@ -155,6 +160,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="30dp"
                 android:hint="\t\t\t\tContraseña"
+                android:background="@drawable/bg_input_rounded"
                 app:boxStrokeColor="@color/marronPrimario"
                 app:passwordToggleEnabled="true"
                 app:startIconDrawable="@drawable/rj_candadonube">

@@ -24,9 +24,12 @@
             </intent-filter>
         </activity>
 
+
         <activity
             android:name=".Controllers.ActividadRegistrarMascota"
-            android:exported="false" />
+            android:exported="false"
+            />
+
 
         <activity
             android:name=".Controllers.ActividadAdopcion"

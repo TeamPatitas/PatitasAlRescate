@@ -52,6 +52,7 @@
                 android:layout_marginBottom="12dp"
                 android:hint="\t\t\tNombre de la mascota"
                 app:boxStrokeColor="@color/marronPrimario"
+                android:background="@drawable/bg_input_rounded"
                 app:hintTextColor="@color/marronPrimario"
                 app:startIconDrawable="@drawable/rj_persona">
 
@@ -68,6 +69,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
+                android:background="@drawable/bg_input_rounded"
                 android:hint="\t\t\tEspecie (ej. Perro, Gato)"
                 app:boxStrokeColor="@color/marronPrimario"
                 app:hintTextColor="@color/marronPrimario"
@@ -77,6 +79,7 @@
                     android:id="@+id/txt_reg_especie"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_rounded"
                     android:inputType="textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -95,6 +98,7 @@
                     android:id="@+id/txt_reg_raza"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_rounded"
                     android:inputType="textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -106,6 +110,7 @@
                 android:layout_marginBottom="12dp"
                 android:hint="\t\t\tEdad en meses"
                 app:boxStrokeColor="@color/marronPrimario"
+                android:background="@drawable/bg_input_rounded"
                 app:hintTextColor="@color/marronPrimario"
                 >
 
@@ -131,6 +136,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txt_reg_temperamento"
                     android:layout_width="match_parent"
+                    android:background="@drawable/bg_input_rounded"
                     android:layout_height="wrap_content"
                     android:inputType="textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -144,6 +150,7 @@
                 android:hint="\t\t\tHistoria de rescate"
                 app:boxStrokeColor="@color/marronPrimario"
                 app:hintTextColor="@color/marronPrimario"
+                android:background="@drawable/bg_input_rounded"
                 >
 
                 <com.google.android.material.textfield.TextInputEditText

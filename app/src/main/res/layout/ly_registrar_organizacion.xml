@@ -55,6 +55,7 @@
                     android:id="@+id/rj_text_org_nombre"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_rounded"
                     android:inputType="textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -69,7 +70,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="\t\t\Dirección (Ej: Av. Perú 123)"
+                    android:background="@drawable/bg_input_rounded"
+                    android:hint="\t\t\t\tDirección (Ej: Av. Perú 123)"
                     app:boxStrokeColor="@color/marronPrimario"
                     app:hintTextColor="@color/marronPrimario"
                     app:startIconDrawable="@android:drawable/ic_dialog_map">
@@ -90,6 +92,7 @@
                     android:backgroundTint="@color/verde_persona"
                     android:contentDescription="Verificar en Mapa"
                     android:src="@android:drawable/ic_dialog_map"
+
                     app:tint="@color/blanco" />
             </LinearLayout>
 
@@ -98,7 +101,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:hint="\t\t\tCelular / Teléfono"
+                android:hint="\t\t\t\tCelular / Teléfono"
                 app:boxStrokeColor="@color/marronPrimario"
                 app:startIconDrawable="@drawable/rj_telefono">
 
@@ -106,6 +109,7 @@
                     android:id="@+id/rj_text_org_telefono"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_rounded"
                     android:inputType="phone"
                     android:maxLength="9" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -117,6 +121,7 @@
                 android:fontFamily="@font/chewy"
                 android:text="Logo / Foto del Refugio"
                 android:textColor="@color/marronOscuro"
+
                 android:textSize="18sp" />
 
             <LinearLayout
@@ -153,7 +158,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:hint="\t\t\tCorreo Electrónico"
+                android:hint="\t\t\t\tCorreo Electrónico"
+                android:background="@drawable/bg_input_rounded"
                 app:boxStrokeColor="@color/marronPrimario"
                 app:startIconDrawable="@drawable/rj_correo">
 
@@ -169,9 +175,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="30dp"
-                android:hint="\t\t\Contraseña"
+                android:hint="\t\t\t\tContraseña"
                 app:boxStrokeColor="@color/marronPrimario"
                 app:passwordToggleEnabled="true"
+                android:background="@drawable/bg_input_rounded"
                 app:startIconDrawable="@drawable/rj_candadonube">
 
                 <com.google.android.material.textfield.TextInputEditText

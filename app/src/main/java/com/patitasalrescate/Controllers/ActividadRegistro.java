@@ -2,6 +2,7 @@ package com.patitasalrescate.Controllers;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
@@ -10,6 +11,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.patitasalrescate.MainActivity;
 import com.patitasalrescate.R;
 
 public class ActividadRegistro extends AppCompatActivity {
@@ -19,6 +21,18 @@ public class ActividadRegistro extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.ly_tipo_registro);
+
+        //splash
+
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(ActividadRegistro.this, ActividadIngresar.class);
+                startActivity(intent);
+                finish();
+            }
+        }, 2000);
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.tipo_registro), (v, insets) -> {
