@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.patitasalrescate.R;
 import com.patitasalrescate.accesoADatos.DAOMascota;
 import com.patitasalrescate.accesoADatos.DAORefugio;
+import com.patitasalrescate.accesoADatos.SupabaseService;
 import com.patitasalrescate.model.Mascota;
 import com.patitasalrescate.model.Refugio;
 
@@ -19,6 +20,7 @@ public class ActividadAdopcion extends AppCompatActivity {
 
     private DAOMascota daoMascota;
     private DAORefugio daoRefugio;
+    private SupabaseService supabaseService;
 
     private String idMascota;  // ← String
     private Mascota mascota;
@@ -31,6 +33,7 @@ public class ActividadAdopcion extends AppCompatActivity {
 
         daoMascota = new DAOMascota(this);
         daoRefugio = new DAORefugio(this);
+        supabaseService = new SupabaseService();
 
         idMascota = getIntent().getStringExtra("id_mascota_key");  // ← getStringExtra
         if (idMascota == null) {
@@ -63,12 +66,22 @@ public class ActividadAdopcion extends AppCompatActivity {
                 return;
             }
             mascota.setEsAdoptado(true);
+
+            // 1) Actualizar local
             int filas = daoMascota.actualizar(mascota);
             if (filas > 0) {
                 Toast.makeText(this, "Adopción registrada ✅", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "No se pudo actualizar el estado", Toast.LENGTH_SHORT).show();
             }
+
+            // 2) Best effort: actualizar en la nube
+            new Thread(() -> {
+                try {
+                    supabaseService.actualizarEstadoAdoptado(mascota.getIdMascota(), true);
+                } catch (Exception ignored) {
+                }
+            }).start();
         });
 
         btnWhatsapp.setOnClickListener(v -> abrirWhatsapp());

@@ -30,6 +30,9 @@ public class ActividadListarMascotas extends AppCompatActivity {
     private SupabaseService supabaseService; // Instancia
 
     private boolean esModoRefugio = false;
+    private String tipoUsuario = null; // "ADOPTANTE" | "REFUGIO"
+    private String idUsuario = null;
+    private String nombreUsuario = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,11 @@ public class ActividadListarMascotas extends AppCompatActivity {
             esModoRefugio = getIntent().getBooleanExtra("es_refugio_key", false);
         }
 
+        // Extras estándar (vienen desde InicioAdoptante/InicioRefugio)
+        tipoUsuario = getIntent().getStringExtra(ActividadIniciarSesion.EXTRA_TIPO_USUARIO);
+        idUsuario = getIntent().getStringExtra(ActividadIniciarSesion.EXTRA_ID_USUARIO);
+        nombreUsuario = getIntent().getStringExtra(ActividadIniciarSesion.EXTRA_NOMBRE_USUARIO);
+
         if (esModoRefugio) {
             getSupportActionBar().setTitle("Gestionar Mascotas");
         } else {
@@ -81,7 +89,7 @@ public class ActividadListarMascotas extends AppCompatActivity {
         } else {
             recyclerMascotas.setVisibility(View.VISIBLE);
             txtListaVacia.setVisibility(View.GONE);
-            adaptador = new AdaptadorMascotas(lista, esModoRefugio);
+            adaptador = new AdaptadorMascotas(lista, esModoRefugio, tipoUsuario, idUsuario, nombreUsuario);
             recyclerMascotas.setAdapter(adaptador);
         }
     }

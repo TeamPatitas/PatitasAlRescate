@@ -179,4 +179,81 @@ public class SupabaseService {
         }
         return null;
     }
+
+    // --- ACTUALIZACIONES (PATCH) ---
+
+    /**
+     * Cambia el estado de adoptado en Supabase.
+     * Requiere que tu tabla se llame "mascotas" y la PK/filtro sea "id_mascota".
+     */
+    public boolean actualizarEstadoAdoptado(String idMascota, boolean esAdoptado) throws IOException {
+        if (idMascota == null || idMascota.trim().isEmpty()) return false;
+
+        String json = "{\"es_adoptado\":" + (esAdoptado ? "true" : "false") + "}";
+        RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
+
+        // OJO: el filtro asume que el campo en Supabase es id_mascota
+        String endpoint = "mascotas?id_mascota=eq." + idMascota;
+
+        Request request = baseRequest(endpoint)
+                .patch(body)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                String errorBody = response.body() != null ? response.body().string() : "No body";
+                Log.e("SupabaseMascota", "Error PATCH es_adoptado: Código " + response.code() + " - " + response.message());
+                Log.e("SupabaseMascota", "Respuesta: " + errorBody);
+                return false;
+            }
+            return true;
+        }
+    }
+
+    /**
+     * Actualiza datos editables de una mascota en Supabase.
+     * (No modifica fotos ni id_refugio; solo campos del perfil)
+     */
+    public boolean actualizarMascota(Mascota mascota) throws IOException {
+        if (mascota == null || mascota.getIdMascota() == null || mascota.getIdMascota().trim().isEmpty()) return false;
+
+        // Armamos un JSON parcial con campos editables
+        String json = "{"
+                + "\"nombre\":\"" + escapeJson(mascota.getNombre()) + "\","
+                + "\"especie\":\"" + escapeJson(mascota.getEspecie()) + "\","
+                + "\"raza\":\"" + escapeJson(mascota.getRaza()) + "\","
+                + "\"edad\":" + mascota.getEdad() + ","
+                + "\"temperamento\":\"" + escapeJson(mascota.getTemperamento()) + "\","
+                + "\"historia\":\"" + escapeJson(mascota.getHistoria()) + "\""
+                + "}";
+
+        RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
+
+        String endpoint = "mascotas?id_mascota=eq." + mascota.getIdMascota();
+
+        Request request = baseRequest(endpoint)
+                .patch(body)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                String errorBody = response.body() != null ? response.body().string() : "No body";
+                Log.e("SupabaseMascota", "Error PATCH mascota: Código " + response.code() + " - " + response.message());
+                Log.e("SupabaseMascota", "JSON enviado: " + json);
+                Log.e("SupabaseMascota", "Respuesta: " + errorBody);
+                return false;
+            }
+            return true;
+        }
+    }
+
+    /** Escape simple para evitar romper JSON si hay comillas o saltos de línea */
+    private String escapeJson(String s) {
+        if (s == null) return "";
+        return s.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r");
+    }
+
 }

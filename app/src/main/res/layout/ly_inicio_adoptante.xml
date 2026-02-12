@@ -14,22 +14,38 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
-        app:title="Adoptante"
-        app:titleTextColor="@color/blanco"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="Adoptante"
+        app:titleTextColor="@color/blanco" />
+
+    <ImageView
+        android:id="@+id/imgBienvenidaAdoptante"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Imagen de bienvenida adoptante"
+        app:layout_constraintBottom_toTopOf="@+id/txtBienvenidoAdoptante"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarInicioAdoptante"
+        app:srcCompat="@drawable/rj_logo_patitas" />
 
     <TextView
         android:id="@+id/txtBienvenidoAdoptante"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="40dp"
+        android:fontFamily="@font/chewy"
         android:text="Bienvenido"
-        android:textSize="28sp"
         android:textColor="@color/marronPrimario"
-        android:layout_margin="16dp"
-        app:layout_constraintTop_toBottomOf="@id/toolbarInicioAdoptante"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:textSize="33sp"
+        app:layout_constraintBottom_toTopOf="@+id/menuInicioAdoptante"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgBienvenidaAdoptante"
+        tools:text="BIENVENIDO LUIS" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/menuInicioAdoptante"
@@ -38,8 +54,9 @@
         android:background="@color/marronPrimario"
         app:itemIconTint="@color/blanco"
         app:itemTextColor="@color/blanco"
-        app:menu="@menu/menu_adoptante"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:menu="@menu/menu_adoptante" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.patitasalrescate.Controllers.ActividadIniciarSesion;
 import com.patitasalrescate.Controllers.ActividadPerfilMascota;
 import com.patitasalrescate.R;
 import com.patitasalrescate.model.Mascota;
@@ -24,9 +25,17 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
     private final List<Mascota> listaMascotas;
     private final boolean esModoRefugio; // TRUE = Refugio (editar), FALSE = Adoptante (adoptar)
 
-    public AdaptadorMascotas(List<Mascota> lista, boolean esModoRefugio) {
+    // Extras estándar para que PerfilMascota sepa qué botones mostrar
+    private final String tipoUsuario;   // "ADOPTANTE" | "REFUGIO" (puede ser null por compatibilidad)
+    private final String idUsuario;
+    private final String nombreUsuario;
+
+    public AdaptadorMascotas(List<Mascota> lista, boolean esModoRefugio, String tipoUsuario, String idUsuario, String nombreUsuario) {
         this.listaMascotas = lista;
         this.esModoRefugio = esModoRefugio;
+        this.tipoUsuario = tipoUsuario;
+        this.idUsuario = idUsuario;
+        this.nombreUsuario = nombreUsuario;
     }
 
     @NonNull
@@ -92,6 +101,16 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
         Intent intent = new Intent(context, ActividadPerfilMascota.class);
         intent.putExtra("id_mascota_key", idMascota);
         intent.putExtra("es_modo_edicion", modoEdicion);
+
+        // Extras estándar (rol)
+        if (tipoUsuario != null) {
+            intent.putExtra(ActividadIniciarSesion.EXTRA_TIPO_USUARIO, tipoUsuario);
+        } else {
+            // Fallback: si no llega, lo inferimos por el modo
+            intent.putExtra(ActividadIniciarSesion.EXTRA_TIPO_USUARIO, modoEdicion ? "REFUGIO" : "ADOPTANTE");
+        }
+        intent.putExtra(ActividadIniciarSesion.EXTRA_ID_USUARIO, idUsuario);
+        intent.putExtra(ActividadIniciarSesion.EXTRA_NOMBRE_USUARIO, nombreUsuario);
         context.startActivity(intent);
     }
 

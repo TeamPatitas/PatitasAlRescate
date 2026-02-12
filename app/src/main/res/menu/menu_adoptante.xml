@@ -6,10 +6,6 @@
         android:id="@+id/itemInicioAdoptante"
         android:icon="@android:drawable/ic_menu_view"
         android:title="Inicio" />
-    <item
-        android:id="@+id/itemRegistrarMascota"
-        android:icon="@android:drawable/ic_menu_add"
-        android:title="Registrar Mascota" />
 
     <item
         android:id="@+id/itemListarMascotasAdoptante"

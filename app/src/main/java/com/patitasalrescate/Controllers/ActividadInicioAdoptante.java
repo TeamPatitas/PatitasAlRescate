@@ -18,10 +18,17 @@ public class ActividadInicioAdoptante extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ly_inicio_adoptante);
 
-        String nombreAdoptante = getIntent().getStringExtra("nombre_adoptante_key");
+        // Nombre del usuario (se envía desde ActividadIniciarSesion con putExtra)
+        String nombreAdoptante = getIntent().getStringExtra(ActividadIniciarSesion.EXTRA_NOMBRE_USUARIO);
+        if (nombreAdoptante == null || nombreAdoptante.trim().isEmpty()) {
+            // fallback por compatibilidad
+            nombreAdoptante = getIntent().getStringExtra("nombre_adoptante_key");
+        }
         if (nombreAdoptante == null || nombreAdoptante.isEmpty()) {
             nombreAdoptante = "Adoptante (Modo Prueba)";
         }
+
+        String idAdoptante = getIntent().getStringExtra(ActividadIniciarSesion.EXTRA_ID_USUARIO);
 
         Toolbar toolbar = findViewById(R.id.toolbarInicioAdoptante);
         setSupportActionBar(toolbar);
@@ -32,11 +39,12 @@ public class ActividadInicioAdoptante extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> finish());
 
         TextView txt = findViewById(R.id.txtBienvenidoAdoptante);
-        txt.setText("Bienvenido: " + nombreAdoptante);
+        txt.setText("Bienvenido " + nombreAdoptante);
 
         BottomNavigationView menu = findViewById(R.id.menuInicioAdoptante);
 
         String finalNombreAdoptante = nombreAdoptante;
+        String finalIdAdoptante = idAdoptante;
         menu.setOnItemSelectedListener(item -> {
             Intent i;
             if (item.getItemId() == R.id.itemInicioAdoptante) return true;
@@ -45,12 +53,17 @@ public class ActividadInicioAdoptante extends AppCompatActivity {
                 i = new Intent(this, ActividadListarMascotas.class);
                 i.putExtra("es_refugio_key", false);
                 i.putExtra("nombre_adoptante_key", finalNombreAdoptante);
+                i.putExtra(ActividadIniciarSesion.EXTRA_TIPO_USUARIO, "ADOPTANTE");
+                i.putExtra(ActividadIniciarSesion.EXTRA_ID_USUARIO, finalIdAdoptante);
+                i.putExtra(ActividadIniciarSesion.EXTRA_NOMBRE_USUARIO, finalNombreAdoptante);
                 startActivity(i);
                 return true;
             }
 
             if (item.getItemId() == R.id.itemFavoritosAdoptante) {
                 i = new Intent(this, ActividadMisFavoritos.class);
+                i.putExtra(ActividadIniciarSesion.EXTRA_TIPO_USUARIO, "ADOPTANTE");
+                i.putExtra(ActividadIniciarSesion.EXTRA_ID_USUARIO, finalIdAdoptante);
                 startActivity(i);
                 return true;
             }
