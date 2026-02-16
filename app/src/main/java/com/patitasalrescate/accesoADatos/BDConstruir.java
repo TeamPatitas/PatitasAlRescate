@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class BDConstruir extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "patitas_db";
-    private static final int DB_VERSION = 5;  // Subimos versión por cambio de IDs a TEXT
+    private static final int DB_VERSION = 6;  // 🔥 Subimos versión
 
     public BDConstruir(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -15,7 +15,8 @@ public class BDConstruir extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Tabla refugios - ID como TEXT
+
+        // Tabla refugios
         db.execSQL("CREATE TABLE refugios (" +
                 "id_refugio TEXT PRIMARY KEY, " +
                 "nombre TEXT NOT NULL, " +
@@ -29,7 +30,7 @@ public class BDConstruir extends SQLiteOpenHelper {
                 "last_sync INTEGER" +
                 ")");
 
-        // Tabla mascotas - ID como TEXT
+        // Tabla mascotas CON estado
         db.execSQL("CREATE TABLE mascotas (" +
                 "id_mascota TEXT PRIMARY KEY, " +
                 "id_refugio TEXT, " +
@@ -40,11 +41,12 @@ public class BDConstruir extends SQLiteOpenHelper {
                 "temperamento TEXT, " +
                 "historia TEXT, " +
                 "fotos TEXT, " +
+                "estado TEXT DEFAULT 'DISPONIBLE', " +   //  NUEVA COLUMNA
                 "es_adoptado INTEGER DEFAULT 0, " +
                 "last_sync INTEGER" +
                 ")");
 
-        // Tabla adoptantes - ID como TEXT
+        // Tabla adoptantes
         db.execSQL("CREATE TABLE adoptantes (" +
                 "id_adoptante TEXT PRIMARY KEY, " +
                 "nombre TEXT, " +
@@ -56,7 +58,7 @@ public class BDConstruir extends SQLiteOpenHelper {
                 "last_sync INTEGER" +
                 ")");
 
-        // Tabla favoritos - IDs como TEXT
+        // Tabla favoritos
         db.execSQL("CREATE TABLE favoritos (" +
                 "id_adoptante TEXT, " +
                 "id_mascota TEXT, " +

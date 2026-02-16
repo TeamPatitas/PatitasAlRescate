@@ -5,82 +5,83 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="4dp">
+    android:layout_marginVertical="12dp"
+    android:layout_marginHorizontal="8dp"
+    app:cardCornerRadius="28dp"
+    app:cardElevation="6dp"
+    app:cardUseCompatPadding="true"
+    android:backgroundTint="#ECE6E2">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:padding="18dp">
 
+        <!-- FOTO -->
         <ImageView
             android:id="@+id/img_foto_mascota"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
             android:scaleType="centerCrop"
-            android:src="@android:drawable/ic_menu_gallery"
-            android:background="#EEEEEE"/>
+            android:background="@drawable/bg_circle_image"
+            android:clipToOutline="true"
+            tools:src="@drawable/ic_launcher_foreground"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- NOMBRE -->
+        <TextView
+            android:id="@+id/txt_nombre_mascota"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#5A3E2B"
+            tools:text="Max"
+            app:layout_constraintStart_toEndOf="@id/img_foto_mascota"
+            app:layout_constraintTop_toTopOf="@id/img_foto_mascota"
+            app:layout_constraintEnd_toStartOf="@id/btn_detalles"
+            android:layout_marginStart="16dp"/>
 
-            <TextView
-                android:id="@+id/txt_nombre_mascota"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Firulais"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="?attr/colorPrimary"/>
+        <!-- EDAD -->
+        <TextView
+            android:id="@+id/txt_estado_mascota"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="#6F6259"
+            tools:text="2 años"
+            app:layout_constraintStart_toStartOf="@id/txt_nombre_mascota"
+            app:layout_constraintTop_toBottomOf="@id/txt_nombre_mascota"
+            app:layout_constraintEnd_toStartOf="@id/btn_detalles"/>
 
-            <TextView
-                android:id="@+id/txt_raza_mascota"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Labrador - 2 años"
-                android:textSize="14sp"
-                android:textColor="#757575"
-                android:layout_marginBottom="8dp"/>
+        <!-- RAZA -->
+        <TextView
+            android:id="@+id/txt_raza_mascota"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="#6F6259"
+            tools:text="Golden Retriever"
+            app:layout_constraintStart_toStartOf="@id/txt_nombre_mascota"
+            app:layout_constraintTop_toBottomOf="@id/txt_estado_mascota"
+            app:layout_constraintEnd_toStartOf="@id/btn_detalles"/>
 
-            <TextView
-                android:id="@+id/txt_estado_mascota"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="En Adopción"
-                android:textStyle="italic"
-                android:textColor="#4CAF50"/>
+        <!-- BOTÓN -->
+        <Button
+            android:id="@+id/btn_detalles"
+            android:layout_width="150dp"
+            android:layout_height="52dp"
+            android:text="Ver Detalles"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="@drawable/bg_boton_detalles"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="12dp"
-                android:gravity="end">
 
-                <Button
-                    android:id="@+id/btn_adoptar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="¡ADOPTAR!"
-                    android:visibility="gone"
-                    tools:visibility="visible"
-                    android:backgroundTint="?attr/colorPrimary"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <Button
-                    android:id="@+id/btn_editar_estado"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="EDITAR"
-                    android:visibility="gone"
-                    tools:visibility="visible"
-                    android:backgroundTint="@color/marronPrimario"
-                    android:textColor="#FFFFFF"/>
-
-            </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
 </androidx.cardview.widget.CardView>

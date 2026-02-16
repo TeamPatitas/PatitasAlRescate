@@ -22,7 +22,7 @@ public class ActividadAdopcion extends AppCompatActivity {
     private DAORefugio daoRefugio;
     private SupabaseService supabaseService;
 
-    private String idMascota;  // ← String
+    private String idMascota;
     private Mascota mascota;
     private Refugio refugio;
 
@@ -35,7 +35,8 @@ public class ActividadAdopcion extends AppCompatActivity {
         daoRefugio = new DAORefugio(this);
         supabaseService = new SupabaseService();
 
-        idMascota = getIntent().getStringExtra("id_mascota_key");  // ← getStringExtra
+        idMascota = getIntent().getStringExtra("id_mascota_key");
+
         if (idMascota == null) {
             Toast.makeText(this, "Error: no llegó la mascota", Toast.LENGTH_SHORT).show();
             finish();
@@ -43,6 +44,7 @@ public class ActividadAdopcion extends AppCompatActivity {
         }
 
         mascota = daoMascota.obtenerPorId(idMascota);
+
         if (mascota == null) {
             Toast.makeText(this, "Mascota no encontrada", Toast.LENGTH_SHORT).show();
             finish();
@@ -60,47 +62,63 @@ public class ActividadAdopcion extends AppCompatActivity {
         txtDetalle.setText("Mascota: " + mascota.getNombre() + "\n"
                 + "Refugio: " + (refugio != null ? refugio.getNombre() : "No identificado"));
 
+        // BOTÓN CONFIRMAR MODERNO CON ESTADO
         btnConfirmar.setOnClickListener(v -> {
-            if (mascota.isEsAdoptado()) {
-                Toast.makeText(this, "Esta mascota ya está adoptada", Toast.LENGTH_SHORT).show();
+
+            if ("ADOPTADO".equals(mascota.getEstado())) {
+                Toast.makeText(this, "Ya fue adoptado", Toast.LENGTH_SHORT).show();
                 return;
             }
-            mascota.setEsAdoptado(true);
 
-            // 1) Actualizar local
+            mascota.setEstado("EN_PROCESO");
+
             int filas = daoMascota.actualizar(mascota);
+
             if (filas > 0) {
-                Toast.makeText(this, "Adopción registrada ✅", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(this, "Solicitud enviada al refugio 🐾", Toast.LENGTH_SHORT).show();
+
+                // Actualizar también en Supabase
+                new Thread(() -> {
+                    try {
+                        supabaseService.actualizarEstadoMascota(
+                                mascota.getIdMascota(),
+                                "EN_PROCESO"
+                        );
+                    } catch (Exception ignored) {
+                    }
+                }).start();
+
+                finish();
             } else {
                 Toast.makeText(this, "No se pudo actualizar el estado", Toast.LENGTH_SHORT).show();
             }
-
-            // 2) Best effort: actualizar en la nube
-            new Thread(() -> {
-                try {
-                    supabaseService.actualizarEstadoAdoptado(mascota.getIdMascota(), true);
-                } catch (Exception ignored) {
-                }
-            }).start();
         });
 
         btnWhatsapp.setOnClickListener(v -> abrirWhatsapp());
     }
 
     private void abrirWhatsapp() {
-        if (refugio == null || refugio.getNumCelular() == null || refugio.getNumCelular().trim().isEmpty()) {
+
+        if (refugio == null || refugio.getNumCelular() == null
+                || refugio.getNumCelular().trim().isEmpty()) {
             Toast.makeText(this, "El refugio no tiene número registrado", Toast.LENGTH_SHORT).show();
             return;
         }
 
         String telefono = refugio.getNumCelular().trim();
+
         if (!telefono.startsWith("+")) {
             telefono = "+51" + telefono;
         }
 
-        String mensaje = "Hola, quiero adoptar a " + mascota.getNombre()
+        String mensaje = "Hola, quiero adoptar a "
+                + mascota.getNombre()
                 + " 🐶🐱. ¿Podemos coordinar?";
-        String url = "https://wa.me/" + telefono.replace("+", "") + "?text=" + Uri.encode(mensaje);
+
+        String url = "https://wa.me/"
+                + telefono.replace("+", "")
+                + "?text=" + Uri.encode(mensaje);
 
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         startActivity(intent);

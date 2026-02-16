@@ -17,7 +17,7 @@ public class Mascota {
     @Expose
     private String idRefugio;
 
-    // --- DATOS BÁSICOS (Agregados SerializedName para seguridad) ---
+    // --- DATOS BÁSICOS ---
     @SerializedName("nombre")
     @Expose
     private String nombre;
@@ -42,12 +42,16 @@ public class Mascota {
     @Expose
     private String historia;
 
-
     @SerializedName("fotos")
     @Expose
     private List<String> fotos = new ArrayList<>();
 
-    // --- ESTADO ---
+    // --- NUEVO ESTADO (SUPABASE) ---
+    @SerializedName("estado")
+    @Expose
+    private String estado; // DISPONIBLE | EN_PROCESO | ADOPTADO
+
+    // --- ESTADO ANTIGUO (Compatibilidad local) ---
     @SerializedName("es_adoptado")
     @Expose
     private boolean esAdoptado;
@@ -59,7 +63,7 @@ public class Mascota {
 
     public Mascota(String idMascota, String idRefugio, String nombre, String especie, String raza,
                    int edad, String temperamento, String historia, List<String> fotos,
-                   boolean esAdoptado, long lastSync) {
+                   String estado, boolean esAdoptado, long lastSync) {
         this.idMascota = idMascota;
         this.idRefugio = idRefugio;
         this.nombre = nombre;
@@ -69,11 +73,13 @@ public class Mascota {
         this.temperamento = temperamento;
         this.historia = historia;
         this.fotos = fotos != null ? fotos : new ArrayList<>();
+        this.estado = estado;
         this.esAdoptado = esAdoptado;
         this.lastSync = lastSync;
     }
 
     // Getters y Setters
+
     public String getIdMascota() { return idMascota; }
     public void setIdMascota(String idMascota) { this.idMascota = idMascota; }
 
@@ -100,6 +106,10 @@ public class Mascota {
 
     public List<String> getFotos() { return fotos; }
     public void setFotos(List<String> fotos) { this.fotos = fotos; }
+
+    // --- NUEVO ESTADO ---
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 
     public boolean isEsAdoptado() { return esAdoptado; }
     public void setEsAdoptado(boolean esAdoptado) { this.esAdoptado = esAdoptado; }

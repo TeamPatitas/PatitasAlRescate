@@ -32,13 +32,11 @@ public class ActividadPerfilMascota extends AppCompatActivity {
     private SupabaseService supabaseService;
     private Mascota mascotaActual;
 
-    private String idMascota;  // ← String UUID
-
-    // Rol
-    private String tipoUsuario;   // "ADOPTANTE" | "REFUGIO"
+    private String idMascota;
+    private String tipoUsuario;
     private String idUsuario;
 
-    private boolean esModoEdicion = false; // se usa como fallback
+    private boolean esModoEdicion = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,18 +46,16 @@ public class ActividadPerfilMascota extends AppCompatActivity {
         daoMascota = new DAOMascota(this);
         daoFavoritos = new DAOFavoritos(this);
         supabaseService = new SupabaseService();
+
         initViews();
 
-        // Recibir ID como String
         idMascota = getIntent().getStringExtra("id_mascota_key");
         esModoEdicion = getIntent().getBooleanExtra("es_modo_edicion", false);
 
-        // Extras estándar (nuevo)
         tipoUsuario = getIntent().getStringExtra(ActividadIniciarSesion.EXTRA_TIPO_USUARIO);
         idUsuario = getIntent().getStringExtra(ActividadIniciarSesion.EXTRA_ID_USUARIO);
 
         if (tipoUsuario == null || tipoUsuario.trim().isEmpty()) {
-            // fallback por compatibilidad: inferimos por modo
             tipoUsuario = esModoEdicion ? "REFUGIO" : "ADOPTANTE";
         }
 
@@ -80,17 +76,16 @@ public class ActividadPerfilMascota extends AppCompatActivity {
         txtEdad = findViewById(R.id.txt_edit_edad);
         txtTemperamento = findViewById(R.id.txt_edit_temperamento);
         txtHistoria = findViewById(R.id.txt_edit_historia);
-
         imgFoto = findViewById(R.id.img_detalle_mascota);
         btnAccion = findViewById(R.id.btn_accion_principal);
         btnFavorito = findViewById(R.id.btn_favorito);
     }
 
     private void cargarDatosMascota() {
-        mascotaActual = daoMascota.obtenerPorId(idMascota);  // ← String
+        mascotaActual = daoMascota.obtenerPorId(idMascota);
 
         if (mascotaActual == null) {
-            Toast.makeText(this, "Error: Mascota no encontrada", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Mascota no encontrada", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -103,9 +98,9 @@ public class ActividadPerfilMascota extends AppCompatActivity {
         txtHistoria.setText(valorSeguro(mascotaActual.getHistoria()));
 
         List<String> fotos = mascotaActual.getFotos();
-        if (fotos != null && !fotos.isEmpty() && fotos.get(0) != null && !fotos.get(0).trim().isEmpty()) {
+        if (fotos != null && !fotos.isEmpty()) {
             Glide.with(this)
-                    .load(fotos.get(0).trim())
+                    .load(fotos.get(0))
                     .placeholder(R.drawable.ic_launcher_foreground)
                     .error(R.drawable.ic_launcher_foreground)
                     .centerCrop()
@@ -116,29 +111,21 @@ public class ActividadPerfilMascota extends AppCompatActivity {
     }
 
     private String valorSeguro(String s) {
-        return (s == null) ? "" : s;
+        return s == null ? "" : s;
     }
 
-    /**
-     * Validación por rol:
-     * - ADOPTANTE: muestra ADOPTAR + FAVORITOS
-     * - REFUGIO: permite EDITAR/Guardar en el perfil
-     */
     private void configurarModoVisualPorRol() {
+
         boolean esRefugio = "REFUGIO".equalsIgnoreCase(tipoUsuario);
 
         if (esRefugio) {
-            // REFUGIO: inicia en modo "solo lectura" con botón EDITAR
             btnFavorito.setVisibility(View.GONE);
             habilitarCampos(false);
 
-            btnAccion.setEnabled(true);
-            btnAccion.setAlpha(1f);
             btnAccion.setText("EDITAR MASCOTA ✏️");
             btnAccion.setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_orange_dark));
             btnAccion.setOnClickListener(v -> {
-                // Segunda pulsación guarda
-                if (!camposEditables()) {
+                if (!txtNombre.isEnabled()) {
                     habilitarCampos(true);
                     btnAccion.setText("GUARDAR CAMBIOS ✅");
                 } else {
@@ -148,41 +135,50 @@ public class ActividadPerfilMascota extends AppCompatActivity {
             return;
         }
 
-        // ADOPTANTE
+        // 🔥 ADOPTANTE
         btnFavorito.setVisibility(View.VISIBLE);
         habilitarCampos(false);
 
-        // Favoritos (mínimo viable: guarda local; luego puedes sincronizar a nube si tienes tabla)
         btnFavorito.setOnClickListener(v -> {
-            if (idUsuario == null || idUsuario.trim().isEmpty()) {
-                Toast.makeText(this, "No se identificó al adoptante (id)", Toast.LENGTH_SHORT).show();
+            if (idUsuario == null) {
+                Toast.makeText(this, "No se identificó al adoptante", Toast.LENGTH_SHORT).show();
                 return;
             }
+
             long r = daoFavoritos.addFavorito(idUsuario, idMascota);
             if (r > 0) {
                 Toast.makeText(this, "Agregado a favoritos ❤️", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "No se pudo agregar a favoritos", Toast.LENGTH_SHORT).show();
             }
         });
 
-        if (mascotaActual != null && mascotaActual.isEsAdoptado()) {
-            btnAccion.setText("YA FUE ADOPTADO ✅");
-            btnAccion.setEnabled(false);
-            btnAccion.setAlpha(0.6f);
-            btnAccion.setBackgroundColor(ContextCompat.getColor(this, android.R.color.darker_gray));
-            return;
+        // 🔥 LÓGICA POR ESTADO
+        String estado = mascotaActual.getEstado();
+        if (estado == null) estado = "DISPONIBLE";
+
+        switch (estado) {
+
+            case "ADOPTADO":
+                btnAccion.setText("YA FUE ADOPTADO ✅");
+                btnAccion.setEnabled(false);
+                btnAccion.setBackgroundColor(
+                        ContextCompat.getColor(this, android.R.color.darker_gray));
+                break;
+
+            case "EN_PROCESO":
+                btnAccion.setText("EN PROCESO DE ADOPCIÓN ⏳");
+                btnAccion.setEnabled(false);
+                btnAccion.setBackgroundColor(
+                        ContextCompat.getColor(this, android.R.color.holo_orange_dark));
+                break;
+
+            default:
+                btnAccion.setText("¡QUIERO ADOPTARLO! 🐾");
+                btnAccion.setEnabled(true);
+                btnAccion.setBackgroundColor(
+                        ContextCompat.getColor(this, android.R.color.holo_green_dark));
+                btnAccion.setOnClickListener(v -> irAAdoptar());
+                break;
         }
-
-        btnAccion.setEnabled(true);
-        btnAccion.setAlpha(1f);
-        btnAccion.setText("¡QUIERO ADOPTARLO! 🐾");
-        btnAccion.setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_green_dark));
-        btnAccion.setOnClickListener(v -> irAAdoptar());
-    }
-
-    private boolean camposEditables() {
-        return txtNombre.isEnabled();
     }
 
     private void habilitarCampos(boolean habilitar) {
@@ -192,65 +188,40 @@ public class ActividadPerfilMascota extends AppCompatActivity {
         txtEdad.setEnabled(habilitar);
         txtTemperamento.setEnabled(habilitar);
         txtHistoria.setEnabled(habilitar);
-
-        if (!habilitar) {
-            int color = ContextCompat.getColor(this, android.R.color.black);
-            txtNombre.setTextColor(color);
-            txtEspecie.setTextColor(color);
-            txtRaza.setTextColor(color);
-            txtEdad.setTextColor(color);
-            txtTemperamento.setTextColor(color);
-            txtHistoria.setTextColor(color);
-        }
     }
 
     private void guardarCambios() {
-        if (mascotaActual == null) return;
 
-        String nombre = txtNombre.getText().toString().trim();
-        String especie = txtEspecie.getText().toString().trim();
-
-        if (nombre.isEmpty() || especie.isEmpty()) {
-            Toast.makeText(this, "Nombre y especie son obligatorios", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        mascotaActual.setNombre(nombre);
-        mascotaActual.setEspecie(especie);
+        mascotaActual.setNombre(txtNombre.getText().toString().trim());
+        mascotaActual.setEspecie(txtEspecie.getText().toString().trim());
         mascotaActual.setRaza(txtRaza.getText().toString().trim());
         mascotaActual.setTemperamento(txtTemperamento.getText().toString().trim());
         mascotaActual.setHistoria(txtHistoria.getText().toString().trim());
 
         try {
             mascotaActual.setEdad(Integer.parseInt(txtEdad.getText().toString().trim()));
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             mascotaActual.setEdad(0);
         }
 
         int filas = daoMascota.actualizar(mascotaActual);
-        if (filas > 0) {
-            Toast.makeText(this, "Cambios guardados correctamente ✅", Toast.LENGTH_SHORT).show();
 
-            // Sincronización con nube (best effort)
+        if (filas > 0) {
+            Toast.makeText(this, "Cambios guardados ✅", Toast.LENGTH_SHORT).show();
+
             new Thread(() -> {
                 try {
                     supabaseService.actualizarMascota(mascotaActual);
-                } catch (Exception ignored) {
-                }
+                } catch (Exception ignored) {}
             }).start();
 
             finish();
-        } else {
-            Toast.makeText(this, "Error al guardar ❌", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void irAAdoptar() {
-        if (mascotaActual == null) return;
-
         Intent intent = new Intent(this, ActividadAdopcion.class);
-        intent.putExtra("id_mascota_key", mascotaActual.getIdMascota());  // ← String
-        intent.putExtra("nombre_mascota_key", mascotaActual.getNombre());
+        intent.putExtra("id_mascota_key", mascotaActual.getIdMascota());
         startActivity(intent);
     }
 }

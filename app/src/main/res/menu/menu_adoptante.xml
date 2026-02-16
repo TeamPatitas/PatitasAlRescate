@@ -12,6 +12,18 @@
         android:icon="@android:drawable/ic_menu_sort_by_size"
         android:title="Mascotas" />
 
+    <!-- 🔥 NUEVO: LISTAR REFUGIOS -->
+    <item
+        android:id="@+id/itemListarRefugios"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="Refugios" />
+
+    <!-- 🔥 NUEVO: BUSCAR POR FILTRO -->
+    <item
+        android:id="@+id/itemBuscarFiltro"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="Buscar por Filtro" />
+
     <item
         android:id="@+id/itemFavoritosAdoptante"
         android:icon="@android:drawable/btn_star_big_on"
@@ -21,4 +33,5 @@
         android:id="@+id/itemSalirAdoptante"
         android:icon="@android:drawable/ic_lock_power_off"
         android:title="Salir" />
+
 </menu>
