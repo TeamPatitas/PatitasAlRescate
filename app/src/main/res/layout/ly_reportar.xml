@@ -1,10 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Controllers.ActividadReportar">
+    android:orientation="vertical"
+    android:background="#F6F2EA"
+    android:padding="20dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- TÍTULO -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Formulario de Reporte 📢"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#5B3A29"
+        android:gravity="center"
+        android:layout_marginBottom="6dp"/>
+
+    <!-- SUBTÍTULO -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cuéntanos qué está pasando"
+        android:textSize="14sp"
+        android:textColor="#7A6A5E"
+        android:gravity="center"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- ASUNTO -->
+    <EditText
+        android:id="@+id/txtAsunto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Asunto"
+        android:padding="14dp"
+        android:textSize="14sp"
+        android:background="@android:drawable/edit_text"
+        android:layout_marginBottom="14dp"/>
+
+    <!-- MENSAJE -->
+    <EditText
+        android:id="@+id/txtMensaje"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:hint="Mensaje"
+        android:padding="14dp"
+        android:textSize="14sp"
+        android:gravity="top"
+        android:inputType="textMultiLine"
+        android:background="@android:drawable/edit_text"
+        android:layout_marginBottom="22dp"/>
+
+    <!-- BOTÓN -->
+    <Button
+        android:id="@+id/btnEnviarReporte"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enviar reporte"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#7A4A32"
+        android:padding="14dp"/>
+
+</LinearLayout>

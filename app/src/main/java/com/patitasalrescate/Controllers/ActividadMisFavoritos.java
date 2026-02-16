@@ -1,26 +1,44 @@
 package com.patitasalrescate.Controllers;
 
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.patitasalrescate.R;
+import com.patitasalrescate.accesoADatos.DAOFavoritos;
+import com.patitasalrescate.model.Mascota;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ActividadMisFavoritos extends AppCompatActivity {
+
+    private ListView listFavoritos;
+    private DAOFavoritos daoFavoritos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.ly_mis_favoritos);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
+        listFavoritos = findViewById(R.id.listFavoritos);
+        daoFavoritos = new DAOFavoritos(this);
+
+        String idAdoptante = "ID_ADOPTANTE_DE_PRUEBA"; // luego se pasa real
+
+        List<Mascota> favoritos = daoFavoritos.getFavoritosPorAdoptante(idAdoptante);
+        List<String> datos = new ArrayList<>();
+
+        for (Mascota m : favoritos) {
+            datos.add(m.getNombre() + " - " + m.getEspecie());
+        }
+
+        listFavoritos.setAdapter(
+                new ArrayAdapter<>(this,
+                        android.R.layout.simple_list_item_1,
+                        datos)
+        );
     }
 }
