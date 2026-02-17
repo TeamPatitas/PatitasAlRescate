@@ -5,33 +5,65 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E9E0D8">
+    android:background="#EFEBE9">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarListarMascotas"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:background="#7B4A36"
+        android:background="#5D4037"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:navigationIcon="@android:drawable/ic_menu_revert"
-        app:title="Mascotas Disponibles"
+        app:title="Mascotas"
         app:titleTextColor="@android:color/white" />
+
+    <LinearLayout
+        android:id="@+id/layout_filtros_refugio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="12dp"
+        android:background="#D7CCC8"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/toolbarListarMascotas"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/btn_filtro_en_adopcion"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="En Adopción"
+            android:textSize="12sp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#5D4037"
+            android:layout_marginEnd="12dp"/>
+
+        <Button
+            android:id="@+id/btn_filtro_adoptados"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Adoptados"
+            android:textSize="12sp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#A1887F"/>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/txt_lista_vacia"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No hay mascotas registradas aún 🐾"
+        android:text="No se encontraron mascotas 🐾"
         android:textSize="18sp"
+        android:textStyle="italic"
         android:textColor="#757575"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/toolbarListarMascotas"
+        app:layout_constraintTop_toBottomOf="@id/layout_filtros_refugio"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -43,8 +75,7 @@
         android:padding="8dp"
         android:clipToPadding="false"
         tools:listitem="@layout/ly_item_cardview_mascota"
-        tools:itemCount="5"
-        app:layout_constraintTop_toBottomOf="@id/toolbarListarMascotas"
+        app:layout_constraintTop_toBottomOf="@id/layout_filtros_refugio"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

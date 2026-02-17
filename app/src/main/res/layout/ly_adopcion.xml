@@ -1,27 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="@color/blanco">
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="git remote -v&#xA;"
-        tools:ignore="MissingConstraints" />
+    android:padding="24dp"
+    android:background="#EFEBE9">
 
     <TextView
         android:id="@+id/txtTituloAdopcion"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Confirmar adopción"
-        android:textSize="22sp"
+        android:text="¡Estás a un paso!"
+        android:textSize="28sp"
         android:textStyle="bold"
+        android:textColor="#5D4037"
+        android:gravity="center"
+        android:layout_marginTop="24dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -30,30 +27,58 @@
         android:id="@+id/txtDetalleAdopcion"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Detalle..."
+        android:text="La mascota quedará reservada mientras se evalúa tu solicitud. Escribe un mensaje al refugio para presentarte:"
         android:textSize="16sp"
-        android:layout_marginTop="12dp"
+        android:textColor="#4E342E"
+        android:lineSpacingExtra="4dp"
+        android:gravity="center"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/txtTituloAdopcion"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <Button
-        android:id="@+id/btnConfirmarAdopcion"
-        android:layout_width="0dp"
+    <TextView
+        android:id="@+id/lbl_mensaje"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Confirmar adopción ✅"
-        android:layout_marginTop="18dp"
+        android:text="Tu mensaje:"
+        android:textStyle="bold"
+        android:textColor="#5D4037"
+        android:layout_marginTop="24dp"
         app:layout_constraintTop_toBottomOf="@id/txtDetalleAdopcion"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <EditText
+        android:id="@+id/edt_mensaje_adopcion"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginTop="8dp"
+        android:background="#FFFFFF"
+        android:padding="12dp"
+        android:gravity="top|start"
+        android:hint="Hola, me llamo... y me gustaría adoptar porque..."
+        android:textSize="14sp"
+        android:textColor="#3E2723"
+        android:inputType="textMultiLine"
+        android:importantForAutofill="no"
+        android:elevation="2dp"
+        app:layout_constraintTop_toBottomOf="@id/lbl_mensaje"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <Button
         android:id="@+id/btnContactarWhatsapp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Contactar por WhatsApp 💬"
-        android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@id/btnConfirmarAdopcion"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Enviar y Contactar"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:backgroundTint="#25D366"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="32dp"
+        android:src="@android:drawable/ic_menu_call"
+        app:iconGravity="textStart"
+        app:layout_constraintTop_toBottomOf="@id/edt_mensaje_adopcion"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

@@ -22,7 +22,7 @@ import java.util.List;
 
 public class ActividadPerfilMascota extends AppCompatActivity {
 
-    private EditText txtNombre, txtEspecie, txtRaza, txtEdad, txtTemperamento, txtHistoria;
+    private EditText txtNombre, txtEspecie, txtRaza, txtSexo, txtEdad, txtTemperamento, txtHistoria;
     private ImageView imgFoto;
     private Button btnAccion;
     private Button btnFavorito;
@@ -73,6 +73,7 @@ public class ActividadPerfilMascota extends AppCompatActivity {
         txtNombre = findViewById(R.id.txt_edit_nombre);
         txtEspecie = findViewById(R.id.txt_edit_especie);
         txtRaza = findViewById(R.id.txt_edit_raza);
+        txtSexo = findViewById(R.id.txt_edit_sexo);
         txtEdad = findViewById(R.id.txt_edit_edad);
         txtTemperamento = findViewById(R.id.txt_edit_temperamento);
         txtHistoria = findViewById(R.id.txt_edit_historia);
@@ -93,6 +94,10 @@ public class ActividadPerfilMascota extends AppCompatActivity {
         txtNombre.setText(valorSeguro(mascotaActual.getNombre()));
         txtEspecie.setText(valorSeguro(mascotaActual.getEspecie()));
         txtRaza.setText(valorSeguro(mascotaActual.getRaza()));
+
+        // 🔥 Cargamos el Sexo (Macho/Hembra)
+        if(txtSexo != null) txtSexo.setText(valorSeguro(mascotaActual.getSexo()));
+
         txtEdad.setText(String.valueOf(mascotaActual.getEdad()));
         txtTemperamento.setText(valorSeguro(mascotaActual.getTemperamento()));
         txtHistoria.setText(valorSeguro(mascotaActual.getHistoria()));
@@ -115,19 +120,18 @@ public class ActividadPerfilMascota extends AppCompatActivity {
     }
 
     private void configurarModoVisualPorRol() {
-
         boolean esRefugio = "REFUGIO".equalsIgnoreCase(tipoUsuario);
 
         if (esRefugio) {
             btnFavorito.setVisibility(View.GONE);
             habilitarCampos(false);
 
-            btnAccion.setText("EDITAR MASCOTA ✏️");
+            btnAccion.setText("EDITAR MASCOTA");
             btnAccion.setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_orange_dark));
             btnAccion.setOnClickListener(v -> {
                 if (!txtNombre.isEnabled()) {
                     habilitarCampos(true);
-                    btnAccion.setText("GUARDAR CAMBIOS ✅");
+                    btnAccion.setText("GUARDAR CAMBIOS");
                 } else {
                     guardarCambios();
                 }
@@ -135,7 +139,7 @@ public class ActividadPerfilMascota extends AppCompatActivity {
             return;
         }
 
-        // 🔥 ADOPTANTE
+        // MODO ADOPTANTE
         btnFavorito.setVisibility(View.VISIBLE);
         habilitarCampos(false);
 
@@ -144,38 +148,35 @@ public class ActividadPerfilMascota extends AppCompatActivity {
                 Toast.makeText(this, "No se identificó al adoptante", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             long r = daoFavoritos.addFavorito(idUsuario, idMascota);
             if (r > 0) {
                 Toast.makeText(this, "Agregado a favoritos ❤️", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Ya estaba en favoritos", Toast.LENGTH_SHORT).show();
             }
         });
 
-        // 🔥 LÓGICA POR ESTADO
+        // Configurar botón de adopción según estado
         String estado = mascotaActual.getEstado();
         if (estado == null) estado = "DISPONIBLE";
 
         switch (estado) {
-
             case "ADOPTADO":
-                btnAccion.setText("YA FUE ADOPTADO ✅");
+                btnAccion.setText("YA FUE ADOPTADO");
                 btnAccion.setEnabled(false);
-                btnAccion.setBackgroundColor(
-                        ContextCompat.getColor(this, android.R.color.darker_gray));
+                btnAccion.setBackgroundColor(ContextCompat.getColor(this, android.R.color.darker_gray));
                 break;
 
             case "EN_PROCESO":
-                btnAccion.setText("EN PROCESO DE ADOPCIÓN ⏳");
+                btnAccion.setText("EN PROCESO DE ADOPCIÓN");
                 btnAccion.setEnabled(false);
-                btnAccion.setBackgroundColor(
-                        ContextCompat.getColor(this, android.R.color.holo_orange_dark));
+                btnAccion.setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_orange_dark));
                 break;
 
             default:
                 btnAccion.setText("¡QUIERO ADOPTARLO! 🐾");
                 btnAccion.setEnabled(true);
-                btnAccion.setBackgroundColor(
-                        ContextCompat.getColor(this, android.R.color.holo_green_dark));
+                btnAccion.setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_green_dark));
                 btnAccion.setOnClickListener(v -> irAAdoptar());
                 break;
         }
@@ -185,16 +186,19 @@ public class ActividadPerfilMascota extends AppCompatActivity {
         txtNombre.setEnabled(habilitar);
         txtEspecie.setEnabled(habilitar);
         txtRaza.setEnabled(habilitar);
+        if(txtSexo != null) txtSexo.setEnabled(habilitar);
         txtEdad.setEnabled(habilitar);
         txtTemperamento.setEnabled(habilitar);
         txtHistoria.setEnabled(habilitar);
     }
 
     private void guardarCambios() {
-
         mascotaActual.setNombre(txtNombre.getText().toString().trim());
         mascotaActual.setEspecie(txtEspecie.getText().toString().trim());
         mascotaActual.setRaza(txtRaza.getText().toString().trim());
+
+        if(txtSexo != null) mascotaActual.setSexo(txtSexo.getText().toString().trim());
+
         mascotaActual.setTemperamento(txtTemperamento.getText().toString().trim());
         mascotaActual.setHistoria(txtHistoria.getText().toString().trim());
 
@@ -222,6 +226,7 @@ public class ActividadPerfilMascota extends AppCompatActivity {
     private void irAAdoptar() {
         Intent intent = new Intent(this, ActividadAdopcion.class);
         intent.putExtra("id_mascota_key", mascotaActual.getIdMascota());
+        intent.putExtra(ActividadIniciarSesion.EXTRA_ID_USUARIO, idUsuario);
         startActivity(intent);
     }
 }

@@ -26,7 +26,8 @@
 
         <activity
             android:name=".Controllers.ActividadRegistrarMascota"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".Controllers.ActividadInicioRefugio"/>
 
         <activity
             android:name=".Controllers.ActividadAdopcion"
@@ -37,9 +38,7 @@
         <activity
             android:name=".Controllers.ActividadListarRefugios"
             android:exported="false" />
-        <activity
-            android:name=".Controllers.ActividadReportar"
-            android:exported="false" />
+
         <activity
             android:name=".Controllers.ActividadBusquedaPorFiltro"
             android:exported="false" />
@@ -58,10 +57,8 @@
         <activity
             android:name=".Controllers.ActividadRegistrarOrganizacion"
             android:exported="false"
-            android:parentActivityName=".Controllers.ActividadRegistro"/>
-        <activity
-            android:name=".Controllers.ActividadRegistro"
-            android:exported="false" />
+            android:parentActivityName=".Controllers.ActividadIngresar"/>
+
         <activity
             android:name=".Controllers.ActividadIniciarSesion"
             android:exported="false" />

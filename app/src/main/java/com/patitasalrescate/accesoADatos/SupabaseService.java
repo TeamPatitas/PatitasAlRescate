@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.patitasalrescate.model.Adopcion;
 import com.patitasalrescate.model.Adoptante;
 import com.patitasalrescate.model.Mascota;
 import com.patitasalrescate.model.Refugio;
@@ -180,48 +181,15 @@ public class SupabaseService {
         return null;
     }
 
-    // --- ACTUALIZACIONES (PATCH) ---
-
-    /**
-     * Cambia el estado de adoptado en Supabase.
-     * Requiere que tu tabla se llame "mascotas" y la PK/filtro sea "id_mascota".
-     */
-    public boolean actualizarEstadoAdoptado(String idMascota, boolean esAdoptado) throws IOException {
-        if (idMascota == null || idMascota.trim().isEmpty()) return false;
-
-        String json = "{\"es_adoptado\":" + (esAdoptado ? "true" : "false") + "}";
-        RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
-
-        // OJO: el filtro asume que el campo en Supabase es id_mascota
-        String endpoint = "mascotas?id_mascota=eq." + idMascota;
-
-        Request request = baseRequest(endpoint)
-                .patch(body)
-                .build();
-
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful()) {
-                String errorBody = response.body() != null ? response.body().string() : "No body";
-                Log.e("SupabaseMascota", "Error PATCH es_adoptado: Código " + response.code() + " - " + response.message());
-                Log.e("SupabaseMascota", "Respuesta: " + errorBody);
-                return false;
-            }
-            return true;
-        }
-    }
-
-    /**
-     * Actualiza datos editables de una mascota en Supabase.
-     * (No modifica fotos ni id_refugio; solo campos del perfil)
-     */
-    public boolean actualizarMascota(Mascota mascota) throws IOException {
+        public boolean actualizarMascota(Mascota mascota) throws IOException {
         if (mascota == null || mascota.getIdMascota() == null || mascota.getIdMascota().trim().isEmpty()) return false;
 
         // Armamos un JSON parcial con campos editables
-        String json = "{"
+        String json ="{"
                 + "\"nombre\":\"" + escapeJson(mascota.getNombre()) + "\","
                 + "\"especie\":\"" + escapeJson(mascota.getEspecie()) + "\","
                 + "\"raza\":\"" + escapeJson(mascota.getRaza()) + "\","
+                + "\"sexo\":\"" + escapeJson(mascota.getSexo()) + "\","
                 + "\"edad\":" + mascota.getEdad() + ","
                 + "\"temperamento\":\"" + escapeJson(mascota.getTemperamento()) + "\","
                 + "\"historia\":\"" + escapeJson(mascota.getHistoria()) + "\""
@@ -255,5 +223,92 @@ public class SupabaseService {
                 .replace("\n", "\\n")
                 .replace("\r", "\\r");
     }
+    public void insertarAdopcionDetallada(Adopcion adopcion) throws Exception {
+        String json = gson.toJson(adopcion);
+        RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
 
+        Request request = baseRequest("adopciones").post(body).build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                String errorJson = response.body() != null ? response.body().string() : "Error desconocido";
+                throw new Exception(errorJson);
+            }
+        }
+    }
+    public boolean actualizarEstadoMascota(String idMascota, String nuevoEstado) throws IOException {
+        if (idMascota == null || nuevoEstado == null) return false;
+
+        String json = "{\"estado\": \"" + nuevoEstado + "\"}";
+
+        RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
+
+        String endpoint = "mascotas?id_mascota=eq." + idMascota;
+
+        Request request = baseRequest(endpoint)
+                .patch(body)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                android.util.Log.e("SupabaseEstado", "Error actualizando estado: " + response.code());
+                return false;
+            }
+            return true;
+        }
+    }
+    // ... (resto de tu código anterior igual) ...
+
+    public boolean actualizarEstadoAdopcion(String idAdopcion, String nuevoEstado) throws IOException {
+        if (idAdopcion == null || nuevoEstado == null) return false;
+        String json = "{\"estado\": \"" + nuevoEstado + "\"}";
+        RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
+        String endpoint = "adopciones?id_adopcion=eq." + idAdopcion;
+        Request request = baseRequest(endpoint).patch(body).build();
+        try (Response response = client.newCall(request).execute()) { return response.isSuccessful(); }
+    }
+
+    // 🔥 MÉTODO NUEVO IMPORTANTE PARA EL ADAPTADOR
+    // Busca en la tabla 'adopciones' cualquier solicitud 'pendiente' de esta mascota y la pone en 'aprobada'
+    public boolean aprobarAdopcionPorMascota(String idMascota) throws IOException {
+        if (idMascota == null) return false;
+
+        // JSON: estado = aprobada (para cumplir el Check Constraint de Supabase)
+        String json = "{\"estado\": \"aprobada\"}";
+        RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
+
+        // Filtro: Donde id_mascota sea igual al ID y el estado actual sea 'pendiente'
+        String endpoint = "adopciones?id_mascota=eq." + idMascota + "&estado=eq.pendiente";
+
+        Request request = baseRequest(endpoint)
+                .patch(body)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                android.util.Log.e("SupabaseAdopcion", "Error aprobando adopción: " + response.code());
+                return false;
+            }
+            return true;
+        }
+    }
+
+    public boolean rechazarAdopcionPorMascota(String idMascota) throws IOException {
+        if (idMascota == null) return false;
+
+        // JSON: estado = rechazada (cumple con tu Check Constraint)
+        String json = "{\"estado\": \"rechazada\"}";
+        RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
+
+        // Filtro: id_mascota coincide Y estado actual es 'pendiente'
+        String endpoint = "adopciones?id_mascota=eq." + idMascota + "&estado=eq.pendiente";
+
+        Request request = baseRequest(endpoint)
+                .patch(body)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            return response.isSuccessful();
+        }
+    }
 }

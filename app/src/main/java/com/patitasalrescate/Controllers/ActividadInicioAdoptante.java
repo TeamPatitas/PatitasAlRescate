@@ -1,7 +1,9 @@
 package com.patitasalrescate.Controllers;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,6 +42,7 @@ public class ActividadInicioAdoptante extends AppCompatActivity {
 
         TextView txt = findViewById(R.id.txtBienvenidoAdoptante);
         txt.setText("Bienvenido " + nombreAdoptante);
+        txt.setGravity(Gravity.CENTER);
 
         BottomNavigationView menu = findViewById(R.id.menuInicioAdoptante);
 
@@ -59,7 +62,17 @@ public class ActividadInicioAdoptante extends AppCompatActivity {
                 startActivity(i);
                 return true;
             }
+            if(item.getItemId()==R.id.itemListarRefugios){
+                i= new Intent(this, ActividadListarRefugios.class);
+                startActivity(i);
+                return true;
 
+            }
+            if(item.getItemId()==R.id.itemBuscarFiltro){
+                i= new Intent(this, ActividadBusquedaPorFiltro.class);
+                startActivity(i);
+                return true;
+            }
             if (item.getItemId() == R.id.itemFavoritosAdoptante) {
                 i = new Intent(this, ActividadMisFavoritos.class);
                 i.putExtra(ActividadIniciarSesion.EXTRA_TIPO_USUARIO, "ADOPTANTE");
@@ -68,13 +81,14 @@ public class ActividadInicioAdoptante extends AppCompatActivity {
                 return true;
             }
 
+
+
             if (item.getItemId() == R.id.itemSalirAdoptante) {
                 i = new Intent(this, MainActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
                 return true;
             }
-
             return false;
         });
     }
