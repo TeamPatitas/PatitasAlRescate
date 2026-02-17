@@ -5,21 +5,18 @@
     android:id="@+id/registrar_mascota_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fondo_crema"
+    android:background="#FFF8E1"
     tools:context=".Controllers.ActividadRegistrarMascota">
 
-    <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarRegistrarMascota"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/marronPrimario"
-        app:title="Registra una Mascota 🐾"
-        app:titleTextColor="@color/blanco"
-        app:navigationIcon="@drawable/rj_inicio_refugio_24"
+        android:background="#5D4037"
+        app:title="Registra una Mascota"
+        app:titleTextColor="@android:color/white"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Contenido principal con Scroll -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -33,28 +30,24 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <!-- Título de sección -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                android:fontFamily="@font/chewy"
                 android:gravity="center"
                 android:text="Datos de la mascota"
-                android:textColor="@color/marronOscuro"
+                android:textStyle="bold"
+                android:textColor="#3E2723"
                 android:textSize="24sp" />
 
-            <!-- Nombre -->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:hint="\t\t\tNombre de la mascota"
-                app:boxStrokeColor="@color/marronPrimario"
-                app:hintTextColor="@color/marronPrimario"
-                app:startIconDrawable="@drawable/rj_persona">
-
+                android:hint="   Nombre de la mascota"
+                app:startIconDrawable="@android:drawable/ic_menu_myplaces"
+                app:startIconTint="#5D4037">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txt_reg_nombre_mascota"
                     android:layout_width="match_parent"
@@ -62,53 +55,98 @@
                     android:inputType="textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Especie -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  Especie"
+                android:textStyle="bold"
+                android:textColor="#5D4037"
+                android:gravity="center_vertical"
+                android:drawableStart="@android:drawable/ic_menu_search"
+                android:drawablePadding="8dp"
+                android:drawableTint="#5D4037"
+                android:layout_marginBottom="4dp"/>
+            <Spinner
+                android:id="@+id/spinner_especie"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@android:drawable/editbox_background"
+                android:layout_marginBottom="12dp"/>
+
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/ly_otra_especie"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:hint="\t\t\tEspecie (ej. Perro, Gato)"
-                app:boxStrokeColor="@color/marronPrimario"
-                app:hintTextColor="@color/marronPrimario"
-                >
-
+                android:hint="   Escribe la especie"
+                android:visibility="gone">
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/txt_reg_especie"
+                    android:id="@+id/txt_otra_especie"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Raza -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  Raza"
+                android:textStyle="bold"
+                android:textColor="#5D4037"
+                android:gravity="center_vertical"
+                android:drawableStart="@android:drawable/ic_menu_sort_by_size"
+                android:drawablePadding="8dp"
+                android:drawableTint="#5D4037"
+                android:layout_marginBottom="4dp"/>
+            <Spinner
+                android:id="@+id/spinner_raza"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@android:drawable/editbox_background"
+                android:layout_marginBottom="12dp"/>
+
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/ly_otra_raza"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:hint="\t\t\tRaza (ej. Labrador)"
-                app:boxStrokeColor="@color/marronPrimario"
-                app:hintTextColor="@color/marronPrimario"
-                >
-
+                android:hint="   Escribe la raza"
+                android:visibility="gone">
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/txt_reg_raza"
+                    android:id="@+id/txt_otra_raza"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Edad -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  Sexo"
+                android:textStyle="bold"
+                android:textColor="#5D4037"
+                android:gravity="center_vertical"
+                android:drawableStart="@android:drawable/ic_menu_info_details"
+                android:drawablePadding="8dp"
+                android:drawableTint="#5D4037"
+                android:layout_marginBottom="4dp"/>
+            <Spinner
+                android:id="@+id/spinner_sexo"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@android:drawable/editbox_background"
+                android:layout_marginBottom="12dp"/>
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:hint="\t\t\tEdad en meses"
-                app:boxStrokeColor="@color/marronPrimario"
-                app:hintTextColor="@color/marronPrimario"
-                >
-
+                android:hint="   Edad (meses)"
+                app:startIconDrawable="@android:drawable/ic_menu_day"
+                app:startIconTint="#5D4037">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txt_reg_edad"
                     android:layout_width="match_parent"
@@ -117,17 +155,14 @@
                     android:maxLength="3" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Temperamento -->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:hint="\t\t\tTemperamento (ej. Juguetón)"
-                app:boxStrokeColor="@color/marronPrimario"
-                app:hintTextColor="@color/marronPrimario"
-                >
-
+                android:hint="   Temperamento (ej. Juguetón)"
+                app:startIconDrawable="@android:drawable/ic_menu_info_details"
+                app:startIconTint="#5D4037">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txt_reg_temperamento"
                     android:layout_width="match_parent"
@@ -135,17 +170,14 @@
                     android:inputType="textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Historia -->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                android:hint="\t\t\tHistoria de rescate"
-                app:boxStrokeColor="@color/marronPrimario"
-                app:hintTextColor="@color/marronPrimario"
-                >
-
+                android:hint="   Historia de rescate"
+                app:startIconDrawable="@android:drawable/ic_menu_edit"
+                app:startIconTint="#5D4037">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txt_reg_historia"
                     android:layout_width="match_parent"
@@ -155,53 +187,32 @@
                     android:gravity="top" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Sección de fotos -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:fontFamily="@font/chewy"
-                android:text="Fotos de la mascota"
-                android:textColor="@color/marronOscuro"
-                android:textSize="18sp" />
-
-            <LinearLayout
+            <Button
+                android:id="@+id/btn_seleccionar_fotos"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/bg_input_rounded"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="12dp">
+                android:text="Seleccionar Fotos"
+                android:textColor="#388E3C"
+                app:strokeColor="#388E3C"
+                android:layout_marginBottom="8dp"/>
 
-                <Button
-                    android:id="@+id/btn_seleccionar_fotos"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/chewy"
-                    android:text="Seleccionar Galería"
-                    android:textColor="@color/verde_persona" />
-            </LinearLayout>
-
-            <!-- Preview de fotos -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_fotos_preview"
                 android:layout_width="match_parent"
-                android:layout_height="140dp"
+                android:layout_height="120dp"
                 android:layout_marginBottom="24dp"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-            <!-- Botón guardar -->
             <Button
                 android:id="@+id/btn_guardar_mascota"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:backgroundTint="@color/naranja_asociacion"
-                android:fontFamily="@font/chewy"
+                android:backgroundTint="#FF9800"
                 android:text="REGISTRAR MASCOTA"
-                android:textColor="@color/blanco"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
                 android:textSize="18sp"
                 app:cornerRadius="30dp" />
 

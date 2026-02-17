@@ -26,6 +26,14 @@ import java.io.IOException;
 
 public class ActividadIniciarSesion extends AppCompatActivity {
 
+    /**
+     * Extras estándar para identificar sesión y rol en TODO el flujo.
+     * Úsalos para: Inicio -> ListarMascotas -> PerfilMascota -> Adopción.
+     */
+    public static final String EXTRA_TIPO_USUARIO = "tipo_usuario_key"; // "ADOPTANTE" | "REFUGIO"
+    public static final String EXTRA_ID_USUARIO = "id_usuario_key";     // id_adoptante o id_refugio
+    public static final String EXTRA_NOMBRE_USUARIO = "nombre_usuario_key";
+
     private EditText textCorreo, textPassword;
     private Button button_Ingresar;
 
@@ -84,8 +92,9 @@ public class ActividadIniciarSesion extends AppCompatActivity {
                 // 1. Adoptante - local
                 Adoptante adoptanteLocal = daoAdoptante.login(correo, passEncriptada);
                 if (adoptanteLocal != null) {
+                    guardarSesionAdoptante(adoptanteLocal);
                     runOnUiThread(() -> {
-                        irAPantallaPrincipal(adoptanteLocal.getNombre(), "Adoptante");
+                        irAPantallaPrincipal(adoptanteLocal.getIdAdoptante(), adoptanteLocal.getNombre(), "ADOPTANTE");
                         button_Ingresar.setEnabled(true);
                     });
                     return;
@@ -95,8 +104,9 @@ public class ActividadIniciarSesion extends AppCompatActivity {
                 Adoptante adoptanteRemoto = supabaseService.loginAdoptanteRemoto(correo, passEncriptada);
                 if (adoptanteRemoto != null) {
                     daoAdoptante.insertar(adoptanteRemoto); // guardar local
+                    guardarSesionAdoptante(adoptanteRemoto);
                     runOnUiThread(() -> {
-                        irAPantallaPrincipal(adoptanteRemoto.getNombre(), "Adoptante");
+                        irAPantallaPrincipal(adoptanteRemoto.getIdAdoptante(), adoptanteRemoto.getNombre(), "ADOPTANTE");
                         button_Ingresar.setEnabled(true);
                     });
                     return;
@@ -107,7 +117,7 @@ public class ActividadIniciarSesion extends AppCompatActivity {
                 if (refugioLocal != null) {
                     guardarSesionRefugio(refugioLocal);
                     runOnUiThread(() -> {
-                        irAPantallaPrincipal(refugioLocal.getNombre(), "Refugio");
+                        irAPantallaPrincipal(refugioLocal.getIdRefugio(), refugioLocal.getNombre(), "REFUGIO");
                         button_Ingresar.setEnabled(true);
                     });
                     return;
@@ -119,7 +129,7 @@ public class ActividadIniciarSesion extends AppCompatActivity {
                     daoRefugio.insertar(refugioRemoto); // guardar local
                     guardarSesionRefugio(refugioRemoto);
                     runOnUiThread(() -> {
-                        irAPantallaPrincipal(refugioRemoto.getNombre(), "Refugio");
+                        irAPantallaPrincipal(refugioRemoto.getIdRefugio(), refugioRemoto.getNombre(), "REFUGIO");
                         button_Ingresar.setEnabled(true);
                     });
                     return;
@@ -149,9 +159,24 @@ public class ActividadIniciarSesion extends AppCompatActivity {
                 .apply();
     }
 
-    public void irAPantallaPrincipal(String nombre, String tipo) {
-        Intent intent = new Intent(this, tipo.equals("Adoptante") ? ActividadInicioAdoptante.class : ActividadInicioRefugio.class);
-        intent.putExtra(tipo.equals("Adoptante") ? "nombre_adoptante_key" : "nombre_refugio_key", nombre);
+    private void guardarSesionAdoptante(Adoptante adoptante) {
+        SharedPreferences prefs = getSharedPreferences("sesion_adoptante", MODE_PRIVATE);
+        prefs.edit()
+                .putString("id_adoptante", adoptante.getIdAdoptante())
+                .putString("nombre_adoptante", adoptante.getNombre())
+                .apply();
+    }
+
+    public void irAPantallaPrincipal(String idUsuario, String nombreUsuario, String tipoUsuario) {
+        boolean esAdoptante = "ADOPTANTE".equalsIgnoreCase(tipoUsuario);
+
+        Intent intent = new Intent(this, esAdoptante ? ActividadInicioAdoptante.class : ActividadInicioRefugio.class);
+        // Compatibilidad con código existente:
+        intent.putExtra(esAdoptante ? "nombre_adoptante_key" : "nombre_refugio_key", nombreUsuario);
+        // Extras estándar (nuevo):
+        intent.putExtra(EXTRA_TIPO_USUARIO, esAdoptante ? "ADOPTANTE" : "REFUGIO");
+        intent.putExtra(EXTRA_ID_USUARIO, idUsuario);
+        intent.putExtra(EXTRA_NOMBRE_USUARIO, nombreUsuario);
         startActivity(intent);
         finish();
     }

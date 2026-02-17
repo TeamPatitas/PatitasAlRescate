@@ -10,14 +10,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.patitasalrescate.R;
 import com.patitasalrescate.model.Refugio;
-
 import java.util.List;
 
 public class AdaptadorRefugios extends RecyclerView.Adapter<AdaptadorRefugios.RefugioViewHolder> {
@@ -25,7 +22,6 @@ public class AdaptadorRefugios extends RecyclerView.Adapter<AdaptadorRefugios.Re
     private Context context;
     private List<Refugio> listaRefugios;
 
-    // Constructor
     public AdaptadorRefugios(Context context, List<Refugio> listaRefugios) {
         this.context = context;
         this.listaRefugios = listaRefugios;
@@ -40,78 +36,92 @@ public class AdaptadorRefugios extends RecyclerView.Adapter<AdaptadorRefugios.Re
 
     @Override
     public void onBindViewHolder(@NonNull RefugioViewHolder holder, int position) {
-        Refugio refugioActual = listaRefugios.get(position);
+        Refugio r = listaRefugios.get(position);
 
-        // 1. Asignamos los Textos
-        holder.txtNombre.setText(refugioActual.getNombre());
-        holder.txtDireccion.setText(refugioActual.getDireccion());
-        holder.txtTelefono.setText(refugioActual.getNumCelular());
+        holder.txtNombre.setText(r.getNombre());
+        holder.txtDireccion.setText(r.getDireccion());
 
-        // 2. Cargamos la IMAGEN usando GLIDE
-        // Verificamos que la URL no sea nula ni vacía
-        if (refugioActual.getFotoUrl() != null && !refugioActual.getFotoUrl().isEmpty()) {
+        if (r.getFotoUrl() != null && !r.getFotoUrl().isEmpty()) {
             Glide.with(context)
-                    .load(refugioActual.getFotoUrl())
-                    .centerCrop() // Recorta la imagen para llenar el cuadro sin deformar
-                    .placeholder(R.drawable.ic_launcher_foreground) // Imagen de espera
-                    .error(R.drawable.ic_launcher_foreground) // Imagen si falla la carga
+                    .load(r.getFotoUrl())
+                    .centerCrop()
+                    .placeholder(R.drawable.ic_launcher_foreground)
                     .into(holder.imgFoto);
         } else {
-            // Si no tiene URL, ponemos una imagen por defecto
             holder.imgFoto.setImageResource(R.drawable.ic_launcher_foreground);
         }
 
-        // 3. Configuración del BOTÓN MAPA
+        // BOTÓN WHATSAPP
+        holder.btnWhatsapp.setOnClickListener(v -> {
+            String fono = r.getNumCelular();
+            if (fono != null && !fono.isEmpty()) {
+                fono = fono.replace(" ", "").replace("+", "");
+                if (!fono.startsWith("51")) fono = "51" + fono;
+
+                String url = "https://wa.me/" + fono + "?text=" + Uri.encode("¡Hola! Vi su refugio en Patitas al Rescate 🐾");
+                try {
+                    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                } catch (Exception e) {
+                    Toast.makeText(context, "WhatsApp no instalado", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(context, "Número no disponible", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         holder.btnMapa.setOnClickListener(v -> {
-            if (refugioActual.getLatitud() != 0 && refugioActual.getLongitud() != 0) {
+            Uri uriMapa = null;
 
-                // URI para abrir la ubicación exacta con una etiqueta (nombre del refugio)
-                String uriMapa = "geo:" + refugioActual.getLatitud() + "," + refugioActual.getLongitud() +
-                        "?q=" + refugioActual.getLatitud() + "," + refugioActual.getLongitud() +
-                        "(" + Uri.encode(refugioActual.getNombre()) + ")";
+            // CASO A: Tenemos Coordenadas exactas
+            if (r.getLatitud() != 0 && r.getLongitud() != 0) {
+                String label = Uri.encode(r.getNombre());
+                // Formato para marcador exacto
+                String uriString = "geo:" + r.getLatitud() + "," + r.getLongitud() + "?q=" + r.getLatitud() + "," + r.getLongitud() + "(" + label + ")";
+                uriMapa = Uri.parse(uriString);
+            }
+            // CASO B: No tenemos coordenadas, probamos con la Dirección
+            else if (r.getDireccion() != null && !r.getDireccion().trim().isEmpty()) {
+                String query = Uri.encode(r.getDireccion());
+                // Formato de búsqueda por texto
+                uriMapa = Uri.parse("geo:0,0?q=" + query);
+            }
 
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uriMapa));
-                intent.setPackage("com.google.android.apps.maps"); // Intentamos abrir Google Maps directo
-
+            // EJECUTAR INTENT
+            if (uriMapa != null) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, uriMapa);
+                intent.setPackage("com.google.android.apps.maps"); // Priorizar Google Maps
                 try {
                     context.startActivity(intent);
                 } catch (Exception e) {
-                    // Si no tiene Maps, intentamos abrir cualquier navegador
-                    Intent intentGenerico = new Intent(Intent.ACTION_VIEW, Uri.parse(uriMapa));
+                    // Fallback a navegador u otra app de mapas
                     try {
-                        context.startActivity(intentGenerico);
+                        context.startActivity(new Intent(Intent.ACTION_VIEW, uriMapa));
                     } catch (Exception ex) {
-                        Toast.makeText(context, "No se encontró aplicación de mapas", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "No hay aplicación de mapas instalada", Toast.LENGTH_SHORT).show();
                     }
                 }
             } else {
+                // CASO C: No hay ni coordenadas ni dirección
                 Toast.makeText(context, "Ubicación no disponible", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Override
-    public int getItemCount() {
-        return listaRefugios.size();
-    }
+    public int getItemCount() { return listaRefugios.size(); }
 
-    // --- CLASE VIEWHOLDER ---
-    // Aquí enlazamos las variables Java con los IDs del XML (txt_, img_, btn_)
     public static class RefugioViewHolder extends RecyclerView.ViewHolder {
-
-        TextView txtNombre, txtDireccion, txtTelefono;
+        TextView txtNombre, txtDireccion;
         ImageView imgFoto;
-        ImageButton btnMapa;
+        ImageButton btnMapa, btnWhatsapp;
 
         public RefugioViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            // Buscamos los IDs que definimos en el XML actualizado
             txtNombre = itemView.findViewById(R.id.txt_nombre_refugio);
             txtDireccion = itemView.findViewById(R.id.txt_direccion_refugio);
-            txtTelefono = itemView.findViewById(R.id.txt_telefono_refugio);
             imgFoto = itemView.findViewById(R.id.img_foto_refugio);
             btnMapa = itemView.findViewById(R.id.btn_ver_mapa);
+            btnWhatsapp = itemView.findViewById(R.id.btn_whatsapp_refugio);
         }
     }
 }

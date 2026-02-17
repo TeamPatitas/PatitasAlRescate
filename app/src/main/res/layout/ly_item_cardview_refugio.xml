@@ -6,9 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="4dp"
-    app:cardBackgroundColor="?attr/colorSurface">
+    app:cardCornerRadius="28dp"
+    app:cardElevation="6dp"
+    app:cardBackgroundColor="@color/naranajBajo">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -33,13 +33,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="8dp"
-            tools:text="Refugio Patitas Felices"
+            tools:text="Refugio Patitas"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="#5D4037"
             app:layout_constraintStart_toEndOf="@id/img_foto_refugio"
             app:layout_constraintTop_toTopOf="@id/img_foto_refugio"
-            app:layout_constraintEnd_toStartOf="@id/btn_ver_mapa"/>
+            app:layout_constraintEnd_toStartOf="@id/btn_whatsapp_refugio"/>
 
         <TextView
             android:id="@+id/txt_direccion_refugio"
@@ -47,38 +47,37 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
-            tools:text="Av. Los Héroes 123, Lima"
-            android:textColor="?attr/colorOnSurfaceVariant"
+            tools:text="Dirección..."
+            android:textColor="#757575"
             android:textSize="13sp"
             app:layout_constraintStart_toStartOf="@id/txt_nombre_refugio"
             app:layout_constraintTop_toBottomOf="@id/txt_nombre_refugio"
-            app:layout_constraintEnd_toStartOf="@id/btn_ver_mapa"/>
+            app:layout_constraintEnd_toStartOf="@id/btn_whatsapp_refugio"/>
 
-        <TextView
-            android:id="@+id/txt_telefono_refugio"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            tools:text="+51 999 999 999"
-            android:textColor="?attr/colorSecondary"
-            android:textSize="12sp"
-            android:textStyle="italic"
-            app:layout_constraintStart_toStartOf="@id/txt_nombre_refugio"
-            app:layout_constraintTop_toBottomOf="@id/txt_direccion_refugio"
-            app:layout_constraintEnd_toStartOf="@id/btn_ver_mapa"/>
+        <ImageButton
+            android:id="@+id/btn_whatsapp_refugio"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Contactar"
+            android:src="@android:drawable/ic_menu_call"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_ver_mapa"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#25D366" />
 
         <ImageButton
             android:id="@+id/btn_ver_mapa"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginBottom="32dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Ver ubicación"
+            android:contentDescription="Ver mapa"
             android:src="@android:drawable/ic_dialog_map"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:tint="?attr/colorPrimary" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#5D4037" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

@@ -6,15 +6,23 @@
         android:id="@+id/itemInicioAdoptante"
         android:icon="@android:drawable/ic_menu_view"
         android:title="Inicio" />
-    <item
-        android:id="@+id/itemRegistrarMascota"
-        android:icon="@android:drawable/ic_menu_add"
-        android:title="Registrar Mascota" />
 
     <item
         android:id="@+id/itemListarMascotasAdoptante"
         android:icon="@android:drawable/ic_menu_sort_by_size"
-        android:title="Mascotas" />
+        android:title="Listar Mascotas" />
+
+    <!-- 🔥 NUEVO: LISTAR REFUGIOS -->
+    <item
+        android:id="@+id/itemListarRefugios"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="Listar Refugios" />
+
+    <!-- 🔥 NUEVO: BUSCAR POR FILTRO -->
+    <item
+        android:id="@+id/itemBuscarFiltro"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="Buscar por Filtro" />
 
     <item
         android:id="@+id/itemFavoritosAdoptante"
@@ -25,4 +33,5 @@
         android:id="@+id/itemSalirAdoptante"
         android:icon="@android:drawable/ic_lock_power_off"
         android:title="Salir" />
+
 </menu>

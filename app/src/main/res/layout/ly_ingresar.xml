@@ -105,28 +105,17 @@
             android:id="@+id/rj_click_inicia_sesion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="14dp"
             android:text="Inicia sesión aquí"
             android:textColor="@color/naranja_asociacion"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:padding="4dp"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
 
             />
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
 
-        <ImageView android:layout_width="40dp" android:layout_height="40dp" android:src="@android:drawable/ic_menu_info_details" android:layout_margin="10dp" app:tint="@color/verde_persona"/>
-        <ImageView android:layout_width="40dp" android:layout_height="40dp" android:src="@android:drawable/ic_menu_info_details" android:layout_margin="10dp" app:tint="@color/naranja_asociacion"/>
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
