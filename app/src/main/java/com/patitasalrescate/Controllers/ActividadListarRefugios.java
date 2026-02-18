@@ -1,25 +1,30 @@
 package com.patitasalrescate.Controllers;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.patitasalrescate.R;
+import com.patitasalrescate.accesoADatos.ApiRefugiosSimulada;
 import com.patitasalrescate.accesoADatos.DAORefugio;
-import com.patitasalrescate.accesoADatos.SupabaseService;
 import com.patitasalrescate.model.Refugio;
 import com.patitasalrescate.ui.AdaptadorRefugios;
+
 import java.util.List;
 
 public class ActividadListarRefugios extends AppCompatActivity {
 
     private RecyclerView recycler;
     private DAORefugio dao;
-    private SupabaseService supabase;
     private TextView txtVacio;
+    private ApiRefugiosSimulada apiSimulada;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +32,7 @@ public class ActividadListarRefugios extends AppCompatActivity {
         setContentView(R.layout.ly_listar_refugios);
 
         dao = new DAORefugio(this);
-        supabase = new SupabaseService();
+        apiSimulada = new ApiRefugiosSimulada();
 
         Toolbar toolbar = findViewById(R.id.toolbarListarRefugios);
         setSupportActionBar(toolbar);
@@ -38,34 +43,52 @@ public class ActividadListarRefugios extends AppCompatActivity {
         recycler.setLayoutManager(new LinearLayoutManager(this));
         txtVacio = findViewById(R.id.txt_refugios_vacio);
 
-        cargarDatos();
-        sincronizarConNube();
+        cargarDatosLocal();
+        sincronizarConApiSimulada();   // ← Llamamos a la API simulada
     }
 
-    private void cargarDatos() {
+    private void cargarDatosLocal() {
         List<Refugio> lista = dao.listarTodos();
+        actualizarUI(lista);
+    }
+
+    private void actualizarUI(List<Refugio> lista) {
         if (lista.isEmpty()) {
-            txtVacio.setVisibility(View.VISIBLE);
             recycler.setVisibility(View.GONE);
+            txtVacio.setVisibility(View.VISIBLE);
         } else {
-            txtVacio.setVisibility(View.GONE);
             recycler.setVisibility(View.VISIBLE);
+            txtVacio.setVisibility(View.GONE);
             recycler.setAdapter(new AdaptadorRefugios(this, lista));
         }
     }
 
-    private void sincronizarConNube() {
+    private void sincronizarConApiSimulada() {
         new Thread(() -> {
             try {
-                List<Refugio> nube = supabase.getRefugios();
-                if (nube != null) {
-                    for (Refugio r : nube) {
-                        if (dao.obtenerPorId(r.getIdRefugio()) == null) dao.insertar(r);
-                        else dao.actualizar(r);
+                List<Refugio> refugiosApi = apiSimulada.getRefugios();
+
+                if (refugiosApi != null && !refugiosApi.isEmpty()) {
+                    Log.d("ApiRefugios", "Se obtuvieron " + refugiosApi.size() + " refugios de la API simulada");
+
+                    for (Refugio r : refugiosApi) {
+                        if (dao.obtenerPorId(r.getIdRefugio()) == null) {
+                            dao.insertar(r);
+                        } else {
+                            dao.actualizar(r);
+                        }
                     }
-                    runOnUiThread(this::cargarDatos);
+
+                    // Recargar la lista en el hilo principal
+                    runOnUiThread(this::cargarDatosLocal);
+                } else {
+                    Log.e("ApiRefugios", "No se obtuvieron datos de la API simulada");
                 }
-            } catch (Exception e) { e.printStackTrace(); }
+            } catch (Exception e) {
+                Log.e("ApiRefugios", "Error al conectar con API simulada: " + e.getMessage());
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(this, "No se pudo conectar con la API simulada", Toast.LENGTH_LONG).show());
+            }
         }).start();
     }
 }
