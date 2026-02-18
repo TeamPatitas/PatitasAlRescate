@@ -27,6 +27,13 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="20dp"/>
 
+    <!-- SPINNER PARA TIPO DE FILTRO -->
+    <Spinner
+        android:id="@+id/spFiltro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp" />
+
     <!-- CAMPO DE TEXTO -->
     <EditText
         android:id="@+id/txtFiltro"
@@ -49,13 +56,12 @@
         android:backgroundTint="#7A4A32"
         android:layout_marginBottom="20dp"/>
 
-    <!-- LISTA DE RESULTADOS -->
-    <ListView
-        android:id="@+id/listResultados"
+    <!-- RECYCLERVIEW (ANTES ERA LISTVIEW) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_mascotas"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:dividerHeight="8dp"
         android:padding="4dp"/>
 
 </LinearLayout>

@@ -1,44 +1,94 @@
 package com.patitasalrescate.Controllers;
 
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.patitasalrescate.R;
 import com.patitasalrescate.accesoADatos.DAOFavoritos;
+import com.patitasalrescate.accesoADatos.DAOMascota;
+import com.patitasalrescate.accesoADatos.SupabaseService;
 import com.patitasalrescate.model.Mascota;
+import com.patitasalrescate.ui.AdaptadorMascotas;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ActividadMisFavoritos extends AppCompatActivity {
 
-    private ListView listFavoritos;
+    private RecyclerView recycler;
+    private TextView txtVacio;
+
     private DAOFavoritos daoFavoritos;
+    private DAOMascota daoMascota;
+    private SupabaseService supabase;
+
+    private String idUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ly_mis_favoritos);
 
-        listFavoritos = findViewById(R.id.listFavoritos);
+        recycler = findViewById(R.id.recycler_mascotas);
+        txtVacio = findViewById(R.id.txt_lista_vacia);
+
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+
         daoFavoritos = new DAOFavoritos(this);
+        daoMascota = new DAOMascota(this);
+        supabase = new SupabaseService();
 
-        String idAdoptante = "ID_ADOPTANTE_DE_PRUEBA"; // luego se pasa real
+        // ID adoptante recibido
+        idUsuario = getIntent().getStringExtra(
+                ActividadIniciarSesion.EXTRA_ID_USUARIO
+        );
 
-        List<Mascota> favoritos = daoFavoritos.getFavoritosPorAdoptante(idAdoptante);
-        List<String> datos = new ArrayList<>();
-
-        for (Mascota m : favoritos) {
-            datos.add(m.getNombre() + " - " + m.getEspecie());
+        if (idUsuario == null) {
+            finish();
+            return;
         }
 
-        listFavoritos.setAdapter(
-                new ArrayAdapter<>(this,
-                        android.R.layout.simple_list_item_1,
-                        datos)
-        );
+        cargarFavoritos();
+    }
+
+    // ===== CARGAR LISTA =====
+    private void cargarFavoritos() {
+
+        List<Mascota> favoritos =
+                daoFavoritos.getFavoritosPorAdoptante(idUsuario);
+
+        if (favoritos == null || favoritos.isEmpty()) {
+
+            recycler.setVisibility(View.GONE);
+            txtVacio.setVisibility(View.VISIBLE);
+            txtVacio.setText("No tienes favoritos ❤️");
+            return;
+        }
+
+        recycler.setVisibility(View.VISIBLE);
+        txtVacio.setVisibility(View.GONE);
+
+        // 🔥 USAMOS TU ADAPTADOR REAL
+        AdaptadorMascotas adapter =
+                new AdaptadorMascotas(
+                        favoritos,
+                        this,
+                        idUsuario,
+                        daoMascota,
+                        supabase,
+                        daoFavoritos
+                );
+
+        recycler.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        cargarFavoritos(); // refresca automáticamente
     }
 }

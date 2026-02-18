@@ -311,4 +311,41 @@ public class SupabaseService {
             return response.isSuccessful();
         }
     }
+    public boolean insertarFavorito(String idAdoptante,
+                                    String idMascota) throws Exception {
+
+        String json = "{"
+                + "\"id_adoptante\":\""+idAdoptante+"\","
+                + "\"id_mascota\":\""+idMascota+"\""
+                + "}";
+
+        RequestBody body = RequestBody.create(
+                json,
+                MediaType.get("application/json; charset=utf-8"));
+
+        Request request = baseRequest("favoritos")
+                .post(body)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            return response.isSuccessful();
+        }
+    }
+    public boolean eliminarFavorito(String idAdoptante,
+                                    String idMascota) throws Exception {
+
+        String endpoint =
+                "favoritos?id_adoptante=eq." + idAdoptante +
+                        "&id_mascota=eq." + idMascota;
+
+        Request request = baseRequest(endpoint)
+                .delete()
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            return response.isSuccessful();
+        }
+    }
+
+
 }

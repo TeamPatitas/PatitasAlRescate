@@ -54,19 +54,31 @@
                 android:textColor="#7A4A32"
                 android:layout_marginBottom="12dp"/>
 
-            <!-- SEPARADOR SUAVE -->
+            <!-- SEPARADOR -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#EFE7DD"
                 android:layout_marginBottom="12dp"/>
 
-            <!-- LISTA -->
-            <ListView
-                android:id="@+id/listFavoritos"
+            <!-- TEXTO VACÍO -->
+            <TextView
+                android:id="@+id/txt_lista_vacia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No tienes favoritos ❤️"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#7A4A32"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_marginTop="20dp"/>
+
+            <!-- RECYCLERVIEW (ANTES ERA LISTVIEW) -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_mascotas"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:dividerHeight="12dp"
                 android:padding="4dp"/>
 
         </LinearLayout>

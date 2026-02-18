@@ -1,6 +1,5 @@
 package com.patitasalrescate.ui;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -18,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.patitasalrescate.Controllers.ActividadIniciarSesion;
 import com.patitasalrescate.Controllers.ActividadPerfilMascota;
 import com.patitasalrescate.R;
+import com.patitasalrescate.accesoADatos.DAOFavoritos;
 import com.patitasalrescate.accesoADatos.DAOMascota;
 import com.patitasalrescate.accesoADatos.SupabaseService;
 import com.patitasalrescate.model.Mascota;
@@ -28,16 +28,22 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
 
     private List<Mascota> lista;
     private boolean esModoRefugio;
+    private boolean esModoFavoritos = false;
+
     private Context context;
     private String idUsuario;
     private String tipoUsuario;
 
     private DAOMascota daoMascota;
     private SupabaseService supabaseService;
+    private DAOFavoritos daoFavoritos;
 
-    public AdaptadorMascotas(List<Mascota> lista, boolean esModoRefugio, Context context,
-                             String idUsuario, String tipoUsuario,
+    // CONSTRUCTOR NORMAL
+    public AdaptadorMascotas(List<Mascota> lista, boolean esModoRefugio,
+                             Context context, String idUsuario,
+                             String tipoUsuario,
                              DAOMascota dao, SupabaseService supabase) {
+
         this.lista = lista;
         this.esModoRefugio = esModoRefugio;
         this.context = context;
@@ -47,124 +53,99 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
         this.supabaseService = supabase;
     }
 
+    // CONSTRUCTOR FAVORITOS
+    public AdaptadorMascotas(List<Mascota> lista,
+                             Context context,
+                             String idUsuario,
+                             DAOMascota dao,
+                             SupabaseService supabase,
+                             DAOFavoritos daoFavoritos) {
+
+        this.lista = lista;
+        this.context = context;
+        this.idUsuario = idUsuario;
+        this.daoMascota = dao;
+        this.supabaseService = supabase;
+        this.daoFavoritos = daoFavoritos;
+
+        this.esModoFavoritos = true;
+        this.esModoRefugio = false;
+        this.tipoUsuario = "ADOPTANTE";
+    }
+
     @NonNull
     @Override
     public MascotaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ly_item_cardview_mascota, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.ly_item_cardview_mascota, parent, false);
         return new MascotaViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MascotaViewHolder holder, int position) {
+
         Mascota m = lista.get(position);
 
         holder.txtNombre.setText(m.getNombre());
         holder.txtRaza.setText(m.getRaza() + " (" + m.getEdad() + " meses)");
 
         if (m.getFotos() != null && !m.getFotos().isEmpty()) {
-            Glide.with(context).load(m.getFotos().get(0)).centerCrop().into(holder.imgFoto);
-        } else {
-            holder.imgFoto.setImageResource(R.drawable.ic_launcher_foreground);
+            Glide.with(context).load(m.getFotos().get(0))
+                    .centerCrop().into(holder.imgFoto);
         }
 
-        // --- LÓGICA DE ESTADO ---
         String estado = m.getEstado() != null ? m.getEstado() : "DISPONIBLE";
+        holder.txtEstado.setText("Estado: " + estado);
 
-        // --- CONFIGURACIÓN DE BOTONES SEGÚN ROL ---
         if (esModoRefugio) {
             holder.btnPrincipal.setText("Editar");
-            holder.btnPrincipal.setOnClickListener(v -> abrirPerfil(m, true));
-            holder.txtEstado.setText("Estado: " + estado);
-
-            if ("EN_PROCESO".equals(estado)) {
-                // CASO 1: Hay una solicitud pendiente -> Mostrar APROBAR y RECHAZAR
-                holder.btnRapido.setVisibility(View.VISIBLE);
-                holder.btnRapido.setText("Aprobar");
-                holder.btnRapido.setOnClickListener(v -> marcarComoAdoptado(m, holder.getAdapterPosition()));
-
-                holder.btnRechazar.setVisibility(View.VISIBLE);
-                holder.btnRechazar.setOnClickListener(v -> rechazarSolicitud(m, holder.getAdapterPosition()));
-
-            } else if ("DISPONIBLE".equals(estado)) {
-                // CASO 2: Está libre -> Mostrar solo marcar como adoptado (manual)
-                holder.btnRapido.setVisibility(View.VISIBLE);
-                holder.btnRapido.setText("Adoptado");
-                holder.btnRapido.setOnClickListener(v -> marcarComoAdoptado(m, holder.getAdapterPosition()));
-
-                holder.btnRechazar.setVisibility(View.GONE); // Ocultar rechazar
-
-            } else {
-                // CASO 3: Ya está ADOPTADO -> Ocultar botones de acción
-                holder.btnRapido.setVisibility(View.GONE);
-                holder.btnRechazar.setVisibility(View.GONE);
-            }
-
-        } else {
-            // [ MODO ADOPTANTE ]
-            holder.txtEstado.setText(estado.equals("DISPONIBLE") ? "Disponible para ti" : "En Proceso");
-            holder.btnPrincipal.setText("Ver Detalles");
-            holder.btnPrincipal.setOnClickListener(v -> abrirPerfil(m, false));
+            holder.btnPrincipal.setOnClickListener(v -> abrirPerfil(m,true));
 
             holder.btnRapido.setVisibility(View.GONE);
             holder.btnRechazar.setVisibility(View.GONE);
-        }
-    }
 
-    // --- APROBAR ADOPCIÓN ---
-    private void marcarComoAdoptado(Mascota m, int pos) {
-        m.setEstado("ADOPTADO");
-        daoMascota.actualizar(m);
+        } else {
 
-        new Thread(() -> {
-            try {
-                // 1. Tabla mascotas -> ADOPTADO
-                supabaseService.actualizarEstadoMascota(m.getIdMascota(), "ADOPTADO");
-                // 2. Tabla adopciones -> aprobada
-                supabaseService.aprobarAdopcionPorMascota(m.getIdMascota());
+            // BOTÓN ADOPTAR SOLO DISPONIBLE
+            if ("DISPONIBLE".equals(estado)) {
+                holder.btnPrincipal.setVisibility(View.VISIBLE);
+                holder.btnPrincipal.setText("Quiero Adoptar");
+                holder.btnPrincipal.setOnClickListener(v -> abrirPerfil(m,false));
+            } else {
+                holder.btnPrincipal.setVisibility(View.GONE);
+            }
 
-                mostrarToast("¡Adopción Aprobada! 🐶");
-            } catch (Exception e) { e.printStackTrace(); }
-        }).start();
+            if (esModoFavoritos) {
 
-        actualizarListaVisual(m, pos);
-    }
+                holder.btnRapido.setVisibility(View.VISIBLE);
+                holder.btnRapido.setText("Eliminar ❤️");
 
-    // --- RECHAZAR ADOPCIÓN (NUEVO) ---
-    private void rechazarSolicitud(Mascota m, int pos) {
-        // 1. Volver estado local a DISPONIBLE
-        m.setEstado("DISPONIBLE");
-        daoMascota.actualizar(m);
+                holder.btnRapido.setOnClickListener(v -> {
+                    daoFavoritos.removeFavorito(idUsuario,m.getIdMascota());
+                    new Thread(() -> {
+                        try {
+                            supabaseService.eliminarFavorito(
+                                    idUsuario,
+                                    m.getIdMascota()
+                            );
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }).start();
 
-        new Thread(() -> {
-            try {
-                // 2. Tabla mascotas -> DISPONIBLE
-                supabaseService.actualizarEstadoMascota(m.getIdMascota(), "DISPONIBLE");
-                // 3. Tabla adopciones -> rechazada
-                supabaseService.rechazarAdopcionPorMascota(m.getIdMascota());
+                    lista.remove(holder.getAdapterPosition());
+                    notifyItemRemoved(holder.getAdapterPosition());
 
-                mostrarToast("Solicitud Rechazada ❌");
-            } catch (Exception e) { e.printStackTrace(); }
-        }).start();
+                    Toast.makeText(context,
+                            "Eliminado de favoritos",
+                            Toast.LENGTH_SHORT).show();
+                });
 
-        // Actualizar visualmente (refrescar el item para que se oculten los botones)
-        notifyItemChanged(pos);
-    }
-
-    private void mostrarToast(String mensaje) {
-        if (context instanceof Activity) {
-            ((Activity) context).runOnUiThread(() ->
-                    Toast.makeText(context, mensaje, Toast.LENGTH_SHORT).show()
-            );
-        }
-    }
-
-    private void actualizarListaVisual(Mascota m, int pos) {
-        if (context instanceof Activity) {
-            ((Activity) context).runOnUiThread(() -> {
-                // Si estamos filtrando, quizás debamos quitarlo
-                // Para este caso, simplemente notificamos el cambio
-                notifyItemChanged(pos);
-            });
+                holder.btnRechazar.setVisibility(View.GONE);
+            } else {
+                holder.btnRapido.setVisibility(View.GONE);
+                holder.btnRechazar.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -172,15 +153,17 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
         Intent i = new Intent(context, ActividadPerfilMascota.class);
         i.putExtra("id_mascota_key", m.getIdMascota());
         i.putExtra("es_modo_edicion", editar);
-        i.putExtra(ActividadIniciarSesion.EXTRA_TIPO_USUARIO, tipoUsuario);
         i.putExtra(ActividadIniciarSesion.EXTRA_ID_USUARIO, idUsuario);
         context.startActivity(i);
     }
 
     @Override
-    public int getItemCount() { return lista != null ? lista.size() : 0; }
+    public int getItemCount() {
+        return lista != null ? lista.size() : 0;
+    }
 
     static class MascotaViewHolder extends RecyclerView.ViewHolder {
+
         TextView txtNombre, txtRaza, txtEstado;
         ImageView imgFoto;
         Button btnPrincipal, btnRapido, btnRechazar;
