@@ -2,6 +2,7 @@ package com.patitasalrescate.Controllers;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -24,7 +25,6 @@ public class ActividadInicioRefugio extends AppCompatActivity {
         BottomNavigationView oMenu = findViewById(R.id.menuInicioRefugio);
         String nombreRefugio = getIntent().getStringExtra(ActividadIniciarSesion.EXTRA_NOMBRE_USUARIO);
         if (nombreRefugio == null || nombreRefugio.trim().isEmpty()) {
-            // fallback por compatibilidad
             nombreRefugio = getIntent().getStringExtra("nombre_refugio_key");
         }
         if (nombreRefugio == null || nombreRefugio.isEmpty()) {
@@ -38,6 +38,7 @@ public class ActividadInicioRefugio extends AppCompatActivity {
         oBarra.setTitle("Refugio " + nombreRefugio);
         TextView textobienvenida= findViewById(R.id.txtBienvenidoRefugio);
         textobienvenida.setText("Bienvenido refugio: "+ nombreRefugio);
+        textobienvenida.setGravity(Gravity.CENTER);
         String finalNombreRefugio = nombreRefugio;
         String finalIdRefugio = idRefugio;
 

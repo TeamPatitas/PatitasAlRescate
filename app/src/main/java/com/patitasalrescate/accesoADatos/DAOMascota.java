@@ -12,111 +12,210 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DAOMascota {
+
     private BDConstruir dbHelper;
 
     public DAOMascota(Context context) {
         dbHelper = new BDConstruir(context);
     }
 
+    // ===== INSERTAR =====
     public long insertar(Mascota mascota) {
+
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("id_mascota", mascota.getIdMascota());  // ← String UUID
-        values.put("id_refugio", mascota.getIdRefugio());  // ← String
+
+        values.put("id_mascota", mascota.getIdMascota());
+        values.put("id_refugio", mascota.getIdRefugio());
         values.put("nombre", mascota.getNombre());
         values.put("especie", mascota.getEspecie());
         values.put("raza", mascota.getRaza());
+        values.put("sexo", mascota.getSexo());
         values.put("edad", mascota.getEdad());
         values.put("temperamento", mascota.getTemperamento());
         values.put("historia", mascota.getHistoria());
         values.put("fotos", String.join(",", mascota.getFotos()));
-        values.put("es_adoptado", mascota.isEsAdoptado() ? 1 : 0);
+        values.put("estado",
+                mascota.getEstado() != null ? mascota.getEstado() : "DISPONIBLE");
         values.put("last_sync", mascota.getLastSync());
 
         return db.insert("mascotas", null, values);
     }
 
-    public List<Mascota> listarTodos() {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        List<Mascota> mascotas = new ArrayList<>();
-        Cursor cursor = db.query("mascotas", null, null, null, null, null, null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                Mascota masc = new Mascota();
-                masc.setIdMascota(cursor.getString(cursor.getColumnIndexOrThrow("id_mascota")));  // ← String
-                masc.setIdRefugio(cursor.getString(cursor.getColumnIndexOrThrow("id_refugio")));  // ← String
-                masc.setNombre(cursor.getString(cursor.getColumnIndexOrThrow("nombre")));
-                masc.setEspecie(cursor.getString(cursor.getColumnIndexOrThrow("especie")));
-                masc.setRaza(cursor.getString(cursor.getColumnIndexOrThrow("raza")));
-                masc.setEdad(cursor.getInt(cursor.getColumnIndexOrThrow("edad")));
-                masc.setTemperamento(cursor.getString(cursor.getColumnIndexOrThrow("temperamento")));
-                masc.setHistoria(cursor.getString(cursor.getColumnIndexOrThrow("historia")));
-
-                List<String> fotosList = new ArrayList<>();
-                String fotosStr = cursor.getString(cursor.getColumnIndexOrThrow("fotos"));
-                if (fotosStr != null && !fotosStr.isEmpty()) {
-                    fotosList = Arrays.asList(fotosStr.split(","));
-                }
-                masc.setFotos(fotosList);
-
-                masc.setEsAdoptado(cursor.getInt(cursor.getColumnIndexOrThrow("es_adoptado")) == 1);
-                masc.setLastSync(cursor.getLong(cursor.getColumnIndexOrThrow("last_sync")));
-                mascotas.add(masc);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        return mascotas;
-    }
-
+    // ===== ACTUALIZAR =====
     public int actualizar(Mascota mascota) {
+
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
+
         values.put("nombre", mascota.getNombre());
         values.put("especie", mascota.getEspecie());
         values.put("raza", mascota.getRaza());
+        values.put("sexo", mascota.getSexo());
         values.put("edad", mascota.getEdad());
         values.put("temperamento", mascota.getTemperamento());
         values.put("historia", mascota.getHistoria());
-        values.put("es_adoptado", mascota.isEsAdoptado() ? 1 : 0);
-        values.put("last_sync", mascota.getLastSync());
+        values.put("estado", mascota.getEstado());
+        values.put("last_sync", System.currentTimeMillis());
 
-        return db.update("mascotas", values, "id_mascota = ?",
-                new String[]{mascota.getIdMascota()});  // ← String
+        return db.update(
+                "mascotas",
+                values,
+                "id_mascota = ?",
+                new String[]{mascota.getIdMascota()}
+        );
     }
 
-    public void eliminar(String idMascota) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.delete("mascotas", "id_mascota = ?", new String[]{idMascota});
-    }
-
+    // ===== OBTENER POR ID =====
     public Mascota obtenerPorId(String idMascota) {
+
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Mascota masc = null;
-        Cursor cursor = db.query("mascotas", null, "id_mascota = ?", new String[]{idMascota}, null, null, null);
 
-        if (cursor.moveToFirst()) {
-            masc = new Mascota();
-            masc.setIdMascota(cursor.getString(cursor.getColumnIndexOrThrow("id_mascota")));
-            masc.setIdRefugio(cursor.getString(cursor.getColumnIndexOrThrow("id_refugio")));
-            masc.setNombre(cursor.getString(cursor.getColumnIndexOrThrow("nombre")));
-            masc.setEspecie(cursor.getString(cursor.getColumnIndexOrThrow("especie")));
-            masc.setRaza(cursor.getString(cursor.getColumnIndexOrThrow("raza")));
-            masc.setEdad(cursor.getInt(cursor.getColumnIndexOrThrow("edad")));
-            masc.setTemperamento(cursor.getString(cursor.getColumnIndexOrThrow("temperamento")));
-            masc.setHistoria(cursor.getString(cursor.getColumnIndexOrThrow("historia")));
+        Cursor c = db.query(
+                "mascotas",
+                null,
+                "id_mascota = ?",
+                new String[]{idMascota},
+                null,
+                null,
+                null
+        );
 
-            List<String> fotosList = new ArrayList<>();
-            String fotosStr = cursor.getString(cursor.getColumnIndexOrThrow("fotos"));
-            if (fotosStr != null && !fotosStr.isEmpty()) {
-                fotosList = Arrays.asList(fotosStr.split(","));
-            }
-            masc.setFotos(fotosList);
+        Mascota m = null;
 
-            masc.setEsAdoptado(cursor.getInt(cursor.getColumnIndexOrThrow("es_adoptado")) == 1);
-            masc.setLastSync(cursor.getLong(cursor.getColumnIndexOrThrow("last_sync")));
+        if (c.moveToFirst())
+            m = cursorToMascota(c);
+
+        c.close();
+
+        return m;
+    }
+
+    // ===== LISTAR POR REFUGIO =====
+    public List<Mascota> listarPorRefugio(String idRefugio) {
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        List<Mascota> lista = new ArrayList<>();
+
+        Cursor c = db.query(
+                "mascotas",
+                null,
+                "id_refugio = ?",
+                new String[]{idRefugio},
+                null,
+                null,
+                null
+        );
+
+        if (c.moveToFirst()) {
+            do {
+                lista.add(cursorToMascota(c));
+            } while (c.moveToNext());
         }
-        cursor.close();
-        return masc;
+
+        c.close();
+        return lista;
+    }
+
+    // ===== LISTAR SOLO DISPONIBLES =====
+    public List<Mascota> listarDisponibles() {
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        List<Mascota> lista = new ArrayList<>();
+
+        Cursor c = db.query(
+                "mascotas",
+                null,
+                "estado = 'DISPONIBLE'",
+                null,
+                null,
+                null,
+                null
+        );
+
+        if (c.moveToFirst()) {
+            do {
+                lista.add(cursorToMascota(c));
+            } while (c.moveToNext());
+        }
+
+        c.close();
+        return lista;
+    }
+
+    // ===== ⭐ NUEVO: LISTAR TODAS LAS MASCOTAS =====
+    public List<Mascota> listarTodos() {
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        List<Mascota> lista = new ArrayList<>();
+
+        Cursor c = db.query(
+                "mascotas",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        if (c.moveToFirst()) {
+            do {
+                lista.add(cursorToMascota(c));
+            } while (c.moveToNext());
+        }
+
+        c.close();
+        return lista;
+    }
+
+    // ===== CONVERTIR CURSOR A OBJETO =====
+    private Mascota cursorToMascota(Cursor cursor) {
+
+        Mascota m = new Mascota();
+
+        m.setIdMascota(cursor.getString(
+                cursor.getColumnIndexOrThrow("id_mascota")));
+
+        m.setIdRefugio(cursor.getString(
+                cursor.getColumnIndexOrThrow("id_refugio")));
+
+        m.setNombre(cursor.getString(
+                cursor.getColumnIndexOrThrow("nombre")));
+
+        m.setEspecie(cursor.getString(
+                cursor.getColumnIndexOrThrow("especie")));
+
+        m.setRaza(cursor.getString(
+                cursor.getColumnIndexOrThrow("raza")));
+
+        m.setSexo(cursor.getString(
+                cursor.getColumnIndexOrThrow("sexo")));
+
+        m.setEdad(cursor.getInt(
+                cursor.getColumnIndexOrThrow("edad")));
+
+        m.setTemperamento(cursor.getString(
+                cursor.getColumnIndexOrThrow("temperamento")));
+
+        m.setHistoria(cursor.getString(
+                cursor.getColumnIndexOrThrow("historia")));
+
+        String f = cursor.getString(
+                cursor.getColumnIndexOrThrow("fotos"));
+
+        m.setFotos(
+                f != null && !f.isEmpty()
+                        ? Arrays.asList(f.split(","))
+                        : new ArrayList<>()
+        );
+
+        m.setEstado(cursor.getString(
+                cursor.getColumnIndexOrThrow("estado")));
+
+        m.setLastSync(cursor.getLong(
+                cursor.getColumnIndexOrThrow("last_sync")));
+
+        return m;
     }
 }

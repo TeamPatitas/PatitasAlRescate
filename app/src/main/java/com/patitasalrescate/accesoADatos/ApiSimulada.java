@@ -29,7 +29,7 @@ public class ApiSimulada {
         List<Refugio> refugios = new ArrayList<>();
 
         refugios.add(new Refugio(
-                UUID.randomUUID().toString(),  // ← String UUID
+                UUID.randomUUID().toString(),
                 "Refugio Ejemplo",
                 "Dirección 1",
                 -12.0464,
@@ -52,33 +52,37 @@ public class ApiSimulada {
                 "https://picsum.photos/200/301"
         );
 
+        // Mascota 1: Bobby
         mascotas.add(new Mascota(
-                UUID.randomUUID().toString(),  // idMascota String
-                UUID.randomUUID().toString(),  // idRefugio String
+                UUID.randomUUID().toString(),
+                UUID.randomUUID().toString(),
                 "Bobby",
                 "Perro",
                 "Labrador",
+                "Macho",
                 24,
                 "Amigable",
                 "Historia de rescate",
                 fotos1,
-                false,
+                "DISPONIBLE",
                 System.currentTimeMillis()
         ));
 
         List<String> fotos2 = Arrays.asList("https://picsum.photos/200/302");
 
+        // Mascota 2: Michi
         mascotas.add(new Mascota(
                 UUID.randomUUID().toString(),
                 UUID.randomUUID().toString(),
                 "Michi",
                 "Gato",
                 "Persa",
+                "Hembra",
                 36,
                 "Tranquilo",
                 "Rescatado de la calle",
                 fotos2,
-                false,
+                "DISPONIBLE",
                 System.currentTimeMillis()
         ));
 

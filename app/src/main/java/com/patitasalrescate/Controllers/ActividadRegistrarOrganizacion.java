@@ -3,6 +3,8 @@ package com.patitasalrescate.Controllers;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -32,17 +34,17 @@ import com.patitasalrescate.utils.SeguridadUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class ActividadRegistrarOrganizacion extends AppCompatActivity {
 
-    // Vistas (Usamos los nuevos IDs)
     private EditText txtNombre, txtDireccion, txtTelefono, txtCorreo, txtPassword;
     private ImageView imgPreview;
     private Button btnGuardar, btnSeleccionarFoto;
     private ImageButton btnAbrirMapa;
 
-    // Lógica
     private DAORefugio daoRefugio;
     private SupabaseService supabaseService;
     private Uri uriImagenSeleccionada = null;
@@ -52,7 +54,6 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ly_registrar_organizacion);
 
-        // 1. Configurar Toolbar
         Toolbar toolbar = findViewById(R.id.toolbarRegistrarOrganizacion);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -61,11 +62,9 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
         }
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        // 2. Inicializar DAOs
         daoRefugio = new DAORefugio(this);
         supabaseService = new SupabaseService();
 
-        // 3. Vincular con los nuevos IDs del XML (Estilo Adoptante)
         txtNombre = findViewById(R.id.rj_text_org_nombre);
         txtDireccion = findViewById(R.id.rj_text_org_direccion);
         txtTelefono = findViewById(R.id.rj_text_org_telefono);
@@ -77,14 +76,12 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
         btnAbrirMapa = findViewById(R.id.btn_abrir_mapa);
         btnGuardar = findViewById(R.id.rj_button_registrar_organizacion);
 
-        // 4. Configurar Padding para EdgeToEdge
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.registrar_organizacion_root), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // 5. Launcher para Galería
         ActivityResultLauncher<Intent> launcherGaleria = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -97,12 +94,12 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
                 }
         );
 
-        // Listeners
         btnSeleccionarFoto.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             launcherGaleria.launch(intent);
         });
 
+        // Botón mapa para previsualizar dirección
         btnAbrirMapa.setOnClickListener(v -> {
             String direccion = txtDireccion.getText().toString();
             if (!direccion.isEmpty()) {
@@ -129,111 +126,97 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
         String correo = txtCorreo.getText().toString().trim();
         String password = txtPassword.getText().toString().trim();
 
-        // --- VALIDACIONES (Igual que en Adoptante) ---
-        if (nombre.isEmpty()) {
-            txtNombre.setError("Ingrese el nombre de la organización");
-            return;
-        }
-        if (direccion.isEmpty()) {
-            txtDireccion.setError("Ingrese la dirección");
-            return;
-        }
-        if (telefono.length() < 7) { // Asumiendo mínimo fijo o celular
-            txtTelefono.setError("Ingrese un teléfono válido");
-            return;
-        }
-        if (correo.isEmpty()) {
-            txtCorreo.setError("Ingrese el correo");
-            return;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(correo).matches()) {
-            txtCorreo.setError("Ingrese un formato de correo válido");
-            return;
-        }
-        if (password.length() < 6) {
-            txtPassword.setError("La contraseña debe tener al menos 6 caracteres");
-            return;
-        }
+        if (nombre.isEmpty()) { txtNombre.setError("Ingrese el nombre"); return; }
+        if (direccion.isEmpty()) { txtDireccion.setError("Ingrese la dirección"); return; }
+        if (telefono.length() < 7) { txtTelefono.setError("Ingrese un teléfono válido"); return; }
+        if (correo.isEmpty()) { txtCorreo.setError("Ingrese el correo"); return; }
+        if (!Patterns.EMAIL_ADDRESS.matcher(correo).matches()) { txtCorreo.setError("Correo inválido"); return; }
+        if (password.length() < 6) { txtPassword.setError("Mínimo 6 caracteres"); return; }
 
-        // --- PROCESO DE REGISTRO (CON SUPABASE) ---
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Registrando organización...");
         progressDialog.setCancelable(false);
         progressDialog.show();
-        new Thread(() -> {
-            String urlFinalFoto = "https://picsum.photos/200"; // Default
 
-            // 1. Subir Foto (Sin cambios)
+        new Thread(() -> {
+            String urlFinalFoto = "https://picsum.photos/200";
+
+            // 1. Subir Foto
             if (uriImagenSeleccionada != null) {
                 try {
                     byte[] imagenBytes = getBytesFromUri(uriImagenSeleccionada);
                     if (imagenBytes != null) {
                         String nombreArchivo = "refugio_" + System.currentTimeMillis() + ".jpg";
                         String urlSubida = supabaseService.subirFoto(imagenBytes, nombreArchivo);
-                        if (urlSubida != null) {
-                            urlFinalFoto = urlSubida;
-                        }
+                        if (urlSubida != null) urlFinalFoto = urlSubida;
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                } catch (IOException e) { e.printStackTrace(); }
             }
 
-            // 2. Preparar Datos (Sin cambios)
+            double latCalculada = 0.0;
+            double lonCalculada = 0.0;
+            try {
+                Geocoder geocoder = new Geocoder(ActividadRegistrarOrganizacion.this, Locale.getDefault());
+                List<Address> addresses = geocoder.getFromLocationName(direccion, 1);
+                if (addresses != null && !addresses.isEmpty()) {
+                    latCalculada = addresses.get(0).getLatitude();
+                    lonCalculada = addresses.get(0).getLongitude();
+                }
+            } catch (Exception e) {
+                e.printStackTrace(); // Si falla, se queda en 0.0 y usamos el fallback
+            }
+
+            // 3. Preparar Datos
             String passwordEncriptada = SeguridadUtils.encriptar(password);
             String idRefugio = UUID.randomUUID().toString();
 
             Refugio nuevoRefugio = new Refugio(
                     idRefugio,
-                    nombre, direccion, 0.0, 0.0,
-                    correo, passwordEncriptada, telefono,
+                    nombre,
+                    direccion,
+                    latCalculada, // Usamos las coordenadas calculadas
+                    lonCalculada,
+                    correo,
+                    passwordEncriptada,
+                    telefono,
                     urlFinalFoto,
                     System.currentTimeMillis()
             );
 
-            // ... dentro del Thread ...
-
-            // 3. Subir a Supabase (AQUÍ ES EL ENVÍO A LA NUBE) ☁️
+            // 4. Subir a Supabase
             boolean subidoANube = false;
-            String mensajeError = ""; // <--- NUEVA VARIABLE PARA VER EL ERROR
-
+            String mensajeError = "";
             try {
                 subidoANube = supabaseService.insertarRefugio(nuevoRefugio);
-                if (!subidoANube) {
-                    mensajeError = "Servidor rechazó los datos (Revisa columnas/tipos)";
-                }
-            } catch (Exception e) { // Cambiamos a Exception para atrapar TODO
+                if (!subidoANube) mensajeError = "Error al subir a la nube";
+            } catch (Exception e) {
                 e.printStackTrace();
-                mensajeError = e.getMessage(); // Guardamos el error técnico
-                Log.e("SupabaseError", "🔥 CRASH: " + mensajeError);
+                mensajeError = e.getMessage();
             }
 
-            // 4. Guardar Localmente y Mostrar Toast
+            // 5. Guardar Local y UI
             Refugio finalRefugio = nuevoRefugio;
             boolean finalSubidoANube = subidoANube;
-            String finalMensajeError = mensajeError; // Pasamos el error al hilo principal
+            String finalMensajeError = mensajeError;
+            double finalLat = latCalculada;
 
             runOnUiThread(() -> {
                 long resultado = daoRefugio.insertar(finalRefugio);
                 progressDialog.dismiss();
 
                 if (resultado != -1) {
-                    // --- TOAST DE DIAGNÓSTICO ---
                     if (finalSubidoANube) {
-                        Toast.makeText(this, "¡ÉXITO TOTAL! Nube y Local ☁️", Toast.LENGTH_LONG).show();
+                        String msg = finalLat != 0 ? "¡Registrado y ubicado en mapa!" : "Registrado (Ubicación por dirección)";
+                        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                         finish();
                     } else {
-                        // AQUÍ VERÁS EL ERROR EN TU PANTALLA
-                        Toast.makeText(this, "⚠️ Solo Local. Error Nube: " + finalMensajeError, Toast.LENGTH_LONG).show();
-                        // No cerramos la actividad (finish) para que puedas leer el error
+                        Toast.makeText(this, "Solo Local. Error Nube: " + finalMensajeError, Toast.LENGTH_LONG).show();
                     }
                 } else {
                     Toast.makeText(this, "Error al guardar localmente", Toast.LENGTH_SHORT).show();
                 }
             });
-
-
         }).start();
-
     }
 
     private byte[] getBytesFromUri(Uri uri) throws IOException {
@@ -242,9 +225,7 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
         int bufferSize = 1024;
         byte[] buffer = new byte[bufferSize];
         int len;
-        while ((len = inputStream.read(buffer)) != -1) {
-            byteBuffer.write(buffer, 0, len);
-        }
+        while ((len = inputStream.read(buffer)) != -1) byteBuffer.write(buffer, 0, len);
         inputStream.close();
         return byteBuffer.toByteArray();
     }

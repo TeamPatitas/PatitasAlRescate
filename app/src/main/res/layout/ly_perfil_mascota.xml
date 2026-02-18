@@ -1,185 +1,247 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5">
+    android:background="#EFEBE9">
 
-    <LinearLayout
-        android:id="@+id/ly_botones_accion"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:id="@+id/btn_favorito"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:padding="12dp"
-            android:text="❤ AGREGAR A FAVORITOS"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/btn_accion_principal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="?attr/colorPrimary"
-            android:padding="12dp"
-            android:text="CARGANDO..."
-            android:textSize="16sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+    <ImageView
+        android:id="@+id/img_detalle_mascota"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:scaleType="centerCrop"
+        android:background="#D7CCC8"
+        android:contentDescription="Foto de la mascota"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@android:drawable/ic_menu_gallery"/>
 
     <ScrollView
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:padding="16dp"
         android:clipToPadding="false"
-        app:layout_constraintBottom_toTopOf="@id/ly_botones_accion"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/img_detalle_mascota"
+        app:layout_constraintBottom_toTopOf="@id/ly_botones_accion">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/img_detalle_mascota"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_marginBottom="16dp"
-                android:background="#E0E0E0"
-                android:contentDescription="Foto de la mascota"
-                android:scaleType="centerCrop"
-                android:src="@android:drawable/ic_menu_gallery" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nombre:"
-                android:textStyle="bold" />
-
+                android:text="Nombre"
+                android:textStyle="bold"
+                android:textColor="#5D4037"/>
             <EditText
                 android:id="@+id/txt_edit_nombre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:background="@android:drawable/edit_text"
-                android:hint="Ej: Firulais"
+                android:minHeight="48dp"
+                android:background="@android:color/transparent"
+                android:padding="8dp"
+                android:textStyle="bold"
+                android:textSize="22sp"
+                android:textColor="#3E2723"
+                android:hint="Nombre"
                 android:inputType="textCapWords"
-                android:minHeight="48dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Especie (Perro/Gato):"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/txt_edit_especie"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:background="@android:drawable/edit_text"
-                android:hint="Ej: Perro"
-                android:inputType="text"
-                android:minHeight="48dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Raza:"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/txt_edit_raza"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:background="@android:drawable/edit_text"
-                android:hint="Ej: Labrador"
-                android:inputType="text"
-                android:minHeight="48dp" />
+                android:importantForAutofill="no"
+                android:enabled="false"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
                     android:layout_weight="1"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Edad (meses):"
-                        android:textStyle="bold" />
-
+                        android:text="Especie"
+                        android:textStyle="bold"
+                        android:textColor="#5D4037"/>
                     <EditText
-                        android:id="@+id/txt_edit_edad"
+                        android:id="@+id/txt_edit_especie"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@android:drawable/edit_text"
-                        android:hint="Ej: 12"
-                        android:inputType="number"
-                        android:minHeight="48dp" />
+                        android:background="@android:color/transparent"
+                        android:enabled="false"
+                        android:hint="Perro"
+                        android:importantForAutofill="no"
+                        android:inputType="text"
+                        android:minHeight="48dp"
+                        android:padding="8dp"
+                        android:textColor="#5D4037" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical">
-
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="8dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Temperamento:"
-                        android:textStyle="bold" />
-
+                        android:text="Raza"
+                        android:textStyle="bold"
+                        android:textColor="#5D4037"/>
                     <EditText
-                        android:id="@+id/txt_edit_temperamento"
+                        android:id="@+id/txt_edit_raza"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@android:drawable/edit_text"
-                        android:hint="Ej: Juguetón"
+                        android:background="@android:color/transparent"
+                        android:enabled="false"
+                        android:hint="único"
+                        android:importantForAutofill="no"
                         android:inputType="text"
-                        android:minHeight="48dp" />
+                        android:minHeight="48dp"
+                        android:padding="8dp"
+                        android:textColor="#5D4037" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sexo"
+                        android:textStyle="bold"
+                        android:textColor="#5D4037"/>
+                    <EditText
+                        android:id="@+id/txt_edit_sexo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:enabled="false"
+                        android:hint="Macho/Hembra"
+                        android:importantForAutofill="no"
+                        android:inputType="text"
+                        android:minHeight="48dp"
+                        android:padding="8dp"
+                        android:textColor="#5D4037" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="8dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Edad (meses)"
+                        android:textStyle="bold"
+                        android:textColor="#5D4037"/>
+                    <EditText
+                        android:id="@+id/txt_edit_edad"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:enabled="false"
+                        android:hint="12"
+                        android:importantForAutofill="no"
+                        android:inputType="number"
+                        android:minHeight="48dp"
+                        android:padding="8dp"
+                        android:textColor="#5D4037" />
                 </LinearLayout>
             </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="Historia / Descripción:"
-                android:textStyle="bold" />
+                android:text="Temperamento"
+                android:textStyle="bold"
+                android:textColor="#5D4037"
+                android:layout_marginTop="12dp"/>
+            <EditText
+                android:id="@+id/txt_edit_temperamento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:enabled="false"
+                android:hint="Alegre, Juguetón..."
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:minHeight="48dp"
+                android:padding="8dp"
+                android:textColor="#5D4037" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Historia / Descripción"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                android:textColor="#5D4037"/>
             <EditText
                 android:id="@+id/txt_edit_historia"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:background="@android:drawable/edit_text"
-                android:gravity="top|start"
-                android:hint="Escribe la historia..."
+                android:minHeight="48dp"
+                android:background="@android:color/transparent"
+                android:padding="8dp"
+                android:hint="Historia..."
                 android:inputType="textMultiLine"
-                android:minHeight="100dp" />
+                android:importantForAutofill="no"
+                android:minLines="3"
+                android:textColor="#4E342E"
+                android:enabled="false"/>
 
         </LinearLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/ly_botones_accion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="#FFFFFF"
+        android:elevation="16dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <Button
+            android:id="@+id/btn_favorito"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="❤ AGREGAR A FAVORITOS"
+            android:textColor="#D81B60"
+            android:backgroundTint="#FCE4EC"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:layout_marginBottom="8dp"/>
+
+        <Button
+            android:id="@+id/btn_accion_principal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="CARGANDO..."
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:backgroundTint="#5D4037"/>
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
