@@ -101,11 +101,20 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
 
         // Botón mapa para previsualizar dirección
         btnAbrirMapa.setOnClickListener(v -> {
-            String direccion = txtDireccion.getText().toString();
-            if (!direccion.isEmpty()) {
-                Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(direccion));
+            String direccionRaw = txtDireccion.getText().toString().trim();
+            if (!direccionRaw.isEmpty()) {
+
+                String direccionLimpia = direccionRaw
+                        .replaceAll("(?i)\\b e \\b", " y ")
+                        .replace("/", " y ");
+
+                String direccionBuscada = direccionLimpia + ", Cajamarca, Perú";
+
+                Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(direccionBuscada));
+
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
+
                 try {
                     startActivity(mapIntent);
                 } catch (Exception e) {
@@ -157,15 +166,21 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
             double lonCalculada = 0.0;
             try {
                 Geocoder geocoder = new Geocoder(ActividadRegistrarOrganizacion.this, Locale.getDefault());
-                List<Address> addresses = geocoder.getFromLocationName(direccion, 1);
+
+                String direccionLimpia = direccion
+                        .replaceAll("(?i)\\b e \\b", " y ")
+                        .replace("/", " y ");
+
+                String direccionExacta = direccionLimpia + ", Cajamarca, Perú";
+                List<Address> addresses = geocoder.getFromLocationName(direccionExacta, 1);
+
                 if (addresses != null && !addresses.isEmpty()) {
                     latCalculada = addresses.get(0).getLatitude();
                     lonCalculada = addresses.get(0).getLongitude();
                 }
             } catch (Exception e) {
-                e.printStackTrace(); // Si falla, se queda en 0.0 y usamos el fallback
+                e.printStackTrace();
             }
-
             // 3. Preparar Datos
             String passwordEncriptada = SeguridadUtils.encriptar(password);
             String idRefugio = UUID.randomUUID().toString();
@@ -174,7 +189,7 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
                     idRefugio,
                     nombre,
                     direccion,
-                    latCalculada, // Usamos las coordenadas calculadas
+                    latCalculada,
                     lonCalculada,
                     correo,
                     passwordEncriptada,
