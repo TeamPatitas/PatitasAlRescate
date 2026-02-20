@@ -34,7 +34,6 @@ public class DAORefugio {
         return db.insert("refugios", null, values);
     }
 
-    // 🔥 ACTUALIZADO: Ahora incluye todos los campos para evitar que el celular o coordenadas se borren al sincronizar
     public int actualizar(Refugio refugio) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
