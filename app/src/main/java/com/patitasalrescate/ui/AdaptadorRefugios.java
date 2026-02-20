@@ -75,19 +75,16 @@ public class AdaptadorRefugios extends RecyclerView.Adapter<AdaptadorRefugios.Re
 
             if (direccionGuardada != null && !direccionGuardada.trim().isEmpty()) {
 
-                // 1. Aplicamos la misma limpieza mágica que en el registro
                 String direccionLimpia = direccionGuardada
                         .replaceAll("(?i)\\b e \\b", " y ")
                         .replace("/", " y ");
 
-                // 2. Le agregamos el contexto para que no se pierda el mapa
                 String direccionBuscada = direccionLimpia + ", Cajamarca, Perú";
 
-                // 3. Formato nativo de búsqueda de Android
                 Uri uriMapa = Uri.parse("geo:0,0?q=" + Uri.encode(direccionBuscada));
 
                 Intent intent = new Intent(Intent.ACTION_VIEW, uriMapa);
-                intent.setPackage("com.google.android.apps.maps"); // Priorizar Google Maps
+                intent.setPackage("com.google.android.apps.maps");
 
                 try {
                     context.startActivity(intent);
