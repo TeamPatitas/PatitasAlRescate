@@ -51,7 +51,7 @@ public class AdaptadorRefugios extends RecyclerView.Adapter<AdaptadorRefugios.Re
             holder.imgFoto.setImageResource(R.drawable.ic_launcher_foreground);
         }
 
-        // BOTÓN WHATSAPP
+        // --- BOTÓN WHATSAPP ---
         holder.btnWhatsapp.setOnClickListener(v -> {
             String fono = r.getNumCelular();
             if (fono != null && !fono.isEmpty()) {
@@ -69,27 +69,23 @@ public class AdaptadorRefugios extends RecyclerView.Adapter<AdaptadorRefugios.Re
             }
         });
 
+        // --- BOTÓN MAPA---
         holder.btnMapa.setOnClickListener(v -> {
-            Uri uriMapa = null;
+            String direccionGuardada = r.getDireccion();
 
-            // CASO A: Tenemos Coordenadas exactas
-            if (r.getLatitud() != 0 && r.getLongitud() != 0) {
-                String label = Uri.encode(r.getNombre());
-                // Formato para marcador exacto
-                String uriString = "geo:" + r.getLatitud() + "," + r.getLongitud() + "?q=" + r.getLatitud() + "," + r.getLongitud() + "(" + label + ")";
-                uriMapa = Uri.parse(uriString);
-            }
-            // CASO B: No tenemos coordenadas, probamos con la Dirección
-            else if (r.getDireccion() != null && !r.getDireccion().trim().isEmpty()) {
-                String query = Uri.encode(r.getDireccion());
-                // Formato de búsqueda por texto
-                uriMapa = Uri.parse("geo:0,0?q=" + query);
-            }
+            if (direccionGuardada != null && !direccionGuardada.trim().isEmpty()) {
 
-            // EJECUTAR INTENT
-            if (uriMapa != null) {
+                String direccionLimpia = direccionGuardada
+                        .replaceAll("(?i)\\b e \\b", " y ")
+                        .replace("/", " y ");
+
+                String direccionBuscada = direccionLimpia + ", Cajamarca, Perú";
+
+                Uri uriMapa = Uri.parse("geo:0,0?q=" + Uri.encode(direccionBuscada));
+
                 Intent intent = new Intent(Intent.ACTION_VIEW, uriMapa);
-                intent.setPackage("com.google.android.apps.maps"); // Priorizar Google Maps
+                intent.setPackage("com.google.android.apps.maps");
+
                 try {
                     context.startActivity(intent);
                 } catch (Exception e) {
@@ -101,8 +97,7 @@ public class AdaptadorRefugios extends RecyclerView.Adapter<AdaptadorRefugios.Re
                     }
                 }
             } else {
-                // CASO C: No hay ni coordenadas ni dirección
-                Toast.makeText(context, "Ubicación no disponible", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Dirección no disponible", Toast.LENGTH_SHORT).show();
             }
         });
     }

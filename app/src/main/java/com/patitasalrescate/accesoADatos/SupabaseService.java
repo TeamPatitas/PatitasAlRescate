@@ -268,7 +268,6 @@ public class SupabaseService {
         try (Response response = client.newCall(request).execute()) { return response.isSuccessful(); }
     }
 
-    // 🔥 MÉTODO NUEVO IMPORTANTE PARA EL ADAPTADOR
     // Busca en la tabla 'adopciones' cualquier solicitud 'pendiente' de esta mascota y la pone en 'aprobada'
     public boolean aprobarAdopcionPorMascota(String idMascota) throws IOException {
         if (idMascota == null) return false;

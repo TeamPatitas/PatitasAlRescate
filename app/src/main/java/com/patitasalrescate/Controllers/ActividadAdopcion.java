@@ -111,15 +111,12 @@ public class ActividadAdopcion extends AppCompatActivity {
         // --- FLUJO DE NUBE ---
         new Thread(() -> {
             try {
-                // 1. Intentamos insertar la adopción (esto lanzará excepción si falla)
                 supabaseService.insertarAdopcionDetallada(nuevaAdopcion);
 
-                // 2. Si lo anterior funcionó, intentamos cambiar el estado de la mascota
                 boolean exitoEstadoNube = supabaseService.actualizarEstadoMascota(mascota.getIdMascota(), "EN_PROCESO");
 
                 runOnUiThread(() -> {
                     if (exitoEstadoNube) {
-                        // ÉXITO TOTAL: Guardamos en local solo si la nube aceptó todo
                         daoAdopcion.insertar(nuevaAdopcion);
                         mascota.setEstado("EN_PROCESO");
                         daoMascota.actualizar(mascota);
@@ -138,7 +135,6 @@ public class ActividadAdopcion extends AppCompatActivity {
                 e.printStackTrace();
 
                 runOnUiThread(() -> {
-                    // El Toast ahora te dirá si es un problema de UUID, RLS o Foreign Key
                     Toast.makeText(getApplicationContext(), "❌ ERROR NUBE: " + mensajeError, Toast.LENGTH_LONG).show();
                     btn.setEnabled(true);
                 });

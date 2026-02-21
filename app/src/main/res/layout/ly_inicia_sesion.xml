@@ -90,58 +90,5 @@
 
     </LinearLayout>
 
-    <!--
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/design_default_color_secondary"
-        app:title="Iniciar Sesión"
-        app:titleTextColor="@android:color/white"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp"
-        app:layout_constraintTop_toBottomOf="@id/toolbarLogin">
-
-        <ImageView
-            android:id="@+id/rj_logo_small_inisesion"
-            android:layout_width="169dp"
-            android:layout_height="163dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="32dp"
-            android:src="@drawable/rj_logo_patitas" />
-
-    <EditText
-        android:id="@+id/rj_text_correr_inisesion"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="Correo Electrónico"
-        android:background="@android:drawable/edit_text"
-        android:inputType="textEmailAddress"
-        android:layout_marginBottom="16dp"/>
-
-    <EditText
-        android:id="@+id/rj_text_pass_inisesion"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="Contraseña"
-        android:background="@android:drawable/edit_text"
-        android:inputType="textPassword"
-        android:layout_marginBottom="32dp"/>
-
-    <Button
-        android:id="@+id/rj_button_ingresar_inisesion"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:text="INGRESAR"
-        android:fontFamily="@font/chewy"
-        android:textSize="18sp"
-        android:textColor="#FFFFFF"/>
-    </LinearLayout>
--->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
