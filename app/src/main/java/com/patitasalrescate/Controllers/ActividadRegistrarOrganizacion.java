@@ -137,7 +137,7 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
 
         if (nombre.isEmpty()) { txtNombre.setError("Ingrese el nombre"); return; }
         if (direccion.isEmpty()) { txtDireccion.setError("Ingrese la dirección"); return; }
-        if (telefono.length() < 7) { txtTelefono.setError("Ingrese un teléfono válido"); return; }
+        if (telefono.length()!=9) { txtTelefono.setError("Ingrese un teléfono válido de 9 dígitos"); return; }
         if (correo.isEmpty()) { txtCorreo.setError("Ingrese el correo"); return; }
         if (!Patterns.EMAIL_ADDRESS.matcher(correo).matches()) { txtCorreo.setError("Correo inválido"); return; }
         if (password.length() < 6) { txtPassword.setError("Mínimo 6 caracteres"); return; }
