@@ -25,68 +25,70 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="vertical"
         android:padding="32dp"
-        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tollbariniciarsesion"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="16dp">
 
         <ImageView
             android:layout_width="160dp"
             android:layout_height="160dp"
-            android:src="@drawable/rj_logo_patitas"
-            android:layout_marginBottom="40dp"/>
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/rj_logo_patitas" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="¡Hola de nuevo!"
+            android:layout_marginBottom="8dp"
             android:fontFamily="@font/chewy"
+            android:text="¡Hola de nuevo!"
             android:textColor="@color/marronOscuro"
-            android:textSize="26sp"
-            android:layout_marginBottom="8dp"/>
+            android:textSize="26sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
             android:text="Ingresa tus datos para continuar"
-            android:textColor="@color/texto_titulo"
-            android:layout_marginBottom="32dp"/>
+            android:textColor="@color/texto_titulo" />
 
         <EditText
             android:id="@+id/rj_text_correr_inisesion"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:hint="Correo Electrónico"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_input_rounded"
             android:drawableStart="@drawable/rj_correo"
             android:drawablePadding="12dp"
-            android:paddingHorizontal="16dp"
-            android:background="@drawable/bg_input_rounded"
+            android:hint="Correo Electrónico"
             android:inputType="textEmailAddress"
-            android:layout_marginBottom="16dp"/>
+            android:paddingHorizontal="16dp" />
 
         <EditText
             android:id="@+id/rj_text_pass_inisesion"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:hint="Contraseña"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/bg_input_rounded"
             android:drawableStart="@drawable/rj_candadonube"
             android:drawablePadding="12dp"
-            android:paddingHorizontal="16dp"
-            android:background="@drawable/bg_input_rounded"
+            android:hint="Contraseña"
             android:inputType="textPassword"
-            android:layout_marginBottom="32dp"/>
+            android:paddingHorizontal="16dp" />
 
         <Button
             android:id="@+id/rj_button_ingresar_inisesion"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:text="INGRESAR"
-            android:fontFamily="@font/chewy"
-            android:textSize="20sp"
             android:backgroundTint="@color/marronPrimario"
+            android:fontFamily="@font/chewy"
+            android:text="INGRESAR"
             android:textColor="@color/blanco"
-            app:cornerRadius="30dp"/>
+            android:textSize="20sp"
+            app:cornerRadius="30dp" />
 
     </LinearLayout>
 

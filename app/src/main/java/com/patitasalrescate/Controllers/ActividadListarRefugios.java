@@ -14,17 +14,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.patitasalrescate.R;
 import com.patitasalrescate.accesoADatos.ApiRefugiosSimulada;
 import com.patitasalrescate.accesoADatos.DAORefugio;
+import com.patitasalrescate.accesoADatos.SupabaseService;
 import com.patitasalrescate.model.Refugio;
 import com.patitasalrescate.ui.AdaptadorRefugios;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ActividadListarRefugios extends AppCompatActivity {
 
     private RecyclerView recycler;
     private DAORefugio dao;
-    private TextView txtVacio;
+    private SupabaseService supabase;
     private ApiRefugiosSimulada apiSimulada;
+    private TextView txtVacio;
+
+    private static boolean yaSincronizado = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +37,14 @@ public class ActividadListarRefugios extends AppCompatActivity {
         setContentView(R.layout.ly_listar_refugios);
 
         dao = new DAORefugio(this);
+        supabase = new SupabaseService();
         apiSimulada = new ApiRefugiosSimulada();
 
         Toolbar toolbar = findViewById(R.id.toolbarListarRefugios);
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         toolbar.setNavigationOnClickListener(v -> finish());
 
         recycler = findViewById(R.id.recycler_refugios);
@@ -44,7 +52,11 @@ public class ActividadListarRefugios extends AppCompatActivity {
         txtVacio = findViewById(R.id.txt_refugios_vacio);
 
         cargarDatosLocal();
-        sincronizarConApiSimulada();   // ← Llamamos a la API simulada
+
+        if (!yaSincronizado) {
+            sincronizarFuentesExternas();
+            yaSincronizado = true;
+        }
     }
 
     private void cargarDatosLocal() {
@@ -53,7 +65,7 @@ public class ActividadListarRefugios extends AppCompatActivity {
     }
 
     private void actualizarUI(List<Refugio> lista) {
-        if (lista.isEmpty()) {
+        if (lista == null || lista.isEmpty()) {
             recycler.setVisibility(View.GONE);
             txtVacio.setVisibility(View.VISIBLE);
         } else {
@@ -63,32 +75,59 @@ public class ActividadListarRefugios extends AppCompatActivity {
         }
     }
 
-    private void sincronizarConApiSimulada() {
+    private void sincronizarFuentesExternas() {
         new Thread(() -> {
+            Log.d("RefugiosSync", "=== Iniciando sincronización completa ===");
+
+            // Supabase
             try {
-                List<Refugio> refugiosApi = apiSimulada.getRefugios();
-
-                if (refugiosApi != null && !refugiosApi.isEmpty()) {
-                    Log.d("ApiRefugios", "Se obtuvieron " + refugiosApi.size() + " refugios de la API simulada");
-
-                    for (Refugio r : refugiosApi) {
-                        if (dao.obtenerPorId(r.getIdRefugio()) == null) {
-                            dao.insertar(r);
-                        } else {
-                            dao.actualizar(r);
-                        }
+                List<Refugio> deSupabase = supabase.getRefugios();
+                if (deSupabase != null) {
+                    Log.d("RefugiosSync", "Supabase devolvió " + deSupabase.size() + " refugios");
+                    for (Refugio r : deSupabase) {
+                        sincronizarRefugioLocal(r);
                     }
-
-                    // Recargar la lista en el hilo principal
-                    runOnUiThread(this::cargarDatosLocal);
-                } else {
-                    Log.e("ApiRefugios", "No se obtuvieron datos de la API simulada");
                 }
             } catch (Exception e) {
-                Log.e("ApiRefugios", "Error al conectar con API simulada: " + e.getMessage());
-                e.printStackTrace();
-                runOnUiThread(() -> Toast.makeText(this, "No se pudo conectar con la API simulada", Toast.LENGTH_LONG).show());
+                Log.e("RefugiosSync", "Error Supabase: " + e.getMessage());
             }
+
+            // API simulada (Render)
+            try {
+                List<Refugio> deApi = apiSimulada.getRefugios();
+                if (deApi != null) {
+                    Log.d("RefugiosSync", "API Render devolvió " + deApi.size() + " refugios");
+                    for (Refugio r : deApi) {
+                        sincronizarRefugioLocal(r);
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("RefugiosSync", "Error API Render: " + e.getMessage());
+            }
+
+            runOnUiThread(() -> {
+                cargarDatosLocal();
+                Toast.makeText(this, "Sincronización completa", Toast.LENGTH_SHORT).show();
+            });
+
         }).start();
+    }
+
+    private void sincronizarRefugioLocal(Refugio r) {
+        if (r == null || r.getIdRefugio() == null || r.getIdRefugio().isEmpty()) return;
+
+        if (dao.obtenerPorId(r.getIdRefugio()) == null) {
+            dao.insertar(r);
+            Log.d("RefugiosSync", "→ Insertado nuevo: " + r.getNombre());
+        } else {
+            dao.actualizar(r);
+            Log.d("RefugiosSync", "→ Actualizado: " + r.getNombre());
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        yaSincronizado = false;
     }
 }
