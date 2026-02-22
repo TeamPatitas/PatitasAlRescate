@@ -10,13 +10,10 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarListarMascotas"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:background="#5D4037"
-        android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:navigationIcon="@android:drawable/ic_menu_revert"
         app:title="Mascotas"
         app:titleTextColor="@android:color/white" />

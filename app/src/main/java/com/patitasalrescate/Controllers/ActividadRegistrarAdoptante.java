@@ -1,5 +1,6 @@
 package com.patitasalrescate.Controllers;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.widget.ArrayAdapter;
@@ -169,7 +170,9 @@ public class ActividadRegistrarAdoptante extends AppCompatActivity {
                     // Volver al hilo principal para mostrar el mensaje final
                     runOnUiThread(() -> {
                         if (exitoNube) {
-                            Toast.makeText(this, "¡Registro completado! (local + nube)", Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(ActividadRegistrarAdoptante.this, ActividadRegistroExitoso.class);
+                            intent.putExtra("USUARIO_NOMBRE", nombre); // Pasamos el nombre para el Splash
+                            startActivity(intent);
                             finish();
                         } else {
                             Toast.makeText(this, "Guardado local OK, pero error en la nube", Toast.LENGTH_LONG).show();
