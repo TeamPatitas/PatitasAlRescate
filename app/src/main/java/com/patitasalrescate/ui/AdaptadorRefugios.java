@@ -41,11 +41,13 @@ public class AdaptadorRefugios extends RecyclerView.Adapter<AdaptadorRefugios.Re
         holder.txtNombre.setText(r.getNombre());
         holder.txtDireccion.setText(r.getDireccion());
 
+
         if (r.getFotoUrl() != null && !r.getFotoUrl().isEmpty()) {
             Glide.with(context)
                     .load(r.getFotoUrl())
-                    .centerCrop()
                     .placeholder(R.drawable.ic_launcher_foreground)
+                    .error(R.drawable.ic_launcher_foreground)
+                    .centerCrop()
                     .into(holder.imgFoto);
         } else {
             holder.imgFoto.setImageResource(R.drawable.ic_launcher_foreground);

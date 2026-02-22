@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Refugio {
 
-    @SerializedName("id_refugio")
+    @SerializedName(value = "id_refugio", alternate = {"idRefugio", "IdRefugio"})
     private String idRefugio;
 
     private String nombre;
@@ -13,14 +13,13 @@ public class Refugio {
     private double longitud;
     private String correo;
 
-
     @SerializedName("password")
     private String password;
 
-    @SerializedName("num_celular")
+    @SerializedName(value = "num_celular", alternate = {"numCelular"})
     private String numCelular;
 
-    @SerializedName("foto")
+    @SerializedName(value = "foto", alternate = {"fotoUrl", "FotoUrl"})
     private String fotoUrl;
 
     private transient long lastSync;
@@ -41,6 +40,7 @@ public class Refugio {
         this.lastSync = lastSync;
     }
 
+    // Getters y Setters
     public String getIdRefugio() { return idRefugio; }
     public void setIdRefugio(String idRefugio) { this.idRefugio = idRefugio; }
 

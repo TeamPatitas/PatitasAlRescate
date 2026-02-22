@@ -16,15 +16,18 @@ import okhttp3.Response;
 
 public class ApiRefugiosSimulada {
 
-    // ==================== CAMBIA AQUÍ SEGÚN DÓNDE ESTÉS PROBANDO ====================
+    // ==================== CONFIGURACIÓN DE ENTORNO ====================
 
-    // Opción 1: Para EMULADOR (usa esta cuando pruebes en emulador)
+    // Opción PRODUCCIÓN (Render) → ÚSALA SIEMPRE para la entrega final
+    private static final String BASE_URL = "https://patitasrefugiosapi.onrender.com";
+
+    // Opción DESARROLLO LOCAL (emulador) → descomenta solo para pruebas en emulador
     // private static final String BASE_URL = "http://10.0.2.2:5243";
 
-    // Opción 2: Para CELULAR REAL (usa esta cuando pruebes en tu teléfono)
-    private static final String BASE_URL = "http://192.168.1.3:5243";
+    // Opción DESARROLLO LOCAL (celular real en misma Wi-Fi) → descomenta solo para pruebas
+    // private static final String BASE_URL = "http://192.168.1.3:5243";
 
-    // =============================================================================
+    // ==================================================================
 
     private final OkHttpClient client = new OkHttpClient();
     private final Gson gson = new Gson();
@@ -40,17 +43,17 @@ public class ApiRefugiosSimulada {
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                Log.e("ApiRefugios", "Error HTTP: " + response.code() + " - " + response.message());
+                Log.e("ApiRefugios", "Error HTTP: Código " + response.code() + " - " + response.message());
                 return null;
             }
 
             String json = response.body().string();
-            Log.d("ApiRefugios", "JSON recibido: " + json);
+            Log.d("ApiRefugios", "JSON recibido correctamente: " + json.substring(0, Math.min(json.length(), 300)) + "...");
 
             Type listType = new TypeToken<List<Refugio>>(){}.getType();
             List<Refugio> lista = gson.fromJson(json, listType);
 
-            Log.d("ApiRefugios", "¡ÉXITO! Se obtuvieron " + lista.size() + " refugios");
+            Log.d("ApiRefugios", "¡ÉXITO! Se obtuvieron " + lista.size() + " refugios de la API");
             return lista;
         }
     }
