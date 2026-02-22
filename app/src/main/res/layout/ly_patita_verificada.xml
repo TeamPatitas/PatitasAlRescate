@@ -41,7 +41,7 @@
             android:id="@+id/ivPatitaVerificada"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:src="@drawable/rj_patita_verificada"
+            android:src="@drawable/rj_patitaverificada"
             android:contentDescription="Patita verificada"
             android:layout_marginBottom="32dp" />
 
