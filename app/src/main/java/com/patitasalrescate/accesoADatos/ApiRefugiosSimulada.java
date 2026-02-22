@@ -15,20 +15,38 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class ApiRefugiosSimulada {
+
+    // ==================== CONFIGURACIÓN DE ENTORNO ====================
+
+    // Opción PRODUCCIÓN (Render) → ÚSALA SIEMPRE para la entrega final
     private static final String BASE_URL = "https://patitasrefugiosapi.onrender.com";
+
+    // Opción DESARROLLO LOCAL (emulador) → descomenta solo para pruebas en emulador
+    // private static final String BASE_URL = "http://10.0.2.2:5243";
+
+    // Opción DESARROLLO LOCAL (celular real en misma Wi-Fi) → descomenta solo para pruebas
+    // private static final String BASE_URL = "http://192.168.1.3:5243";
+
+    // ==================================================================
+
     private final OkHttpClient client = new OkHttpClient();
     private final Gson gson = new Gson();
+
     public List<Refugio> getRefugios() throws IOException {
         String urlFinal = BASE_URL + "/api/Refugios";
+
         Log.d("ApiRefugios", "Intentando conectar a: " + urlFinal);
+
         Request request = new Request.Builder()
                 .url(urlFinal)
                 .build();
+
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 Log.e("ApiRefugios", "Error HTTP: Código " + response.code() + " - " + response.message());
                 return null;
             }
+
             String json = response.body().string();
             Log.d("ApiRefugios", "JSON recibido correctamente: " + json.substring(0, Math.min(json.length(), 300)) + "...");
 

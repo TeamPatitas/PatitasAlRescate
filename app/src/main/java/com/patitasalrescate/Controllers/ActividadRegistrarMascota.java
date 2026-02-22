@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -18,12 +19,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.textfield.TextInputLayout;
 import com.patitasalrescate.R;
 import com.patitasalrescate.accesoADatos.DAOMascota;
 import com.patitasalrescate.accesoADatos.SupabaseService;
 import com.patitasalrescate.model.Mascota;
 import com.patitasalrescate.ui.AdaptadorFotosPreview;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,18 +35,23 @@ import java.util.List;
 import java.util.UUID;
 
 public class ActividadRegistrarMascota extends AppCompatActivity {
+
     private EditText txtNombre, txtEdad, txtTemperamento, txtHistoria;
     private EditText txtOtraEspecie, txtOtraRaza; // Campos ocultos
     private TextInputLayout lyOtraEspecie, lyOtraRaza;
+
     private Spinner spinnerEspecie, spinnerRaza, spinnerSexo;
     private Button btnSeleccionarFotos, btnGuardar;
     private RecyclerView recyclerFotosPreview;
+
     private DAOMascota daoMascota;
     private SupabaseService supabaseService;
+
     private List<Uri> urisFotosSeleccionadas = new ArrayList<>();
     private List<String> linksFotosSubidas = new ArrayList<>();
     private ActivityResultLauncher<Intent> launcherGaleria;
 
+    // DATOS ESTÁTICOS
     private final String[] especies = {"Seleccione...", "Perro", "Gato", "Conejo", "Otro"};
     private final String[] razasPerro = {"Seleccione...", "Perro único (Chusco)", "Perro sin Pelo del Perú", "Schnauzer", "Poodle", "Golden Retriever", "Chihuahua", "Bulldog Francés", "Pastor Alemán", "Yorkshire Terrier", "Labrador Retriever", "Siberian Husky", "Otro"};
     private final String[] razasGato = {"Seleccione...", "Persa", "Siamés", "Angora Turco", "Ragdoll", "Maine Coon", "British Shorthair", "Sphynx", "Bengala", "Himalayo", "Exótico de Pelo Corto", "Otro"};
@@ -59,6 +67,7 @@ public class ActividadRegistrarMascota extends AppCompatActivity {
         daoMascota = new DAOMascota(this);
         supabaseService = new SupabaseService();
 
+        // Vincular Vistas
         txtNombre = findViewById(R.id.txt_reg_nombre_mascota);
         txtEdad = findViewById(R.id.txt_reg_edad);
         txtTemperamento = findViewById(R.id.txt_reg_temperamento);
@@ -77,31 +86,39 @@ public class ActividadRegistrarMascota extends AppCompatActivity {
         btnGuardar = findViewById(R.id.btn_guardar_mascota);
         recyclerFotosPreview = findViewById(R.id.recycler_fotos_preview);
 
+        // Configurar Recycler y Fotos
         recyclerFotosPreview.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerFotosPreview.setAdapter(new AdaptadorFotosPreview(urisFotosSeleccionadas));
         configurarLauncherFotos();
 
+        //Configuración de ToolBar
         Toolbar tlbregistrarMascota= findViewById(R.id.toolbarRegistrarMascota);
         setSupportActionBar(tlbregistrarMascota);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         configurarSpinners();
+
         btnGuardar.setOnClickListener(v -> registrarMascota());
 
     }
 
     private void configurarSpinners() {
+        // 1. Spinner Sexo
         ArrayAdapter<String> adapterSexo = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, sexos);
         spinnerSexo.setAdapter(adapterSexo);
+
+        // 2. Spinner Especie
         ArrayAdapter<String> adapterEspecie = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, especies);
         spinnerEspecie.setAdapter(adapterEspecie);
 
+        // Listener para cambiar Razas según Especie
         spinnerEspecie.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String seleccion = especies[position];
                 actualizarSpinnerRaza(seleccion);
 
+                // Mostrar campo "Otra Especie" si elige Otro
                 if (seleccion.equals("Otro")) {
                     lyOtraEspecie.setVisibility(View.VISIBLE);
                     lyOtraRaza.setVisibility(View.VISIBLE); // Si es otra especie, la raza también es libre
@@ -113,6 +130,7 @@ public class ActividadRegistrarMascota extends AppCompatActivity {
             }
             @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
+
 
         spinnerRaza.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -134,7 +152,7 @@ public class ActividadRegistrarMascota extends AppCompatActivity {
             case "Perro": razas = razasPerro; break;
             case "Gato": razas = razasGato; break;
             case "Conejo": razas = razasConejo; break;
-            default: razas = new String[]{}; break; // Caso "Otro" o "Seleccione"
+            default: razas = new String[]{}; break;
         }
 
         ArrayAdapter<String> adapterRaza = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, razas);
@@ -146,10 +164,10 @@ public class ActividadRegistrarMascota extends AppCompatActivity {
         String edadStr = txtEdad.getText().toString().trim();
         String temperamento = txtTemperamento.getText().toString().trim();
         String historia = txtHistoria.getText().toString().trim();
-
         String sexo = spinnerSexo.getSelectedItem().toString();
         String especie = spinnerEspecie.getSelectedItem().toString();
         String raza = "";
+
 
         if (especie.equals("Seleccione...")) {
             Toast.makeText(this, "Selecciona una especie", Toast.LENGTH_SHORT).show();
@@ -172,6 +190,7 @@ public class ActividadRegistrarMascota extends AppCompatActivity {
             }
         }
 
+        // Validaciones
         if (nombre.isEmpty() || especie.isEmpty() || raza.isEmpty()) {
             Toast.makeText(this, "Faltan datos obligatorios (Nombre, Especie, Raza)", Toast.LENGTH_SHORT).show();
             return;
@@ -194,6 +213,7 @@ public class ActividadRegistrarMascota extends AppCompatActivity {
             return;
         }
 
+        // Sesión Refugio
         SharedPreferences prefs = getSharedPreferences("sesion_refugio", MODE_PRIVATE);
         final String idRefugio = prefs.getString("id_refugio", "");
         if (idRefugio.isEmpty()) {
@@ -202,6 +222,7 @@ public class ActividadRegistrarMascota extends AppCompatActivity {
             return;
         }
 
+        // Proceso de guardado (Igual que antes pero pasando las nuevas variables)
         final String finalEspecie = especie;
         final String finalRaza = raza;
         final String idMascota = UUID.randomUUID().toString();
@@ -210,6 +231,7 @@ public class ActividadRegistrarMascota extends AppCompatActivity {
         btnGuardar.setEnabled(false);
 
         new Thread(() -> {
+            // Subir Fotos
             for (Uri uri : urisFotosSeleccionadas) {
                 try {
                     InputStream is = getContentResolver().openInputStream(uri);
@@ -245,6 +267,7 @@ public class ActividadRegistrarMascota extends AppCompatActivity {
         }).start();
     }
 
+    // Configuración del selector de fotos
     private void configurarLauncherFotos() {
         btnSeleccionarFotos.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK);

@@ -34,7 +34,7 @@ public class SupabaseService {
 
     // --- SUBIDA DE FOTOS ---
     public String subirFoto(byte[] imagenBytes, String nombreArchivo) {
-        // Asegúrate de que el bucket se llame 'imagenes-refugio' en Supabase Storage
+
         String urlStorage = SUPABASE_URL + "/storage/v1/object/imagenes-refugio/" + nombreArchivo;
         RequestBody requestBody = RequestBody.create(imagenBytes, MediaType.parse("image/jpeg"));
 
