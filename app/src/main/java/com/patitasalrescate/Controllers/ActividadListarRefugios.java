@@ -5,24 +5,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.patitasalrescate.R;
 import com.patitasalrescate.accesoADatos.ApiRefugiosSimulada;
 import com.patitasalrescate.accesoADatos.DAORefugio;
 import com.patitasalrescate.accesoADatos.SupabaseService;
 import com.patitasalrescate.model.Refugio;
 import com.patitasalrescate.ui.AdaptadorRefugios;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class ActividadListarRefugios extends AppCompatActivity {
-
     private RecyclerView recycler;
     private DAORefugio dao;
     private SupabaseService supabase;

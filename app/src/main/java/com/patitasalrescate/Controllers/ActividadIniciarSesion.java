@@ -25,18 +25,11 @@ import com.patitasalrescate.utils.SeguridadUtils;
 import java.io.IOException;
 
 public class ActividadIniciarSesion extends AppCompatActivity {
-
-    /**
-     * Extras estándar para identificar sesión y rol en TODO el flujo.
-     * Úsalos para: Inicio -> ListarMascotas -> PerfilMascota -> Adopción.
-     */
     public static final String EXTRA_TIPO_USUARIO = "tipo_usuario_key"; // "ADOPTANTE" | "REFUGIO"
     public static final String EXTRA_ID_USUARIO = "id_usuario_key";     // id_adoptante o id_refugio
     public static final String EXTRA_NOMBRE_USUARIO = "nombre_usuario_key";
-
     private EditText textCorreo, textPassword;
     private Button button_Ingresar;
-
     private DAOAdoptante daoAdoptante;
     private DAORefugio daoRefugio;
     private SupabaseService supabaseService;
@@ -46,7 +39,6 @@ public class ActividadIniciarSesion extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.ly_inicia_sesion);
-
         // Toolbar
         Toolbar toolbar = findViewById(R.id.tollbariniciarsesion);
         setSupportActionBar(toolbar);
@@ -55,41 +47,33 @@ public class ActividadIniciarSesion extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
-
         daoAdoptante = new DAOAdoptante(this);
         daoRefugio = new DAORefugio(this);
         supabaseService = new SupabaseService();
-
         textCorreo = findViewById(R.id.rj_text_correr_inisesion);
         textPassword = findViewById(R.id.rj_text_pass_inisesion);
         button_Ingresar = findViewById(R.id.rj_button_ingresar_inisesion);
-
         button_Ingresar.setOnClickListener(v -> ejecutarLogin());
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.iniciarsesion), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
     }
-
     private void ejecutarLogin() {
         String correo = textCorreo.getText().toString().trim();
         String passPlana = textPassword.getText().toString().trim();
-
         if (correo.isEmpty() || passPlana.isEmpty()) {
             Toast.makeText(this, "Completa todos los Campos", Toast.LENGTH_SHORT).show();
             return;
         }
-
         String passEncriptada = SeguridadUtils.encriptar(passPlana);
 
-        // Deshabilitar botón para evitar múltiples clics
         button_Ingresar.setEnabled(false);
 
         new Thread(() -> {
+            // Local & supabase
             try {
-                // 1. Adoptante - local
                 Adoptante adoptanteLocal = daoAdoptante.login(correo, passEncriptada);
                 if (adoptanteLocal != null) {
                     guardarSesionAdoptante(adoptanteLocal);
@@ -99,8 +83,6 @@ public class ActividadIniciarSesion extends AppCompatActivity {
                     });
                     return;
                 }
-
-                // 2. Adoptante - remoto
                 Adoptante adoptanteRemoto = supabaseService.loginAdoptanteRemoto(correo, passEncriptada);
                 if (adoptanteRemoto != null) {
                     daoAdoptante.insertar(adoptanteRemoto); // guardar local
@@ -111,8 +93,6 @@ public class ActividadIniciarSesion extends AppCompatActivity {
                     });
                     return;
                 }
-
-                // 3. Refugio - local
                 Refugio refugioLocal = daoRefugio.login(correo, passEncriptada);
                 if (refugioLocal != null) {
                     guardarSesionRefugio(refugioLocal);
@@ -122,8 +102,6 @@ public class ActividadIniciarSesion extends AppCompatActivity {
                     });
                     return;
                 }
-
-                // 4. Refugio - remoto
                 Refugio refugioRemoto = supabaseService.loginRefugioRemoto(correo, passEncriptada);
                 if (refugioRemoto != null) {
                     daoRefugio.insertar(refugioRemoto); // guardar local
@@ -134,8 +112,6 @@ public class ActividadIniciarSesion extends AppCompatActivity {
                     });
                     return;
                 }
-
-                // Si nada funcionó
                 runOnUiThread(() -> {
                     Toast.makeText(this, "Correo o contraseña incorrectos", Toast.LENGTH_LONG).show();
                     button_Ingresar.setEnabled(true);
@@ -150,7 +126,6 @@ public class ActividadIniciarSesion extends AppCompatActivity {
             }
         }).start();
     }
-
     private void guardarSesionRefugio(Refugio refugio) {
         SharedPreferences prefs = getSharedPreferences("sesion_refugio", MODE_PRIVATE);
         prefs.edit()
@@ -158,7 +133,6 @@ public class ActividadIniciarSesion extends AppCompatActivity {
                 .putString("nombre_refugio", refugio.getNombre())
                 .apply();
     }
-
     private void guardarSesionAdoptante(Adoptante adoptante) {
         SharedPreferences prefs = getSharedPreferences("sesion_adoptante", MODE_PRIVATE);
         prefs.edit()
@@ -166,14 +140,10 @@ public class ActividadIniciarSesion extends AppCompatActivity {
                 .putString("nombre_adoptante", adoptante.getNombre())
                 .apply();
     }
-
     public void irAPantallaPrincipal(String idUsuario, String nombreUsuario, String tipoUsuario) {
         boolean esAdoptante = "ADOPTANTE".equalsIgnoreCase(tipoUsuario);
-
         Intent intent = new Intent(this, esAdoptante ? ActividadInicioAdoptante.class : ActividadInicioRefugio.class);
-        // Compatibilidad con código existente:
         intent.putExtra(esAdoptante ? "nombre_adoptante_key" : "nombre_refugio_key", nombreUsuario);
-        // Extras estándar (nuevo):
         intent.putExtra(EXTRA_TIPO_USUARIO, esAdoptante ? "ADOPTANTE" : "REFUGIO");
         intent.putExtra(EXTRA_ID_USUARIO, idUsuario);
         intent.putExtra(EXTRA_NOMBRE_USUARIO, nombreUsuario);

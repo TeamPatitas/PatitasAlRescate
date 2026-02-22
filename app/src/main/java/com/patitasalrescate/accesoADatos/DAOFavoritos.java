@@ -18,8 +18,6 @@ public class DAOFavoritos {
     public DAOFavoritos(Context context) {
         dbHelper = new BDConstruir(context);
     }
-
-    // ===== AGREGAR FAVORITO =====
     public long addFavorito(String idAdoptante, String idMascota) {
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -37,8 +35,6 @@ public class DAOFavoritos {
                 SQLiteDatabase.CONFLICT_IGNORE
         );
     }
-
-    // ===== ELIMINAR FAVORITO =====
     public void removeFavorito(String idAdoptante, String idMascota) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.delete(
@@ -47,8 +43,6 @@ public class DAOFavoritos {
                 new String[]{idAdoptante, idMascota}
         );
     }
-
-    // ===== VERIFICAR FAVORITO =====
     public boolean esFavorito(String idAdoptante, String idMascota) {
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -68,8 +62,6 @@ public class DAOFavoritos {
 
         return existe;
     }
-
-    // ===== ⭐ NUEVO: OBTENER SOLO IDs FAVORITOS =====
     public List<String> obtenerIdsFavoritos(String idAdoptante) {
 
         List<String> lista = new ArrayList<>();
@@ -99,8 +91,6 @@ public class DAOFavoritos {
         c.close();
         return lista;
     }
-
-    // ===== LISTAR FAVORITOS (JOIN CON MASCOTAS) =====
     public List<Mascota> getFavoritosPorAdoptante(String idAdoptante) {
 
         List<Mascota> favoritos = new ArrayList<>();

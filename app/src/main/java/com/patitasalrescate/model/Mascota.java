@@ -19,7 +19,7 @@ public class Mascota {
     @SerializedName("temperamento") @Expose private String temperamento;
     @SerializedName("historia") @Expose private String historia;
     @SerializedName("fotos") @Expose private List<String> fotos = new ArrayList<>();
-    @SerializedName("estado") @Expose private String estado; // DISPONIBLE | EN_PROCESO | ADOPTADO
+    @SerializedName("estado") @Expose private String estado; // Disponible, En proceso, Adoptado
 
     private transient long lastSync;
 

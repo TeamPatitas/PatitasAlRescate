@@ -20,14 +20,10 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class SupabaseService {
-
     private static final String SUPABASE_URL = "https://sjbuliztalqmsquunnsv.supabase.co";
-    // TU ANON KEY (Mantenla segura)
     private static final String ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqYnVsaXp0YWxxbXNxdXVubnN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwODMwOTEsImV4cCI6MjA4NTY1OTA5MX0.SmTZWaSdO0OFTmHgM4VeBZyErc1O_MQO1be8pKJahoI";
-
     private final OkHttpClient client = new OkHttpClient();
     private final Gson gson = new Gson();
-
     private Request.Builder baseRequest(String endpoint) {
         return new Request.Builder()
                 .url(SUPABASE_URL + "/rest/v1/" + endpoint)
@@ -61,8 +57,6 @@ public class SupabaseService {
         }
         return null;
     }
-
-    // --- INSERTAR REFUGIO (REGISTRO) ---
     public boolean insertarRefugio(Refugio refugio) throws IOException {
         String json = gson.toJson(refugio);
         RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
@@ -73,7 +67,6 @@ public class SupabaseService {
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                // ESTO TE DIRÁ EL ERROR EXACTO EN EL LOGCAT
                 String errorBody = response.body() != null ? response.body().string() : "Sin mensaje";
                 android.util.Log.e("SupabaseError", "❌ CÓDIGO: " + response.code());
                 android.util.Log.e("SupabaseError", "❌ MENSAJE: " + errorBody);
@@ -84,8 +77,6 @@ public class SupabaseService {
             return true;
         }
     }
-
-    // --- OTROS MÉTODOS (Mascotas, Adoptantes...) ---
     public List<Mascota> getMascotas() throws IOException {
         Request request = baseRequest("mascotas?select=*").build();
         try (Response response = client.newCall(request).execute()) {
@@ -124,8 +115,6 @@ public class SupabaseService {
         Request request = baseRequest("adoptantes").post(body).build();
         try (Response response = client.newCall(request).execute()) { return response.isSuccessful(); }
     }
-
-    // Obtener todos los adoptantes de Supabase (para sincronización)
     public List<Adoptante> getAdoptantes() throws IOException {
         Request request = baseRequest("adoptantes?select=*").build();
         try (Response response = client.newCall(request).execute()) {
@@ -136,8 +125,6 @@ public class SupabaseService {
         }
         return null;
     }
-
-    // Obtener todos los refugios de Supabase (para sincronización)
     public List<Refugio> getRefugios() throws IOException {
         Request request = baseRequest("refugios?select=*").build();
         try (Response response = client.newCall(request).execute()) {
@@ -148,8 +135,6 @@ public class SupabaseService {
         }
         return null;
     }
-
-    // Login remoto para adoptante (consulta Supabase)
     public Adoptante loginAdoptanteRemoto(String correo, String passwordEncriptada) throws IOException {
         Request request = baseRequest("adoptantes?correo=eq." + correo + "&password=eq." + passwordEncriptada + "&select=*").build();
 
@@ -164,8 +149,6 @@ public class SupabaseService {
         }
         return null;
     }
-
-    // Login remoto para refugio (consulta Supabase)
     public Refugio loginRefugioRemoto(String correo, String passwordEncriptada) throws IOException {
         Request request = baseRequest("refugios?correo=eq." + correo + "&password=eq." + passwordEncriptada + "&select=*").build();
 
@@ -184,7 +167,6 @@ public class SupabaseService {
         public boolean actualizarMascota(Mascota mascota) throws IOException {
         if (mascota == null || mascota.getIdMascota() == null || mascota.getIdMascota().trim().isEmpty()) return false;
 
-        // Armamos un JSON parcial con campos editables
         String json ="{"
                 + "\"nombre\":\"" + escapeJson(mascota.getNombre()) + "\","
                 + "\"especie\":\"" + escapeJson(mascota.getEspecie()) + "\","
@@ -214,8 +196,6 @@ public class SupabaseService {
             return true;
         }
     }
-
-    /** Escape simple para evitar romper JSON si hay comillas o saltos de línea */
     private String escapeJson(String s) {
         if (s == null) return "";
         return s.replace("\\", "\\\\")
@@ -257,7 +237,6 @@ public class SupabaseService {
             return true;
         }
     }
-    // ... (resto de tu código anterior igual) ...
 
     public boolean actualizarEstadoAdopcion(String idAdopcion, String nuevoEstado) throws IOException {
         if (idAdopcion == null || nuevoEstado == null) return false;
@@ -268,15 +247,12 @@ public class SupabaseService {
         try (Response response = client.newCall(request).execute()) { return response.isSuccessful(); }
     }
 
-    // Busca en la tabla 'adopciones' cualquier solicitud 'pendiente' de esta mascota y la pone en 'aprobada'
     public boolean aprobarAdopcionPorMascota(String idMascota) throws IOException {
         if (idMascota == null) return false;
 
-        // JSON: estado = aprobada (para cumplir el Check Constraint de Supabase)
         String json = "{\"estado\": \"aprobada\"}";
         RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
 
-        // Filtro: Donde id_mascota sea igual al ID y el estado actual sea 'pendiente'
         String endpoint = "adopciones?id_mascota=eq." + idMascota + "&estado=eq.pendiente";
 
         Request request = baseRequest(endpoint)
@@ -294,12 +270,8 @@ public class SupabaseService {
 
     public boolean rechazarAdopcionPorMascota(String idMascota) throws IOException {
         if (idMascota == null) return false;
-
-        // JSON: estado = rechazada (cumple con tu Check Constraint)
         String json = "{\"estado\": \"rechazada\"}";
         RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
-
-        // Filtro: id_mascota coincide Y estado actual es 'pendiente'
         String endpoint = "adopciones?id_mascota=eq." + idMascota + "&estado=eq.pendiente";
 
         Request request = baseRequest(endpoint)
@@ -332,7 +304,6 @@ public class SupabaseService {
     }
     public boolean eliminarFavorito(String idAdoptante,
                                     String idMascota) throws Exception {
-
         String endpoint =
                 "favoritos?id_adoptante=eq." + idAdoptante +
                         "&id_mascota=eq." + idMascota;
@@ -345,6 +316,4 @@ public class SupabaseService {
             return response.isSuccessful();
         }
     }
-
-
 }

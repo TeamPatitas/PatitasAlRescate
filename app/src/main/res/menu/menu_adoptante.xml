@@ -12,13 +12,11 @@
         android:icon="@android:drawable/ic_menu_sort_by_size"
         android:title="Listar Mascotas" />
 
-    <!-- 🔥 NUEVO: LISTAR REFUGIOS -->
     <item
         android:id="@+id/itemListarRefugios"
         android:icon="@android:drawable/ic_menu_myplaces"
         android:title="Listar Refugios" />
 
-    <!-- 🔥 NUEVO: BUSCAR POR FILTRO -->
     <item
         android:id="@+id/itemBuscarFiltro"
         android:icon="@android:drawable/ic_menu_search"

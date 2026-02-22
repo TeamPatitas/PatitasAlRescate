@@ -4,7 +4,6 @@ import java.security.MessageDigest;
 import java.nio.charset.StandardCharsets;
 
 public class SeguridadUtils {
-
     public static String encriptar(String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");

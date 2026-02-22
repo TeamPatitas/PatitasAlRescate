@@ -6,7 +6,6 @@
     android:background="#F4F1E8"
     android:padding="20dp">
 
-    <!-- TÍTULO -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,7 +16,6 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp"/>
 
-    <!-- SUBTÍTULO -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,14 +25,12 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="20dp"/>
 
-    <!-- SPINNER PARA TIPO DE FILTRO -->
     <Spinner
         android:id="@+id/spFiltro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp" />
 
-    <!-- CAMPO DE TEXTO -->
     <EditText
         android:id="@+id/txtFiltro"
         android:layout_width="match_parent"
@@ -44,7 +40,6 @@
         android:background="@android:drawable/edit_text"
         android:layout_marginBottom="16dp"/>
 
-    <!-- BOTÓN -->
     <Button
         android:id="@+id/btnBuscar"
         android:layout_width="match_parent"
@@ -56,7 +51,6 @@
         android:backgroundTint="#7A4A32"
         android:layout_marginBottom="20dp"/>
 
-    <!-- RECYCLERVIEW (ANTES ERA LISTVIEW) -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_mascotas"
         android:layout_width="match_parent"

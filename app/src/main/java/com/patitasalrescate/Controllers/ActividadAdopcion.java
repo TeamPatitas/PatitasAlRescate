@@ -93,8 +93,7 @@ public class ActividadAdopcion extends AppCompatActivity {
             textoIngresado = "Hola, estoy interesado en adoptar a " + mascota.getNombre();
         }
         final String mensajeFinalParaWhatsapp = textoIngresado;
-
-        // Creamos el objeto Adopción
+        // Objeto adopcion
         Adopcion nuevaAdopcion = new Adopcion(
                 UUID.randomUUID().toString(),
                 idAdoptante,
@@ -108,7 +107,7 @@ public class ActividadAdopcion extends AppCompatActivity {
         Button btn = findViewById(R.id.btnContactarWhatsapp);
         btn.setEnabled(false);
 
-        // --- FLUJO DE NUBE ---
+        // Supa Base
         new Thread(() -> {
             try {
                 supabaseService.insertarAdopcionDetallada(nuevaAdopcion);

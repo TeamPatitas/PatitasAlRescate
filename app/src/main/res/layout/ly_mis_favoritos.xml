@@ -7,7 +7,6 @@
     android:background="#F6F2EA"
     android:padding="20dp">
 
-    <!-- TÍTULO -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,7 +17,6 @@
         android:gravity="center"
         android:layout_marginBottom="6dp"/>
 
-    <!-- SUBTÍTULO -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,7 +26,6 @@
         android:gravity="center"
         android:layout_marginBottom="20dp"/>
 
-    <!-- CARD PRINCIPAL -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -44,7 +41,6 @@
             android:padding="18dp"
             android:background="#FFFFFF">
 
-            <!-- HEADER CARD -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -54,14 +50,12 @@
                 android:textColor="#7A4A32"
                 android:layout_marginBottom="12dp"/>
 
-            <!-- SEPARADOR -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#EFE7DD"
                 android:layout_marginBottom="12dp"/>
 
-            <!-- TEXTO VACÍO -->
             <TextView
                 android:id="@+id/txt_lista_vacia"
                 android:layout_width="match_parent"
@@ -74,7 +68,6 @@
                 android:visibility="gone"
                 android:layout_marginTop="20dp"/>
 
-            <!-- RECYCLERVIEW (ANTES ERA LISTVIEW) -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_mascotas"
                 android:layout_width="match_parent"

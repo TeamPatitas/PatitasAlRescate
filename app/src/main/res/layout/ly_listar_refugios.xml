@@ -8,8 +8,6 @@
     android:layout_height="match_parent"
     android:background="#F6F2EA"
     tools:context=".Controllers.ActividadListarRefugios">
-
-    <!-- TOOLBAR (AGREGADO) -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarListarRefugios"
         android:layout_width="0dp"
@@ -19,7 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- TÍTULO -->
     <TextView
         android:id="@+id/txtTitulo"
         android:layout_width="wrap_content"
@@ -33,7 +30,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- SUBTÍTULO -->
     <TextView
         android:id="@+id/txtSubtitulo"
         android:layout_width="wrap_content"
@@ -46,7 +42,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- CARD -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardRefugios"
         android:layout_width="0dp"
@@ -59,7 +54,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- RECYCLERVIEW (AGREGADO) -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_refugios"
             android:layout_width="match_parent"
@@ -68,7 +62,6 @@
 
     </androidx.cardview.widget.CardView>
 
-    <!-- TEXTO VACÍO (AGREGADO) -->
     <TextView
         android:id="@+id/txt_refugios_vacio"
         android:layout_width="wrap_content"

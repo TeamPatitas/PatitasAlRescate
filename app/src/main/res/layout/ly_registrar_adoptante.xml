@@ -74,8 +74,8 @@
                     android:id="@+id/rj_text_adopt_telefono"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
-                    android:background="@drawable/bg_input_rounded"                    android:inputType="phone"
+                    android:background="@drawable/bg_input_rounded"
+                    android:inputType="phone"
                     android:maxLength="9" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -185,6 +185,4 @@
 
         </LinearLayout>
     </ScrollView>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

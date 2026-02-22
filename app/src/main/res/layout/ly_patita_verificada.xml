@@ -53,10 +53,5 @@
             android:text="¡GRACIAS POR UNIRTE!"
             android:textColor="@color/marronOscuro"
             android:textSize="28sp" />
-
     </LinearLayout>
-
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

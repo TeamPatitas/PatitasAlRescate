@@ -9,8 +9,6 @@
     android:background="@color/fondo_crema"
     >
 
-
-
     <ImageView
         android:id="@+id/rj_iniciologo_small"
         android:layout_width="205dp"
@@ -116,6 +114,4 @@
 
             />
     </LinearLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

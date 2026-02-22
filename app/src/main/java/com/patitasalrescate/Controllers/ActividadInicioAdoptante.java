@@ -14,18 +14,16 @@ import com.patitasalrescate.MainActivity;
 import com.patitasalrescate.R;
 
 public class ActividadInicioAdoptante extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ly_inicio_adoptante);
-
-        // Nombre del usuario (se envía desde ActividadIniciarSesion con putExtra)
         String nombreAdoptante = getIntent().getStringExtra(ActividadIniciarSesion.EXTRA_NOMBRE_USUARIO);
+
         if (nombreAdoptante == null || nombreAdoptante.trim().isEmpty()) {
-            // fallback por compatibilidad
             nombreAdoptante = getIntent().getStringExtra("nombre_adoptante_key");
         }
+
         if (nombreAdoptante == null || nombreAdoptante.isEmpty()) {
             nombreAdoptante = "Adoptante (Modo Prueba)";
         }
@@ -34,24 +32,23 @@ public class ActividadInicioAdoptante extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbarInicioAdoptante);
         setSupportActionBar(toolbar);
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
         toolbar.setTitle("Adoptante " + nombreAdoptante);
         toolbar.setNavigationOnClickListener(v -> finish());
 
         TextView txt = findViewById(R.id.txtBienvenidoAdoptante);
         txt.setText("Bienvenido " + nombreAdoptante);
         txt.setGravity(Gravity.CENTER);
-
         BottomNavigationView menu = findViewById(R.id.menuInicioAdoptante);
-
         String finalNombreAdoptante = nombreAdoptante;
         String finalIdAdoptante = idAdoptante;
         menu.setOnItemSelectedListener(item -> {
             Intent i;
             if (item.getItemId() == R.id.itemInicioAdoptante) return true;
-
             if (item.getItemId() == R.id.itemListarMascotasAdoptante) {
                 i = new Intent(this, ActividadListarMascotas.class);
                 i.putExtra("es_refugio_key", false);
@@ -66,7 +63,6 @@ public class ActividadInicioAdoptante extends AppCompatActivity {
                 i= new Intent(this, ActividadListarRefugios.class);
                 startActivity(i);
                 return true;
-
             }
             if(item.getItemId()==R.id.itemBuscarFiltro){
                 i= new Intent(this, ActividadBusquedaPorFiltro.class);
@@ -80,8 +76,6 @@ public class ActividadInicioAdoptante extends AppCompatActivity {
                 startActivity(i);
                 return true;
             }
-
-
 
             if (item.getItemId() == R.id.itemSalirAdoptante) {
                 i = new Intent(this, MainActivity.class);

@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ActividadListarMascotas extends AppCompatActivity {
-
     private RecyclerView recycler;
     private TextView txtVacio;
     private LinearLayout lyFiltros;
@@ -32,7 +31,6 @@ public class ActividadListarMascotas extends AppCompatActivity {
     private DAORefugio daoRefugio;
     private DAOMascota dao;
     private SupabaseService supabase;
-
     private List<Mascota> listaCacheRefugio;
     private boolean esModoRefugio = false;
     private String idUsuario;
@@ -44,7 +42,6 @@ public class ActividadListarMascotas extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ly_listar_mascotas);
 
-        // 1. INICIALIZAR HERRAMIENTAS
         dao = new DAOMascota(this);
         supabase = new SupabaseService();
         daoRefugio = new DAORefugio(this);
@@ -68,11 +65,10 @@ public class ActividadListarMascotas extends AppCompatActivity {
 
         if (idUsuario == null && esModoRefugio) {
             Toast.makeText(this, "Error de sesión. Vuelve a ingresar.", Toast.LENGTH_SHORT).show();
-            finish(); // Cerramos para evitar el crash
+            finish();
             return;
         }
 
-        // 3. VINCULAR VISTAS
         Toolbar toolbar = findViewById(R.id.toolbarListarMascotas);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -85,7 +81,6 @@ public class ActividadListarMascotas extends AppCompatActivity {
         btnEnAdopcion = findViewById(R.id.btn_filtro_en_adopcion);
         btnAdoptados = findViewById(R.id.btn_filtro_adoptados);
 
-        // 4. CONFIGURACIÓN VISUAL
         if (esModoRefugio) {
             if (getSupportActionBar() != null) getSupportActionBar().setTitle("Gestionar Mis Mascotas");
             lyFiltros.setVisibility(View.VISIBLE);
@@ -106,8 +101,6 @@ public class ActividadListarMascotas extends AppCompatActivity {
             if (getSupportActionBar() != null) getSupportActionBar().setTitle("Mascotas en Adopción");
             lyFiltros.setVisibility(View.GONE);
         }
-
-        // 5. CARGAR DATOS
         cargarDatosLocales();
         sincronizarConNube();
     }
@@ -123,7 +116,6 @@ public class ActividadListarMascotas extends AppCompatActivity {
     private void cargarDatosLocales() {
         try {
             if (esModoRefugio) {
-                // Validación extra para evitar consulta nula
                 if (idUsuario != null) {
                     listaCacheRefugio = dao.listarPorRefugio(idUsuario);
                     filtrarYMostrarRefugio();
@@ -186,10 +178,9 @@ public class ActividadListarMascotas extends AppCompatActivity {
         }
     }
 
-    private void sincronizarConNube() {
+    private void sincronizarConNube() { //sincronizaciones
         new Thread(() -> {
             try {
-                // 1. SINCRONIZAR REFUGIOS PRIMERO (Vital para evitar "Datos no encontrados")
                 List<com.patitasalrescate.model.Refugio> refugiosNube = supabase.getRefugios();
                 if (refugiosNube != null) {
                     com.patitasalrescate.accesoADatos.DAORefugio daoRefugio = new com.patitasalrescate.accesoADatos.DAORefugio(this);
@@ -201,8 +192,6 @@ public class ActividadListarMascotas extends AppCompatActivity {
                         }
                     }
                 }
-
-                // 2. SINCRONIZAR MASCOTAS
                 List<Mascota> nube = supabase.getMascotas();
                 if (nube != null && !nube.isEmpty()) {
                     for (Mascota m : nube) {
@@ -224,5 +213,4 @@ public class ActividadListarMascotas extends AppCompatActivity {
             }
         }).start();
     }
-
 }

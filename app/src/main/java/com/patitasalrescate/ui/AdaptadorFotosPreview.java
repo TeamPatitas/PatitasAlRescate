@@ -14,13 +14,10 @@ import com.patitasalrescate.R;
 import java.util.List;
 
 public class AdaptadorFotosPreview extends RecyclerView.Adapter<AdaptadorFotosPreview.FotoViewHolder> {
-
     private final List<Uri> listaUris;
-
     public AdaptadorFotosPreview(List<Uri> lista) {
         this.listaUris = lista;
     }
-
     @NonNull
     @Override
     public FotoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -28,13 +25,11 @@ public class AdaptadorFotosPreview extends RecyclerView.Adapter<AdaptadorFotosPr
                 .inflate(R.layout.ly_item_foto_preview, parent, false);
         return new FotoViewHolder(view);
     }
-
     @Override
     public void onBindViewHolder(@NonNull FotoViewHolder holder, int position) {
         Uri uri = listaUris.get(position);
         holder.imgPreview.setImageURI(uri);
     }
-
     @Override
     public int getItemCount() {
         return listaUris.size();

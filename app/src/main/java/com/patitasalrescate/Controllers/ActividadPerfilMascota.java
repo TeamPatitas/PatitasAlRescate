@@ -21,21 +21,17 @@ import com.patitasalrescate.model.Mascota;
 import java.util.List;
 
 public class ActividadPerfilMascota extends AppCompatActivity {
-
     private EditText txtNombre, txtEspecie, txtRaza, txtSexo, txtEdad, txtTemperamento, txtHistoria;
     private ImageView imgFoto;
     private Button btnAccion;
     private Button btnFavorito;
-
     private DAOMascota daoMascota;
     private DAOFavoritos daoFavoritos;
     private SupabaseService supabaseService;
     private Mascota mascotaActual;
-
     private String idMascota;
     private String tipoUsuario;
     private String idUsuario;
-
     private boolean esModoEdicion = false;
 
     @Override
@@ -81,7 +77,6 @@ public class ActividadPerfilMascota extends AppCompatActivity {
         btnAccion = findViewById(R.id.btn_accion_principal);
         btnFavorito = findViewById(R.id.btn_favorito);
     }
-
     private void cargarDatosMascota() {
 
         mascotaActual = daoMascota.obtenerPorId(idMascota);
@@ -91,7 +86,6 @@ public class ActividadPerfilMascota extends AppCompatActivity {
             finish();
             return;
         }
-
         txtNombre.setText(valorSeguro(mascotaActual.getNombre()));
         txtEspecie.setText(valorSeguro(mascotaActual.getEspecie()));
         txtRaza.setText(valorSeguro(mascotaActual.getRaza()));
@@ -109,11 +103,9 @@ public class ActividadPerfilMascota extends AppCompatActivity {
                     .into(imgFoto);
         }
     }
-
     private String valorSeguro(String s) {
         return s == null ? "" : s;
     }
-
     private void configurarModoVisualPorRol() {
 
         boolean esRefugio = "REFUGIO".equalsIgnoreCase(tipoUsuario);
@@ -122,7 +114,6 @@ public class ActividadPerfilMascota extends AppCompatActivity {
 
             btnFavorito.setVisibility(View.GONE);
             habilitarCampos(false);
-
             btnAccion.setText("EDITAR MASCOTA");
             btnAccion.setBackgroundColor(
                     ContextCompat.getColor(this, android.R.color.holo_orange_dark));
@@ -135,33 +126,24 @@ public class ActividadPerfilMascota extends AppCompatActivity {
                     guardarCambios();
                 }
             });
-
             return;
         }
-
-        // ===== MODO ADOPTANTE =====
         btnFavorito.setVisibility(View.VISIBLE);
         habilitarCampos(false);
-
-        // ⭐ FAVORITOS LOCAL + NUBE
         btnFavorito.setOnClickListener(v -> {
-
             if (idUsuario == null) {
                 Toast.makeText(this,
                         "No se identificó al adoptante",
                         Toast.LENGTH_SHORT).show();
                 return;
             }
-
             long r = daoFavoritos.addFavorito(idUsuario, idMascota);
 
             if (r > 0) {
-
                 Toast.makeText(this,
                         "Agregado a favoritos ❤️",
                         Toast.LENGTH_SHORT).show();
-
-                // GUARDAR EN SUPABASE
+                // supabase
                 new Thread(() -> {
                     try {
                         supabaseService.insertarFavorito(
@@ -179,8 +161,6 @@ public class ActividadPerfilMascota extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
             }
         });
-
-        // BOTÓN ADOPCIÓN
         String estado = mascotaActual.getEstado();
         if (estado == null) estado = "DISPONIBLE";
 
@@ -203,7 +183,6 @@ public class ActividadPerfilMascota extends AppCompatActivity {
                 break;
         }
     }
-
     private void habilitarCampos(boolean habilitar) {
         txtNombre.setEnabled(habilitar);
         txtEspecie.setEnabled(habilitar);

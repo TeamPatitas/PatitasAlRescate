@@ -34,7 +34,9 @@ public class ActividadInicioRefugio extends AppCompatActivity {
 
         Toolbar oBarra= findViewById(R.id.toolbarInicioRefugio);
         setSupportActionBar(oBarra);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         oBarra.setTitle("Refugio " + nombreRefugio);
         TextView textobienvenida= findViewById(R.id.txtBienvenidoRefugio);
         textobienvenida.setText("Bienvenido refugio: "+ nombreRefugio);
@@ -76,6 +78,5 @@ public class ActividadInicioRefugio extends AppCompatActivity {
             }
             return false;
         });
-
     }
 }

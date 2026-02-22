@@ -18,10 +18,8 @@ import com.patitasalrescate.model.Refugio;
 import java.util.List;
 
 public class AdaptadorRefugios extends RecyclerView.Adapter<AdaptadorRefugios.RefugioViewHolder> {
-
     private Context context;
     private List<Refugio> listaRefugios;
-
     public AdaptadorRefugios(Context context, List<Refugio> listaRefugios) {
         this.context = context;
         this.listaRefugios = listaRefugios;
@@ -33,7 +31,6 @@ public class AdaptadorRefugios extends RecyclerView.Adapter<AdaptadorRefugios.Re
         View view = LayoutInflater.from(context).inflate(R.layout.ly_item_cardview_refugio, parent, false);
         return new RefugioViewHolder(view);
     }
-
     @Override
     public void onBindViewHolder(@NonNull RefugioViewHolder holder, int position) {
         Refugio r = listaRefugios.get(position);
@@ -52,8 +49,6 @@ public class AdaptadorRefugios extends RecyclerView.Adapter<AdaptadorRefugios.Re
         } else {
             holder.imgFoto.setImageResource(R.drawable.ic_launcher_foreground);
         }
-
-        // --- BOTÓN WHATSAPP ---
         holder.btnWhatsapp.setOnClickListener(v -> {
             String fono = r.getNumCelular();
             if (fono != null && !fono.isEmpty()) {
@@ -71,7 +66,6 @@ public class AdaptadorRefugios extends RecyclerView.Adapter<AdaptadorRefugios.Re
             }
         });
 
-        // --- BOTÓN MAPA---
         holder.btnMapa.setOnClickListener(v -> {
             String direccionGuardada = r.getDireccion();
 
@@ -91,7 +85,6 @@ public class AdaptadorRefugios extends RecyclerView.Adapter<AdaptadorRefugios.Re
                 try {
                     context.startActivity(intent);
                 } catch (Exception e) {
-                    // Fallback a navegador u otra app de mapas
                     try {
                         context.startActivity(new Intent(Intent.ACTION_VIEW, uriMapa));
                     } catch (Exception ex) {

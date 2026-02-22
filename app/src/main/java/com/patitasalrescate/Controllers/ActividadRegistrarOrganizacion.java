@@ -8,14 +8,12 @@ import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,14 +21,12 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import com.bumptech.glide.Glide;
 import com.patitasalrescate.R;
 import com.patitasalrescate.accesoADatos.DAORefugio;
 import com.patitasalrescate.accesoADatos.SupabaseService;
 import com.patitasalrescate.model.Refugio;
 import com.patitasalrescate.utils.SeguridadUtils;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,7 +35,6 @@ import java.util.Locale;
 import java.util.UUID;
 
 public class ActividadRegistrarOrganizacion extends AppCompatActivity {
-
     private EditText txtNombre, txtDireccion, txtTelefono, txtCorreo, txtPassword;
     private ImageView imgPreview;
     private Button btnGuardar, btnSeleccionarFoto;
@@ -149,8 +144,6 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
 
         new Thread(() -> {
             String urlFinalFoto = "https://picsum.photos/200";
-
-            // 1. Subir Foto
             if (uriImagenSeleccionada != null) {
                 try {
                     byte[] imagenBytes = getBytesFromUri(uriImagenSeleccionada);
@@ -181,7 +174,7 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            // 3. Preparar Datos
+            // Preparacion de datos
             String passwordEncriptada = SeguridadUtils.encriptar(password);
             String idRefugio = UUID.randomUUID().toString();
 
@@ -198,7 +191,7 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
                     System.currentTimeMillis()
             );
 
-            // 4. Subir a Supabase
+            // supa-base
             boolean subidoANube = false;
             String mensajeError = "";
             try {
@@ -209,7 +202,6 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
                 mensajeError = e.getMessage();
             }
 
-            // 5. Guardar Local y UI
             Refugio finalRefugio = nuevoRefugio;
             boolean finalSubidoANube = subidoANube;
             String finalMensajeError = mensajeError;
@@ -233,7 +225,6 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
             });
         }).start();
     }
-
     private byte[] getBytesFromUri(Uri uri) throws IOException {
         InputStream inputStream = getContentResolver().openInputStream(uri);
         ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();

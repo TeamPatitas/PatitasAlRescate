@@ -18,14 +18,11 @@ import com.patitasalrescate.ui.AdaptadorMascotas;
 import java.util.List;
 
 public class ActividadMisFavoritos extends AppCompatActivity {
-
     private RecyclerView recycler;
     private TextView txtVacio;
-
     private DAOFavoritos daoFavoritos;
     private DAOMascota daoMascota;
     private SupabaseService supabase;
-
     private String idUsuario;
 
     @Override
@@ -42,20 +39,15 @@ public class ActividadMisFavoritos extends AppCompatActivity {
         daoMascota = new DAOMascota(this);
         supabase = new SupabaseService();
 
-        // ID adoptante recibido
         idUsuario = getIntent().getStringExtra(
                 ActividadIniciarSesion.EXTRA_ID_USUARIO
         );
-
         if (idUsuario == null) {
             finish();
             return;
         }
-
         cargarFavoritos();
     }
-
-    // ===== CARGAR LISTA =====
     private void cargarFavoritos() {
 
         List<Mascota> favoritos =
@@ -72,7 +64,6 @@ public class ActividadMisFavoritos extends AppCompatActivity {
         recycler.setVisibility(View.VISIBLE);
         txtVacio.setVisibility(View.GONE);
 
-        // 🔥 USAMOS TU ADAPTADOR REAL
         AdaptadorMascotas adapter =
                 new AdaptadorMascotas(
                         favoritos,
@@ -82,13 +73,11 @@ public class ActividadMisFavoritos extends AppCompatActivity {
                         supabase,
                         daoFavoritos
                 );
-
         recycler.setAdapter(adapter);
     }
-
     @Override
-    protected void onResume() {
+    protected void onResume() { //actualiz
         super.onResume();
-        cargarFavoritos(); // refresca automáticamente
+        cargarFavoritos();
     }
 }

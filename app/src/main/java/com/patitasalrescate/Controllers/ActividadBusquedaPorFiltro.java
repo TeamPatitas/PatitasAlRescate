@@ -20,12 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ActividadBusquedaPorFiltro extends AppCompatActivity {
-
     private Spinner spFiltro;
     private EditText txtFiltro;
     private Button btnBuscar;
     private RecyclerView recycler;
-
     private DAOMascota daoMascota;
     private SupabaseService supabase;
 
@@ -49,68 +47,50 @@ public class ActividadBusquedaPorFiltro extends AppCompatActivity {
         idUsuario = getIntent().getStringExtra(
                 ActividadIniciarSesion.EXTRA_ID_USUARIO
         );
-
-        // opciones spinner
         ArrayAdapter<String> adapterSpinner =
                 new ArrayAdapter<>(
                         this,
                         android.R.layout.simple_spinner_dropdown_item,
                         new String[]{"Nombre","Especie","Raza","Sexo"}
                 );
-
         spFiltro.setAdapter(adapterSpinner);
 
         btnBuscar.setOnClickListener(v -> buscar());
     }
-
-    // ===== BUSCAR =====
     private void buscar() {
-
         String texto =
                 txtFiltro.getText().toString().toLowerCase();
-
         String tipoFiltro =
                 spFiltro.getSelectedItem().toString();
-
         List<Mascota> lista = daoMascota.listarTodos();
         List<Mascota> resultados = new ArrayList<>();
-
         for (Mascota m : lista) {
-
             boolean coincide = false;
-
             switch (tipoFiltro) {
-
                 case "Nombre":
                     coincide = m.getNombre()
                             .toLowerCase()
                             .contains(texto);
                     break;
-
                 case "Especie":
                     coincide = m.getEspecie()
                             .toLowerCase()
                             .contains(texto);
                     break;
-
                 case "Raza":
                     coincide = m.getRaza()
                             .toLowerCase()
                             .contains(texto);
                     break;
-
                 case "Sexo":
                     coincide = m.getSexo()
                             .toLowerCase()
                             .contains(texto);
                     break;
             }
-
             if (coincide)
                 resultados.add(m);
         }
-
-        // 🔥 MISMO ADAPTADOR QUE FAVORITOS
         AdaptadorMascotas adapter =
                 new AdaptadorMascotas(
                         resultados,
@@ -121,7 +101,6 @@ public class ActividadBusquedaPorFiltro extends AppCompatActivity {
                         daoMascota,
                         supabase
                 );
-
         recycler.setAdapter(adapter);
     }
 }

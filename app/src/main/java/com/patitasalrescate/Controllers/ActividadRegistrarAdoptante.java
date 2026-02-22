@@ -24,32 +24,24 @@ import com.patitasalrescate.utils.SeguridadUtils;
 import java.util.UUID;
 
 public class ActividadRegistrarAdoptante extends AppCompatActivity {
-
-    // Variables de interfaz
     private EditText etNombre, etCorreo, etPass, etTelefono, etEdad;
     private Spinner spSexo;
-
-    // Variables de lógica
     private DAOAdoptante daoAdoptante;
-    private SupabaseService supabaseService; // ¡ESTO ES LO QUE NO PODEMOS PERDER!
+    private SupabaseService supabaseService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 1. Configuración Visual (EdgeToEdge) - Traído del Código 2
         EdgeToEdge.enable(this);
         setContentView(R.layout.ly_registrar_adoptante);
 
-        // 2. Manejo de Insets (Para que el Layout no se corte) - Traído del Código 2
-        // Esto asegura que el ID "registrar_adoptante" de tu XML respete los márgenes del celular
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.registrar_adoptante), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // 3. Configuración del Toolbar
         Toolbar toolbar1 = findViewById(R.id.toolbarRegistrarAdoptante);
         setSupportActionBar(toolbar1);
         if (getSupportActionBar() != null) {
@@ -58,11 +50,9 @@ public class ActividadRegistrarAdoptante extends AppCompatActivity {
         }
         toolbar1.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        // 4. Inicialización de Clases de Datos (DAO y Supabase)
         daoAdoptante = new DAOAdoptante(this);
         supabaseService = new SupabaseService();
 
-        // 5. Vincular Vistas
         etNombre = findViewById(R.id.rj_text_adopt_nombre);
         etCorreo = findViewById(R.id.rj_text_adopt_correo);
         etPass = findViewById(R.id.rj_text_adopt_password);
@@ -70,25 +60,21 @@ public class ActividadRegistrarAdoptante extends AppCompatActivity {
         etEdad = findViewById(R.id.rj_text_adopt_edad);
         spSexo = findViewById(R.id.rj_combo_adopt_sexo);
 
-        // 6. Configurar Spinner (Combo box)
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.opciones_sexo, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spSexo.setAdapter(adapter);
 
-        // 7. Botón de Registro
         findViewById(R.id.rj_button_registrar_adoptante).setOnClickListener(v -> registrarUsuario());
     }
 
     private void registrarUsuario() {
-        // --- AQUI USAMOS LA LÓGICA DEL CODIGO 1 (QUE ESTABA BIEN) ---
 
         String nombre = etNombre.getText().toString().trim();
         String correo = etCorreo.getText().toString().trim();
         String passTextoPlano = etPass.getText().toString().trim();
         String telefono = etTelefono.getText().toString().trim();
 
-        // Validación Sexo
         int seleccion = spSexo.getSelectedItemPosition();
         if (seleccion == 0) {
             Toast.makeText(this, "Por favor, seleccione un sexo", Toast.LENGTH_SHORT).show();
@@ -99,7 +85,6 @@ public class ActividadRegistrarAdoptante extends AppCompatActivity {
         String edadStr = etEdad.getText().toString().trim();
         String passEncriptada = SeguridadUtils.encriptar(passTextoPlano);
 
-        // Validaciones Generales
         if (nombre.isEmpty()) {
             etNombre.setError("Aún no ha ingresado su NOMBRE");
             return;
@@ -128,8 +113,6 @@ public class ActividadRegistrarAdoptante extends AppCompatActivity {
             etEdad.setError("Ingrese su EDAD");
             return;
         }
-
-        // Validación Edad Numérica
         int edad;
         try {
             edad = Integer.parseInt(edadStr);
@@ -142,7 +125,6 @@ public class ActividadRegistrarAdoptante extends AppCompatActivity {
             return;
         }
 
-        // --- GENERACIÓN DE ID Y OBJETO (CLAVE PARA SUPABASE) ---
         String idAdoptante = UUID.randomUUID().toString();
 
         Adoptante nuevoAdoptante = new Adoptante();
@@ -155,28 +137,23 @@ public class ActividadRegistrarAdoptante extends AppCompatActivity {
         nuevoAdoptante.setSexo(sexo);
         nuevoAdoptante.setLastSync(System.currentTimeMillis());
 
-        // 1. Guardar Localmente (SQLite)
         long resultadoLocal = daoAdoptante.insertar(nuevoAdoptante);
 
         if (resultadoLocal != -1) {
-            // Si guardó en local, intentamos subir a la nube
             Toast.makeText(this, "Guardando...", Toast.LENGTH_SHORT).show();
 
-            // 2. Guardar en Supabase (Hilo secundario para no congelar la app)
             new Thread(() -> {
                 try {
                     boolean exitoNube = supabaseService.insertarAdoptante(nuevoAdoptante);
 
-                    // Volver al hilo principal para mostrar el mensaje final
                     runOnUiThread(() -> {
                         if (exitoNube) {
                             Intent intent = new Intent(ActividadRegistrarAdoptante.this, ActividadRegistroExitoso.class);
-                            intent.putExtra("USUARIO_NOMBRE", nombre); // Pasamos el nombre para el Splash
+                            intent.putExtra("USUARIO_NOMBRE", nombre);
                             startActivity(intent);
                             finish();
                         } else {
                             Toast.makeText(this, "Guardado local OK, pero error en la nube", Toast.LENGTH_LONG).show();
-                            // Aquí podrías decidir si cerrar o no, por seguridad cerramos
                             finish();
                         }
                     });

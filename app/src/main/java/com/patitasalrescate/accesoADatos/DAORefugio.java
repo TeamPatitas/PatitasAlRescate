@@ -42,7 +42,7 @@ public class DAORefugio {
         values.put("latitud", refugio.getLatitud());
         values.put("longitud", refugio.getLongitud());
         values.put("correo", refugio.getCorreo());
-        values.put("num_celular", refugio.getNumCelular()); // Crítico para WhatsApp
+        values.put("num_celular", refugio.getNumCelular());
         values.put("foto", refugio.getFotoUrl());
         values.put("last_sync", refugio.getLastSync());
 
@@ -51,7 +51,7 @@ public class DAORefugio {
     }
 
     public Refugio obtenerPorId(String idRefugio) {
-        if (idRefugio == null) return null; // Validación de seguridad
+        if (idRefugio == null) return null;
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Refugio ref = null;
@@ -82,7 +82,7 @@ public class DAORefugio {
         if (cursor.moveToFirst()) {
             do {
                 Refugio ref = new Refugio();
-                ref.setIdRefugio(cursor.getString(cursor.getColumnIndexOrThrow("id_refugio")));  // ← getString
+                ref.setIdRefugio(cursor.getString(cursor.getColumnIndexOrThrow("id_refugio")));
                 ref.setNombre(cursor.getString(cursor.getColumnIndexOrThrow("nombre")));
                 ref.setDireccion(cursor.getString(cursor.getColumnIndexOrThrow("direccion")));
                 ref.setLatitud(cursor.getDouble(cursor.getColumnIndexOrThrow("latitud")));
@@ -116,12 +116,8 @@ public class DAORefugio {
         cursor.close();
         return null;
     }
-
-
     public void eliminar(String idRefugio) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.delete("refugios", "id_refugio = ?", new String[]{idRefugio});
     }
-
-
 }

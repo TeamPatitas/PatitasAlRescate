@@ -6,7 +6,6 @@ import com.google.gson.annotations.SerializedName;
 import java.util.UUID;
 
 public class Adopcion {
-
     @SerializedName("id_adopcion")
     @Expose
     private String idAdopcion;
@@ -23,20 +22,16 @@ public class Adopcion {
     @Expose
     private String idRefugio;
 
-
     @SerializedName("estado")
     @Expose
-    private String estado; // "SOLICITADO", "APROBADO", "RECHAZADO"
+    private String estado; // Solicitado, Aprobado, Rechazado
 
     @SerializedName("notas")
     @Expose
     private String notas;
-
     private transient long lastSync;
 
     public Adopcion() {}
-
-    // Constructor completo
     public Adopcion(String idAdopcion, String idAdoptante, String idMascota, String idRefugio, String estado, String notas) {
         this.idAdopcion = idAdopcion;
         this.idAdoptante = idAdoptante;
@@ -46,8 +41,6 @@ public class Adopcion {
         this.notas=notas;
         this.lastSync = System.currentTimeMillis();
     }
-
-    // Getters y Setters
     public String getIdAdopcion() { return idAdopcion; }
     public void setIdAdopcion(String idAdopcion) { this.idAdopcion = idAdopcion; }
 

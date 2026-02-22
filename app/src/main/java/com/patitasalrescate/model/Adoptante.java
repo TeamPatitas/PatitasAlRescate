@@ -8,21 +8,18 @@ public class Adoptante {
 
     @SerializedName("id_adoptante")
     private String idAdoptante;
-
     private String nombre;
     private String correo;
 
-    @SerializedName("password")  // ← Agrega SerializedName para coincidir con columna 'password'
-    private String password;     // ← Quita transient para que se envíe a Supabase
-
+    @SerializedName("password")
+    private String password;
     @SerializedName("num_celular")
     private String numCelular;
-
     private int edad;
     private String sexo;
 
     @SerializedName("last_sync")
-    private transient long lastSync;  // ← Mantén transient, es local
+    private transient long lastSync;
 
     public Adoptante() {}
 
@@ -37,8 +34,6 @@ public class Adoptante {
         this.sexo = sexo;
         this.lastSync = lastSync;
     }
-
-    // Getters y Setters (sin cambios)
     public String getIdAdoptante() { return idAdoptante; }
     public void setIdAdoptante(String idAdoptante) { this.idAdoptante = idAdoptante; }
     public String getNombre() { return nombre; }

@@ -19,19 +19,16 @@ import androidx.core.view.WindowInsetsCompat;
 import com.patitasalrescate.R;
 
 public class ActividadIngresar extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.ly_ingresar);
-
         Button button_soypersona = findViewById(R.id.rj_button_soypersona);
         Button button_soyasociacion = findViewById(R.id.rj_button_soyasociacion);
-
         TextView text_yatengocuenta = findViewById(R.id.rj_click_inicia_sesion);
-        //subrayado
-        text_yatengocuenta.setPaintFlags(/*text_yatengocuenta.getPaintFlags() | */android.graphics.Paint.UNDERLINE_TEXT_FLAG);
+
+        text_yatengocuenta.setPaintFlags(android.graphics.Paint.UNDERLINE_TEXT_FLAG);
 
         button_soypersona.setOnClickListener(v->{
             Intent intent = new Intent(ActividadIngresar.this, ActividadRegistrarAdoptante.class);
@@ -47,27 +44,6 @@ public class ActividadIngresar extends AppCompatActivity {
             Intent intent = new Intent(ActividadIngresar.this, ActividadIniciarSesion.class);
             startActivity(intent);
         });
-
-
-
-
-
-
-
-        /*
-        LOGICA ANTERIOR DESCARTADA
-        Button b_iniciarsesion = findViewById(R.id.rj_button_iniciosesion);
-        Button b_registrarse = findViewById(R.id.rj_button_registrarse);
-
-        b_iniciarsesion.setOnClickListener(v->{
-            Intent intent = new Intent(ActividadIngresar.this, ActividadIniciarSesion.class);
-            startActivity(intent);
-        });
-        b_registrarse.setOnClickListener(v->{
-            Intent intent = new Intent(ActividadIngresar.this, ActividadRegistro.class);
-            startActivity(intent);
-        });*/
-
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.ingresar), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());

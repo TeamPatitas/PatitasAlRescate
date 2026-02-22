@@ -30,7 +30,6 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
     private List<Mascota> lista;
     private boolean esModoRefugio;
     private boolean esModoFavoritos = false;
-
     private Context context;
     private String idUsuario;
     private String tipoUsuario;
@@ -38,8 +37,6 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
     private DAOMascota daoMascota;
     private SupabaseService supabaseService;
     private DAOFavoritos daoFavoritos;
-
-    // CONSTRUCTOR NORMAL
     public AdaptadorMascotas(List<Mascota> lista, boolean esModoRefugio,
                              Context context, String idUsuario,
                              String tipoUsuario,
@@ -52,8 +49,6 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
         this.daoMascota = dao;
         this.supabaseService = supabase;
     }
-
-    // CONSTRUCTOR FAVORITOS
     public AdaptadorMascotas(List<Mascota> lista,
                              Context context,
                              String idUsuario,
@@ -95,7 +90,6 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
         String estado = m.getEstado() != null ? m.getEstado() : "DISPONIBLE";
         holder.txtEstado.setText("Estado: " + estado);
 
-        // LÓGICA DE VISIBILIDAD DE BOTONES
         if (esModoRefugio) {
             holder.btnPrincipal.setVisibility(View.VISIBLE);
             holder.btnPrincipal.setText("Editar");
@@ -115,7 +109,6 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
             }
 
         } else {
-            // USUARIO ADOPTANTE
             if ("DISPONIBLE".equals(estado)) {
                 holder.btnPrincipal.setVisibility(View.VISIBLE);
                 holder.btnPrincipal.setText("Quiero Adoptar");
@@ -150,9 +143,6 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
             }
         }
     }
-
-    // --- MÉTODOS DEL REFUGIO RECUPERADOS ---
-
     private void marcarComoAdoptado(Mascota m, int pos) {
         m.setEstado("ADOPTADO");
         daoMascota.actualizar(m);
@@ -216,7 +206,6 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
         TextView txtNombre, txtRaza, txtEstado;
         ImageView imgFoto;
         Button btnPrincipal, btnRapido, btnRechazar;
-
         public MascotaViewHolder(@NonNull View itemView) {
             super(itemView);
             txtNombre = itemView.findViewById(R.id.txt_nombre_mascota);

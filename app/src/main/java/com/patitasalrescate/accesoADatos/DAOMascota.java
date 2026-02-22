@@ -19,7 +19,6 @@ public class DAOMascota {
         dbHelper = new BDConstruir(context);
     }
 
-    // ===== INSERTAR =====
     public long insertar(Mascota mascota) {
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -42,7 +41,6 @@ public class DAOMascota {
         return db.insert("mascotas", null, values);
     }
 
-    // ===== ACTUALIZAR =====
     public int actualizar(Mascota mascota) {
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -66,7 +64,6 @@ public class DAOMascota {
         );
     }
 
-    // ===== OBTENER POR ID =====
     public Mascota obtenerPorId(String idMascota) {
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -91,7 +88,6 @@ public class DAOMascota {
         return m;
     }
 
-    // ===== LISTAR POR REFUGIO =====
     public List<Mascota> listarPorRefugio(String idRefugio) {
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -117,7 +113,6 @@ public class DAOMascota {
         return lista;
     }
 
-    // ===== LISTAR SOLO DISPONIBLES =====
     public List<Mascota> listarDisponibles() {
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -143,7 +138,6 @@ public class DAOMascota {
         return lista;
     }
 
-    // ===== ⭐ NUEVO: LISTAR TODAS LAS MASCOTAS =====
     public List<Mascota> listarTodos() {
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -169,7 +163,6 @@ public class DAOMascota {
         return lista;
     }
 
-    // ===== CONVERTIR CURSOR A OBJETO =====
     private Mascota cursorToMascota(Cursor cursor) {
 
         Mascota m = new Mascota();

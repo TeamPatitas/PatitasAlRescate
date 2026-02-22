@@ -8,17 +8,14 @@ public class BDConstruir extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "patitas_db";
     private static final int DB_VERSION = 11;
-
     public BDConstruir(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Tablas anteriores...
         db.execSQL("CREATE TABLE refugios (id_refugio TEXT PRIMARY KEY, nombre TEXT NOT NULL, direccion TEXT, latitud REAL, longitud REAL, correo TEXT, password TEXT, num_celular TEXT, foto TEXT, last_sync INTEGER)");
 
-        // Tabla MASCOTAS actualizada con SEXO
         db.execSQL("CREATE TABLE mascotas (" +
                 "id_mascota TEXT PRIMARY KEY, " +
                 "id_refugio TEXT, " +
