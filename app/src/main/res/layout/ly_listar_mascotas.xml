@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/listarmascotas"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EFEBE9">
@@ -22,33 +22,33 @@
         android:id="@+id/layout_filtros_refugio"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:padding="12dp"
         android:background="#D7CCC8"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="12dp"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/toolbarListarMascotas"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/toolbarListarMascotas">
 
         <Button
             android:id="@+id/btn_filtro_en_adopcion"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:text="En Adopción"
-            android:textSize="12sp"
-            android:textColor="@android:color/white"
+            android:layout_marginEnd="12dp"
             android:backgroundTint="#5D4037"
-            android:layout_marginEnd="12dp"/>
+            android:text="En Adopción"
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/btn_filtro_adoptados"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
+            android:backgroundTint="#A1887F"
             android:text="Adoptados"
-            android:textSize="12sp"
             android:textColor="@android:color/white"
-            android:backgroundTint="#A1887F"/>
+            android:textSize="12sp" />
     </LinearLayout>
 
     <TextView
@@ -56,25 +56,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="No se encontraron mascotas 🐾"
+        android:textColor="#757575"
         android:textSize="18sp"
         android:textStyle="italic"
-        android:textColor="#757575"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/layout_filtros_refugio"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/layout_filtros_refugio" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_mascotas"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="8dp"
         android:clipToPadding="false"
-        tools:listitem="@layout/ly_item_cardview_mascota"
-        app:layout_constraintTop_toBottomOf="@id/layout_filtros_refugio"
+        android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/layout_filtros_refugio"
+        tools:listitem="@layout/ly_item_cardview_mascota" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

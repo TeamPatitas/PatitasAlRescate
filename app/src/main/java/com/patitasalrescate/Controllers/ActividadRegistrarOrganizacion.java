@@ -49,6 +49,12 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ly_registrar_organizacion);
 
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.registrar_organizacion_root), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
         Toolbar toolbar = findViewById(R.id.toolbarRegistrarOrganizacion);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {

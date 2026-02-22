@@ -31,7 +31,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="24dp">
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -39,7 +38,6 @@
                 android:text="Crea tu perfil"
                 android:textColor="@color/marronOscuro"
                 android:textSize="24sp"
-
                 android:layout_marginBottom="20dp"
                 android:gravity="center" />
 
@@ -84,7 +82,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:baselineAligned="false"
-
                 android:layout_marginBottom="12dp">
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -117,7 +114,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Sexo"
-
                         android:textSize="12sp"
                         android:textColor="@color/marronPrimario"
                         android:layout_marginStart="12dp"

@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/busquedafiltro"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#F4F1E8"
+    android:orientation="vertical"
     android:padding="20dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="🐾 Búsqueda por filtro"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="#5B3A29"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp"
+        android:text="🐾 Búsqueda por filtro"
+        android:textColor="#5B3A29"
+        android:textSize="22sp"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Encuentra a tu nuevo compañero"
-        android:textSize="14sp"
-        android:textColor="#7A6A5E"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="20dp"
+        android:text="Encuentra a tu nuevo compañero"
+        android:textColor="#7A6A5E"
+        android:textSize="14sp" />
 
     <Spinner
         android:id="@+id/spFiltro"
@@ -35,27 +36,27 @@
         android:id="@+id/txtFiltro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Ej. perro, gato, labrador"
-        android:padding="14dp"
+        android:layout_marginBottom="16dp"
         android:background="@android:drawable/edit_text"
-        android:layout_marginBottom="16dp"/>
+        android:hint="Ej. perro, gato, labrador"
+        android:padding="14dp" />
 
     <Button
         android:id="@+id/btnBuscar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="#7A4A32"
         android:text="BUSCAR 🐶"
         android:textAllCaps="true"
-        android:textStyle="bold"
         android:textColor="#FFFFFF"
-        android:backgroundTint="#7A4A32"
-        android:layout_marginBottom="20dp"/>
+        android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_mascotas"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="4dp"/>
+        android:padding="4dp" />
 
 </LinearLayout>

@@ -8,6 +8,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.patitasalrescate.MainActivity;
@@ -19,6 +22,13 @@ public class ActividadInicioAdoptante extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ly_inicio_adoptante);
         String nombreAdoptante = getIntent().getStringExtra(ActividadIniciarSesion.EXTRA_NOMBRE_USUARIO);
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
 
         if (nombreAdoptante == null || nombreAdoptante.trim().isEmpty()) {
             nombreAdoptante = getIntent().getStringExtra("nombre_adoptante_key");

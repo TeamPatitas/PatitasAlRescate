@@ -14,6 +14,8 @@ public class ActividadRegistroExitoso extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ly_patita_verificada);
 
+
+
         String nombre = getIntent().getStringExtra("USUARIO_NOMBRE");
         TextView tvBienvenido = findViewById(R.id.tvBienvenido);
         if (nombre != null) {

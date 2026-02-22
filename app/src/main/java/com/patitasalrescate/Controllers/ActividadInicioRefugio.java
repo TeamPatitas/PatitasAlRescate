@@ -22,7 +22,18 @@ public class ActividadInicioRefugio extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ly_inicio_refugio);
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+
         BottomNavigationView oMenu = findViewById(R.id.menuInicioRefugio);
+
+
+
         String nombreRefugio = getIntent().getStringExtra(ActividadIniciarSesion.EXTRA_NOMBRE_USUARIO);
         if (nombreRefugio == null || nombreRefugio.trim().isEmpty()) {
             nombreRefugio = getIntent().getStringExtra("nombre_refugio_key");
