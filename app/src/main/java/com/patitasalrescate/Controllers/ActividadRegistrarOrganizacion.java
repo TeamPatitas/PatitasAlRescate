@@ -100,7 +100,7 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
             launcherGaleria.launch(intent);
         });
 
-        // Botón mapa para previsualizar dirección
+        // Botón mapa
         btnAbrirMapa.setOnClickListener(v -> {
             String direccionRaw = txtDireccion.getText().toString().trim();
             if (!direccionRaw.isEmpty()) {
@@ -180,7 +180,7 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            // Preparacion de datos
+
             String passwordEncriptada = SeguridadUtils.encriptar(password);
             String idRefugio = UUID.randomUUID().toString();
 
@@ -197,7 +197,7 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
                     System.currentTimeMillis()
             );
 
-            // supa-base
+
             boolean subidoANube = false;
             String mensajeError = "";
             try {

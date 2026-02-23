@@ -25,8 +25,8 @@ import com.patitasalrescate.utils.SeguridadUtils;
 import java.io.IOException;
 
 public class ActividadIniciarSesion extends AppCompatActivity {
-    public static final String EXTRA_TIPO_USUARIO = "tipo_usuario_key"; // "ADOPTANTE" | "REFUGIO"
-    public static final String EXTRA_ID_USUARIO = "id_usuario_key";     // id_adoptante o id_refugio
+    public static final String EXTRA_TIPO_USUARIO = "tipo_usuario_key";
+    public static final String EXTRA_ID_USUARIO = "id_usuario_key";
     public static final String EXTRA_NOMBRE_USUARIO = "nombre_usuario_key";
     private EditText textCorreo, textPassword;
     private Button button_Ingresar;
@@ -39,7 +39,6 @@ public class ActividadIniciarSesion extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.ly_inicia_sesion);
-        // Toolbar
         Toolbar toolbar = findViewById(R.id.tollbariniciarsesion);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -72,7 +71,7 @@ public class ActividadIniciarSesion extends AppCompatActivity {
         button_Ingresar.setEnabled(false);
 
         new Thread(() -> {
-            // Local & supabase
+
             try {
                 Adoptante adoptanteLocal = daoAdoptante.login(correo, passEncriptada);
                 if (adoptanteLocal != null) {
@@ -85,7 +84,7 @@ public class ActividadIniciarSesion extends AppCompatActivity {
                 }
                 Adoptante adoptanteRemoto = supabaseService.loginAdoptanteRemoto(correo, passEncriptada);
                 if (adoptanteRemoto != null) {
-                    daoAdoptante.insertar(adoptanteRemoto); // guardar local
+                    daoAdoptante.insertar(adoptanteRemoto);
                     guardarSesionAdoptante(adoptanteRemoto);
                     runOnUiThread(() -> {
                         irAPantallaPrincipal(adoptanteRemoto.getIdAdoptante(), adoptanteRemoto.getNombre(), "ADOPTANTE");
@@ -104,7 +103,7 @@ public class ActividadIniciarSesion extends AppCompatActivity {
                 }
                 Refugio refugioRemoto = supabaseService.loginRefugioRemoto(correo, passEncriptada);
                 if (refugioRemoto != null) {
-                    daoRefugio.insertar(refugioRemoto); // guardar local
+                    daoRefugio.insertar(refugioRemoto);
                     guardarSesionRefugio(refugioRemoto);
                     runOnUiThread(() -> {
                         irAPantallaPrincipal(refugioRemoto.getIdRefugio(), refugioRemoto.getNombre(), "REFUGIO");

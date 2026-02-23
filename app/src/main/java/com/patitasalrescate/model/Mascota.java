@@ -42,7 +42,7 @@ public class Mascota {
         this.lastSync = lastSync;
     }
 
-    // Getters y Setters
+
     public String getIdMascota() { return idMascota; }
     public void setIdMascota(String idMascota) { this.idMascota = idMascota; }
     public String getIdRefugio() { return idRefugio; }

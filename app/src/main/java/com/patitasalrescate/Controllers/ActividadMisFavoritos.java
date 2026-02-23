@@ -85,7 +85,7 @@ public class ActividadMisFavoritos extends AppCompatActivity {
         recycler.setAdapter(adapter);
     }
     @Override
-    protected void onResume() { //actualiz
+    protected void onResume() {
         super.onResume();
         cargarFavoritos();
     }

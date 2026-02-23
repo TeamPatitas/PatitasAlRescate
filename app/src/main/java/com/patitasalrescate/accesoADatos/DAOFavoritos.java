@@ -27,7 +27,6 @@ public class DAOFavoritos {
         values.put("id_mascota", idMascota);
         values.put("last_sync", System.currentTimeMillis());
 
-        // evita duplicados
         return db.insertWithOnConflict(
                 "favoritos",
                 null,

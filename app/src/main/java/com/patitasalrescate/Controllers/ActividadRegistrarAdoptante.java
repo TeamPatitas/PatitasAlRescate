@@ -128,7 +128,7 @@ public class ActividadRegistrarAdoptante extends AppCompatActivity {
         String idAdoptante = UUID.randomUUID().toString();
 
         Adoptante nuevoAdoptante = new Adoptante();
-        nuevoAdoptante.setIdAdoptante(idAdoptante); // Importante: Asignar el UUID generado
+        nuevoAdoptante.setIdAdoptante(idAdoptante);
         nuevoAdoptante.setNombre(nombre);
         nuevoAdoptante.setCorreo(correo);
         nuevoAdoptante.setPassword(passEncriptada);

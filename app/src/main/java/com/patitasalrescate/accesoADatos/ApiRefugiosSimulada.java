@@ -16,18 +16,12 @@ import okhttp3.Response;
 
 public class ApiRefugiosSimulada {
 
-    // ==================== CONFIGURACIÓN DE ENTORNO ====================
 
-    // Opción PRODUCCIÓN (Render) → ÚSALA SIEMPRE para la entrega final
     private static final String BASE_URL = "https://patitasrefugiosapi.onrender.com";
 
-    // Opción DESARROLLO LOCAL (emulador) → descomenta solo para pruebas en emulador
-    // private static final String BASE_URL = "http://10.0.2.2:5243";
 
-    // Opción DESARROLLO LOCAL (celular real en misma Wi-Fi) → descomenta solo para pruebas
-    // private static final String BASE_URL = "http://192.168.1.3:5243";
 
-    // ==================================================================
+
 
     private final OkHttpClient client = new OkHttpClient();
     private final Gson gson = new Gson();

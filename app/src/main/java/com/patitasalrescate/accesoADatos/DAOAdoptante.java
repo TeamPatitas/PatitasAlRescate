@@ -21,7 +21,7 @@ public class DAOAdoptante {
     public long insertar(Adoptante adoptante) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("id_adoptante", adoptante.getIdAdoptante());  // ← String UUID
+        values.put("id_adoptante", adoptante.getIdAdoptante());
         values.put("nombre", adoptante.getNombre());
         values.put("correo", adoptante.getCorreo());
         values.put("password", adoptante.getPassword());
@@ -41,7 +41,7 @@ public class DAOAdoptante {
         if (cursor.moveToFirst()) {
             do {
                 Adoptante adopt = new Adoptante();
-                adopt.setIdAdoptante(cursor.getString(cursor.getColumnIndexOrThrow("id_adoptante")));  // ← getString
+                adopt.setIdAdoptante(cursor.getString(cursor.getColumnIndexOrThrow("id_adoptante")));
                 adopt.setNombre(cursor.getString(cursor.getColumnIndexOrThrow("nombre")));
                 adopt.setCorreo(cursor.getString(cursor.getColumnIndexOrThrow("correo")));
                 adopt.setPassword(cursor.getString(cursor.getColumnIndexOrThrow("password")));
@@ -63,7 +63,7 @@ public class DAOAdoptante {
 
         if (cursor.moveToFirst()) {
             Adoptante adopt = new Adoptante();
-            adopt.setIdAdoptante(cursor.getString(cursor.getColumnIndexOrThrow("id_adoptante")));  // ← String
+            adopt.setIdAdoptante(cursor.getString(cursor.getColumnIndexOrThrow("id_adoptante")));
             adopt.setNombre(cursor.getString(cursor.getColumnIndexOrThrow("nombre")));
             adopt.setCorreo(cursor.getString(cursor.getColumnIndexOrThrow("correo")));
             adopt.setPassword(cursor.getString(cursor.getColumnIndexOrThrow("password")));
@@ -88,7 +88,7 @@ public class DAOAdoptante {
         values.put("last_sync", adoptante.getLastSync());
 
         return db.update("adoptantes", values, "id_adoptante = ?",
-                new String[]{adoptante.getIdAdoptante()});  // ← String directo
+                new String[]{adoptante.getIdAdoptante()});
     }
 
     public void eliminar(String idAdoptante) {

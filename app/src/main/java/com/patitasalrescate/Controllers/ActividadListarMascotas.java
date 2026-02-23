@@ -189,7 +189,7 @@ public class ActividadListarMascotas extends AppCompatActivity {
         }
     }
 
-    private void sincronizarConNube() { //sincronizaciones
+    private void sincronizarConNube() {
         new Thread(() -> {
             try {
                 List<com.patitasalrescate.model.Refugio> refugiosNube = supabase.getRefugios();

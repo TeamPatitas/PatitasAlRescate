@@ -61,7 +61,7 @@ public class SupabaseService {
         String json = gson.toJson(refugio);
         RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
 
-        Request request = baseRequest("refugios") // La tabla se llama 'refugios'
+        Request request = baseRequest("refugios")
                 .post(body)
                 .build();
 

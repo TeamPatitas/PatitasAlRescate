@@ -22,7 +22,7 @@ public class BDConstruir extends SQLiteOpenHelper {
                 "nombre TEXT, " +
                 "especie TEXT NOT NULL, " +
                 "raza TEXT, " +
-                "sexo TEXT, " +          // 🔥 NUEVA COLUMNA
+                "sexo TEXT, " +
                 "edad INTEGER, " +
                 "temperamento TEXT, " +
                 "historia TEXT, " +
