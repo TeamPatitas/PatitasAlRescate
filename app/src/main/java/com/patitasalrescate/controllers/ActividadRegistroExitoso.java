@@ -1,4 +1,4 @@
-package com.patitasalrescate.Controllers;
+package com.patitasalrescate.controllers;
 
 import android.content.Intent;
 import android.os.Bundle;

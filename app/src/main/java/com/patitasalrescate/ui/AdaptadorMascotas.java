@@ -15,12 +15,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.patitasalrescate.Controllers.ActividadIniciarSesion;
-import com.patitasalrescate.Controllers.ActividadPerfilMascota;
+import com.patitasalrescate.controllers.ActividadIniciarSesion;
+import com.patitasalrescate.controllers.ActividadPerfilMascota;
 import com.patitasalrescate.R;
-import com.patitasalrescate.accesoADatos.DAOFavoritos;
-import com.patitasalrescate.accesoADatos.DAOMascota;
-import com.patitasalrescate.accesoADatos.SupabaseService;
+import com.patitasalrescate.data_access.DAOFavoritos;
+import com.patitasalrescate.data_access.DAOMascota;
+import com.patitasalrescate.data_access.SupabaseService;
 import com.patitasalrescate.model.Mascota;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.patitasalrescate.Controllers;
+package com.patitasalrescate.controllers;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,10 +14,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.patitasalrescate.R;
-import com.patitasalrescate.accesoADatos.DAOAdopcion;
-import com.patitasalrescate.accesoADatos.DAOMascota;
-import com.patitasalrescate.accesoADatos.DAORefugio;
-import com.patitasalrescate.accesoADatos.SupabaseService;
+import com.patitasalrescate.data_access.DAOAdopcion;
+import com.patitasalrescate.data_access.DAOMascota;
+import com.patitasalrescate.data_access.DAORefugio;
+import com.patitasalrescate.data_access.SupabaseService;
 import com.patitasalrescate.model.Adopcion;
 import com.patitasalrescate.model.Mascota;
 import com.patitasalrescate.model.Refugio;

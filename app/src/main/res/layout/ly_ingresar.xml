@@ -5,7 +5,7 @@
     android:id="@+id/ingresar"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Controllers.ActividadIngresar"
+    tools:context=".controllers.ActividadIngresar"
     android:background="@color/fondo_crema"
     >
 

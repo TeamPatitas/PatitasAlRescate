@@ -1,4 +1,4 @@
-package com.patitasalrescate.accesoADatos;
+package com.patitasalrescate.data_access;
 
 import android.content.ContentValues;
 import android.content.Context;

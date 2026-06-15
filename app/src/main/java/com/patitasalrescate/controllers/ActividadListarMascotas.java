@@ -1,4 +1,4 @@
-package com.patitasalrescate.Controllers;
+package com.patitasalrescate.controllers;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,9 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.patitasalrescate.R;
-import com.patitasalrescate.accesoADatos.DAOMascota;
-import com.patitasalrescate.accesoADatos.DAORefugio;
-import com.patitasalrescate.accesoADatos.SupabaseService;
+import com.patitasalrescate.data_access.DAOMascota;
+import com.patitasalrescate.data_access.DAORefugio;
+import com.patitasalrescate.data_access.SupabaseService;
 import com.patitasalrescate.model.Mascota;
 import com.patitasalrescate.ui.AdaptadorMascotas;
 
@@ -194,7 +194,7 @@ public class ActividadListarMascotas extends AppCompatActivity {
             try {
                 List<com.patitasalrescate.model.Refugio> refugiosNube = supabase.getRefugios();
                 if (refugiosNube != null) {
-                    com.patitasalrescate.accesoADatos.DAORefugio daoRefugio = new com.patitasalrescate.accesoADatos.DAORefugio(this);
+                    com.patitasalrescate.data_access.DAORefugio daoRefugio = new com.patitasalrescate.data_access.DAORefugio(this);
                     for (com.patitasalrescate.model.Refugio r : refugiosNube) {
                         if (daoRefugio.obtenerPorId(r.getIdRefugio()) == null) {
                             daoRefugio.insertar(r);

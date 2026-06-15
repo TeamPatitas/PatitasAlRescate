@@ -1,4 +1,4 @@
-package com.patitasalrescate.Controllers;
+package com.patitasalrescate.controllers;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -23,8 +23,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.bumptech.glide.Glide;
 import com.patitasalrescate.R;
-import com.patitasalrescate.accesoADatos.DAORefugio;
-import com.patitasalrescate.accesoADatos.SupabaseService;
+import com.patitasalrescate.data_access.DAORefugio;
+import com.patitasalrescate.data_access.SupabaseService;
 import com.patitasalrescate.model.Refugio;
 import com.patitasalrescate.utils.SeguridadUtils;
 import java.io.ByteArrayOutputStream;

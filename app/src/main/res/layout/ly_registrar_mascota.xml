@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFF8E1"
-    tools:context=".Controllers.ActividadRegistrarMascota">
+    tools:context=".controllers.ActividadRegistrarMascota">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarRegistrarMascota"

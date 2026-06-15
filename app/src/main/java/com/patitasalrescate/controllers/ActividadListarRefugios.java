@@ -1,4 +1,4 @@
-package com.patitasalrescate.Controllers;
+package com.patitasalrescate.controllers;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -13,9 +13,9 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.patitasalrescate.R;
-import com.patitasalrescate.accesoADatos.ApiRefugiosSimulada;
-import com.patitasalrescate.accesoADatos.DAORefugio;
-import com.patitasalrescate.accesoADatos.SupabaseService;
+import com.patitasalrescate.data_access.ApiRefugiosSimulada;
+import com.patitasalrescate.data_access.DAORefugio;
+import com.patitasalrescate.data_access.SupabaseService;
 import com.patitasalrescate.model.Refugio;
 import com.patitasalrescate.ui.AdaptadorRefugios;
 import java.util.List;

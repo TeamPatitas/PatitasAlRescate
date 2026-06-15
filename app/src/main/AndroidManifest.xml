@@ -26,52 +26,52 @@
         </activity>
 
         <activity
-            android:name=".Controllers.ActividadRegistrarMascota"
+            android:name=".controllers.ActividadRegistrarMascota"
             android:exported="false"
-            android:parentActivityName=".Controllers.ActividadInicioRefugio"/>
+            android:parentActivityName=".controllers.ActividadInicioRefugio"/>
         <activity
-            android:name=".Controllers.ActividadAdopcion"
+            android:name=".controllers.ActividadAdopcion"
             android:exported="false" />
         <activity
-            android:name=".Controllers.ActividadPerfilMascota"
+            android:name=".controllers.ActividadPerfilMascota"
             android:exported="false" />
         <activity
-            android:name=".Controllers.ActividadListarRefugios"
+            android:name=".controllers.ActividadListarRefugios"
             android:exported="false" />
         <activity
-            android:name=".Controllers.ActividadBusquedaPorFiltro"
+            android:name=".controllers.ActividadBusquedaPorFiltro"
             android:exported="false" />
         <activity
-            android:name=".Controllers.ActividadMisFavoritos"
+            android:name=".controllers.ActividadMisFavoritos"
             android:exported="false" />
         <activity
-            android:name=".Controllers.ActividadListarMascotas"
+            android:name=".controllers.ActividadListarMascotas"
             android:exported = "false"/>
         <activity
-            android:name=".Controllers.ActividadRegistroExitoso"
+            android:name=".controllers.ActividadRegistroExitoso"
             android:exported="false" />
         <activity
-            android:name=".Controllers.ActividadInicioAdoptante"
+            android:name=".controllers.ActividadInicioAdoptante"
             android:exported="false" />
         <activity
-            android:name=".Controllers.ActividadRegistrarAdoptante"
+            android:name=".controllers.ActividadRegistrarAdoptante"
             android:exported="false" />
         <activity
-            android:name=".Controllers.ActividadRegistrarOrganizacion"
+            android:name=".controllers.ActividadRegistrarOrganizacion"
             android:exported="false"
-            android:parentActivityName=".Controllers.ActividadIngresar"/>
+            android:parentActivityName=".controllers.ActividadIngresar"/>
 
         <activity
-            android:name=".Controllers.ActividadIniciarSesion"
+            android:name=".controllers.ActividadIniciarSesion"
             android:exported="false" />
         <activity
-            android:name=".Controllers.ActividadIngresar"
+            android:name=".controllers.ActividadIngresar"
             android:exported="false"
             android:theme="@style/Theme.PatitasAlRescate" />
         <activity
-            android:name=".Controllers.ActividadInicioRefugio"
+            android:name=".controllers.ActividadInicioRefugio"
             android:exported="false"
-            android:parentActivityName=".Controllers.ActividadIniciarSesion" />
+            android:parentActivityName=".controllers.ActividadIniciarSesion" />
 
         <meta-data
             android:name="preloaded_fonts"

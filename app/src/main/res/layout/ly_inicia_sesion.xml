@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
 
     android:layout_height="match_parent"
-    tools:context=".Controllers.ActividadIniciarSesion">
+    tools:context=".controllers.ActividadIniciarSesion">
 
 
     <androidx.appcompat.widget.Toolbar

@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/fondo_crema"
-    tools:context=".Controllers.ActividadRegistrarAdoptante">
+    tools:context=".controllers.ActividadRegistrarAdoptante">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarRegistrarAdoptante"

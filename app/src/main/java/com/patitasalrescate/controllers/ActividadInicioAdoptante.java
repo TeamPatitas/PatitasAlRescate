@@ -1,6 +1,5 @@
-package com.patitasalrescate.Controllers;
+package com.patitasalrescate.controllers;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
