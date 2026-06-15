@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/blanco"
-    tools:context=".controllers.ActividadInicioAdoptante">
+    tools:context=".controllers.feed.ActividadInicioAdoptante">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarInicioAdoptante"

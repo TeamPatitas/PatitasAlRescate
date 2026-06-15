@@ -1,4 +1,4 @@
-package com.patitasalrescate.controllers;
+package com.patitasalrescate.controllers.lists;
 
 import android.os.Bundle;
 import android.util.Log;

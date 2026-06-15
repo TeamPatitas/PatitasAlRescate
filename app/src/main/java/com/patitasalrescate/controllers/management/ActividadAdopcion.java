@@ -1,4 +1,4 @@
-package com.patitasalrescate.controllers;
+package com.patitasalrescate.controllers.management;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.patitasalrescate.R;
+import com.patitasalrescate.controllers.auth.ActividadIniciarSesion;
 import com.patitasalrescate.data_access.DAOAdopcion;
 import com.patitasalrescate.data_access.DAOMascota;
 import com.patitasalrescate.data_access.DAORefugio;

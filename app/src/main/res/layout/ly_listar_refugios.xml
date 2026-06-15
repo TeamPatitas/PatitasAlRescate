@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F6F2EA"
-    tools:context=".controllers.ActividadListarRefugios">
+    tools:context=".controllers.lists.ActividadListarRefugios">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarListarRefugios"
         android:layout_width="0dp"

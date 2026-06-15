@@ -1,4 +1,4 @@
-package com.patitasalrescate.controllers;
+package com.patitasalrescate.controllers.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +16,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.patitasalrescate.R;
+import com.patitasalrescate.controllers.feed.ActividadRegistroExitoso;
 import com.patitasalrescate.data_access.DAOAdoptante;
 import com.patitasalrescate.data_access.SupabaseService;
 import com.patitasalrescate.model.Adoptante;

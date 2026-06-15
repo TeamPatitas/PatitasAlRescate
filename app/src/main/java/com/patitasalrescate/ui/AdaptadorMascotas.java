@@ -15,8 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.patitasalrescate.controllers.ActividadIniciarSesion;
-import com.patitasalrescate.controllers.ActividadPerfilMascota;
+import com.patitasalrescate.controllers.auth.ActividadIniciarSesion;
+import com.patitasalrescate.controllers.management.ActividadPerfilMascota;
 import com.patitasalrescate.R;
 import com.patitasalrescate.data_access.DAOFavoritos;
 import com.patitasalrescate.data_access.DAOMascota;

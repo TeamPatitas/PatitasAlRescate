@@ -1,4 +1,4 @@
-package com.patitasalrescate.controllers;
+package com.patitasalrescate.controllers.lists;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.patitasalrescate.R;
+import com.patitasalrescate.controllers.auth.ActividadIniciarSesion;
 import com.patitasalrescate.data_access.DAOMascota;
 import com.patitasalrescate.data_access.DAORefugio;
 import com.patitasalrescate.data_access.SupabaseService;

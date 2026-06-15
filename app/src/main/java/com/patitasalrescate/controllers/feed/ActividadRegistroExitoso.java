@@ -1,4 +1,4 @@
-package com.patitasalrescate.controllers;
+package com.patitasalrescate.controllers.feed;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.patitasalrescate.R;
+import com.patitasalrescate.controllers.auth.ActividadIniciarSesion;
 
 public class ActividadRegistroExitoso extends AppCompatActivity{
     @Override

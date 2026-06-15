@@ -1,4 +1,4 @@
-package com.patitasalrescate.controllers;
+package com.patitasalrescate.controllers.feed;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +14,9 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.patitasalrescate.MainActivity;
 import com.patitasalrescate.R;
+import com.patitasalrescate.controllers.management.ActividadRegistrarMascota;
+import com.patitasalrescate.controllers.auth.ActividadIniciarSesion;
+import com.patitasalrescate.controllers.lists.ActividadListarMascotas;
 
 public class ActividadInicioRefugio extends AppCompatActivity {
 
@@ -70,7 +73,7 @@ public class ActividadInicioRefugio extends AppCompatActivity {
                 return true;
             }
             if(menuItem.getItemId()==R.id.itemListarMacostaRefugio){
-                oIntento= new Intent(this,ActividadListarMascotas.class);
+                oIntento= new Intent(this, ActividadListarMascotas.class);
                 oIntento.putExtra("es_refugio_key", true);
                 oIntento.putExtra("nombre_refugio_key", finalNombreRefugio);
                 oIntento.putExtra(ActividadIniciarSesion.EXTRA_TIPO_USUARIO, "REFUGIO");

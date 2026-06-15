@@ -1,4 +1,4 @@
-package com.patitasalrescate.controllers;
+package com.patitasalrescate.controllers.auth;
 
 import android.app.Activity;
 import android.app.ProgressDialog;

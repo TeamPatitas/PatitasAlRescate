@@ -1,4 +1,4 @@
-package com.patitasalrescate.controllers;
+package com.patitasalrescate.controllers.auth;
 
 import android.content.Intent;
 import android.os.Bundle;

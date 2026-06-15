@@ -1,4 +1,4 @@
-package com.patitasalrescate.controllers;
+package com.patitasalrescate.controllers.management;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.patitasalrescate.R;
+import com.patitasalrescate.controllers.auth.ActividadIniciarSesion;
 import com.patitasalrescate.data_access.SupabaseService;
 import com.patitasalrescate.data_access.DAOMascota;
 import com.patitasalrescate.data_access.DAOFavoritos;

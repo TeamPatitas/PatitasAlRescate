@@ -1,4 +1,4 @@
-package com.patitasalrescate.controllers;
+package com.patitasalrescate.controllers.feed;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +14,11 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.patitasalrescate.MainActivity;
 import com.patitasalrescate.R;
+import com.patitasalrescate.controllers.lists.ActividadBusquedaPorFiltro;
+import com.patitasalrescate.controllers.lists.ActividadListarMascotas;
+import com.patitasalrescate.controllers.lists.ActividadListarRefugios;
+import com.patitasalrescate.controllers.lists.ActividadMisFavoritos;
+import com.patitasalrescate.controllers.auth.ActividadIniciarSesion;
 
 public class ActividadInicioAdoptante extends AppCompatActivity {
     @Override
