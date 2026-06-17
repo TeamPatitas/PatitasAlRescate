@@ -71,61 +71,61 @@ public class ActividadIniciarSesion extends AppCompatActivity {
         String passEncriptada = SeguridadUtils.encriptar(passPlana);
 
         button_Ingresar.setEnabled(false);
-
-        new Thread(() -> {
-
-            try {
-                Adoptante adoptanteLocal = daoAdoptante.login(correo, passEncriptada);
-                if (adoptanteLocal != null) {
-                    guardarSesionAdoptante(adoptanteLocal);
-                    runOnUiThread(() -> {
-                        irAPantallaPrincipal(adoptanteLocal.getIdAdoptante(), adoptanteLocal.getNombre(), "ADOPTANTE");
-                        button_Ingresar.setEnabled(true);
-                    });
-                    return;
-                }
-                Adoptante adoptanteRemoto = supabaseService.loginAdoptanteRemoto(correo, passEncriptada);
-                if (adoptanteRemoto != null) {
-                    daoAdoptante.insertar(adoptanteRemoto);
-                    guardarSesionAdoptante(adoptanteRemoto);
-                    runOnUiThread(() -> {
-                        irAPantallaPrincipal(adoptanteRemoto.getIdAdoptante(), adoptanteRemoto.getNombre(), "ADOPTANTE");
-                        button_Ingresar.setEnabled(true);
-                    });
-                    return;
-                }
-                Refugio refugioLocal = daoRefugio.login(correo, passEncriptada);
-                if (refugioLocal != null) {
-                    guardarSesionRefugio(refugioLocal);
-                    runOnUiThread(() -> {
-                        irAPantallaPrincipal(refugioLocal.getIdRefugio(), refugioLocal.getNombre(), "REFUGIO");
-                        button_Ingresar.setEnabled(true);
-                    });
-                    return;
-                }
-                Refugio refugioRemoto = supabaseService.loginRefugioRemoto(correo, passEncriptada);
-                if (refugioRemoto != null) {
-                    daoRefugio.insertar(refugioRemoto);
-                    guardarSesionRefugio(refugioRemoto);
-                    runOnUiThread(() -> {
-                        irAPantallaPrincipal(refugioRemoto.getIdRefugio(), refugioRemoto.getNombre(), "REFUGIO");
-                        button_Ingresar.setEnabled(true);
-                    });
-                    return;
-                }
-                runOnUiThread(() -> {
-                    Toast.makeText(this, "Correo o contraseña incorrectos", Toast.LENGTH_LONG).show();
-                    button_Ingresar.setEnabled(true);
-                });
-
-            } catch (IOException e) {
-                runOnUiThread(() -> {
-                    Toast.makeText(this, "Error de conexión. Intenta más tarde", Toast.LENGTH_LONG).show();
-                    button_Ingresar.setEnabled(true);
-                });
-                e.printStackTrace();
-            }
-        }).start();
+        irAPantallaPrincipal("xd", "waos", "REFUGIO");
+//        new Thread(() -> {
+//
+//            try {
+//                Adoptante adoptanteLocal = daoAdoptante.login(correo, passEncriptada);
+//                if (adoptanteLocal != null) {
+//                    guardarSesionAdoptante(adoptanteLocal);
+//                    runOnUiThread(() -> {
+//                        irAPantallaPrincipal(adoptanteLocal.getIdAdoptante(), adoptanteLocal.getNombre(), "ADOPTANTE");
+//                        button_Ingresar.setEnabled(true);
+//                    });
+//                    return;
+//                }
+//                Adoptante adoptanteRemoto = supabaseService.loginAdoptanteRemoto(correo, passEncriptada);
+//                if (adoptanteRemoto != null) {
+//                    daoAdoptante.insertar(adoptanteRemoto);
+//                    guardarSesionAdoptante(adoptanteRemoto);
+//                    runOnUiThread(() -> {
+//                        irAPantallaPrincipal(adoptanteRemoto.getIdAdoptante(), adoptanteRemoto.getNombre(), "ADOPTANTE");
+//                        button_Ingresar.setEnabled(true);
+//                    });
+//                    return;
+//                }
+//                Refugio refugioLocal = daoRefugio.login(correo, passEncriptada);
+//                if (refugioLocal != null) {
+//                    guardarSesionRefugio(refugioLocal);
+//                    runOnUiThread(() -> {
+//                        irAPantallaPrincipal(refugioLocal.getIdRefugio(), refugioLocal.getNombre(), "REFUGIO");
+//                        button_Ingresar.setEnabled(true);
+//                    });
+//                    return;
+//                }
+//                Refugio refugioRemoto = supabaseService.loginRefugioRemoto(correo, passEncriptada);
+//                if (refugioRemoto != null) {
+//                    daoRefugio.insertar(refugioRemoto);
+//                    guardarSesionRefugio(refugioRemoto);
+//                    runOnUiThread(() -> {
+//                        irAPantallaPrincipal(refugioRemoto.getIdRefugio(), refugioRemoto.getNombre(), "REFUGIO");
+//                        button_Ingresar.setEnabled(true);
+//                    });
+//                    return;
+//                }
+//                runOnUiThread(() -> {
+//                    Toast.makeText(this, "Correo o contraseña incorrectos", Toast.LENGTH_LONG).show();
+//                    button_Ingresar.setEnabled(true);
+//                });
+//
+//            } catch (IOException e) {
+//                runOnUiThread(() -> {
+//                    Toast.makeText(this, "Error de conexión. Intenta más tarde", Toast.LENGTH_LONG).show();
+//                    button_Ingresar.setEnabled(true);
+//                });
+//                e.printStackTrace();
+//            }
+//        }).start();
     }
     private void guardarSesionRefugio(Refugio refugio) {
         SharedPreferences prefs = getSharedPreferences("sesion_refugio", MODE_PRIVATE);
