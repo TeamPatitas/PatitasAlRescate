@@ -20,6 +20,9 @@ import com.patitasalrescate.controllers.lists.ActividadListarRefugios;
 import com.patitasalrescate.controllers.lists.ActividadMisFavoritos;
 import com.patitasalrescate.controllers.auth.ActividadIniciarSesion;
 
+import com.patitasalrescate.controllers.lists.ActividadEventosLista;
+import com.patitasalrescate.controllers.auth.ActividadIniciarSesion;
+
 public class ActividadInicioAdoptante extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +90,12 @@ public class ActividadInicioAdoptante extends AppCompatActivity {
                 i = new Intent(this, ActividadMisFavoritos.class);
                 i.putExtra(ActividadIniciarSesion.EXTRA_TIPO_USUARIO, "ADOPTANTE");
                 i.putExtra(ActividadIniciarSesion.EXTRA_ID_USUARIO, finalIdAdoptante);
+                startActivity(i);
+                return true;
+            }
+
+            if (item.getItemId() == R.id.itemEventosAdoptante) {
+                i = new Intent(this, ActividadEventosLista.class);
                 startActivity(i);
                 return true;
             }

@@ -17,6 +17,7 @@ import com.patitasalrescate.R;
 import com.patitasalrescate.controllers.management.ActividadRegistrarMascota;
 import com.patitasalrescate.controllers.auth.ActividadIniciarSesion;
 import com.patitasalrescate.controllers.lists.ActividadListarMascotas;
+import com.patitasalrescate.controllers.lists.ActividadEventosLista;
 
 public class ActividadInicioRefugio extends AppCompatActivity {
 
@@ -82,6 +83,13 @@ public class ActividadInicioRefugio extends AppCompatActivity {
                 startActivity(oIntento );
                 return true;
             }
+
+            if (menuItem.getItemId() == R.id.itemEventosRefugio) {
+                oIntento = new Intent(this, ActividadEventosLista.class);
+                startActivity(oIntento);
+                return true;
+            }
+
             if(menuItem.getItemId()==R.id.itemSalirRefugio){
                 oIntento= new Intent(this, MainActivity.class);
                 oIntento.putExtra("nombre_refugio_key", finalNombreRefugio);

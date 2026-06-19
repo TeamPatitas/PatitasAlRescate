@@ -61,6 +61,29 @@ public class ActividadEventosLista extends AppCompatActivity {
             adaptador = new AdaptadorEventos(listaEventos, this);
             recycler.setAdapter(adaptador);
         }
+
+        recycler = findViewById(R.id.recycler_eventos);
+        txtVacio = findViewById(R.id.txt_lista_eventos_vacia);
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+
+        cargarEventos();
+    }
+
+    private void cargarEventos() {
+        List<Evento> listaEventos = obtenerEventosPrueba();
+        mostrarEventos(listaEventos);
+    }
+
+    private void mostrarEventos(List<Evento> listaEventos) {
+        if (listaEventos == null || listaEventos.isEmpty()) {
+            recycler.setVisibility(View.GONE);
+            txtVacio.setVisibility(View.VISIBLE);
+        } else {
+            recycler.setVisibility(View.VISIBLE);
+            txtVacio.setVisibility(View.GONE);
+            adaptador = new AdaptadorEventos(listaEventos, this);
+            recycler.setAdapter(adaptador);
+        }
     }
 
     private List<Evento> obtenerEventosPrueba() {

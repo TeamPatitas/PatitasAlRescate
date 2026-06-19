@@ -28,6 +28,11 @@
         android:title="Favoritos" />
 
     <item
+        android:id="@+id/itemEventosAdoptante"
+        android:icon="@drawable/bg_boton_detalles"
+        android:title="Eventos" />
+
+    <item
         android:id="@+id/itemSalirAdoptante"
         android:icon="@android:drawable/ic_lock_power_off"
         android:title="Salir" />
