@@ -2,14 +2,15 @@ package com.patitasalrescate.controllers.feed;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.patitasalrescate.MainActivity;
@@ -21,21 +22,24 @@ import com.patitasalrescate.controllers.lists.ActividadMisFavoritos;
 import com.patitasalrescate.controllers.auth.ActividadIniciarSesion;
 
 import com.patitasalrescate.controllers.lists.ActividadEventosLista;
-import com.patitasalrescate.controllers.auth.ActividadIniciarSesion;
 
-public class ActividadInicioAdoptante extends AppCompatActivity {
+public class ActividadFeedAdoptante extends AppCompatActivity {
+    private NavController navController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ly_inicio_adoptante);
+        setContentView(R.layout.ly_feed_adoptante);
         String nombreAdoptante = getIntent().getStringExtra(ActividadIniciarSesion.EXTRA_NOMBRE_USUARIO);
+        NavHostFragment navHost = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentFeedAdoptante);
+
+        if(navHost != null) navController = navHost.getNavController();
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
 
         if (nombreAdoptante == null || nombreAdoptante.trim().isEmpty()) {
             nombreAdoptante = getIntent().getStringExtra("nombre_adoptante_key");
@@ -57,9 +61,6 @@ public class ActividadInicioAdoptante extends AppCompatActivity {
         toolbar.setTitle("Adoptante " + nombreAdoptante);
         toolbar.setNavigationOnClickListener(v -> finish());
 
-        TextView txt = findViewById(R.id.txtBienvenidoAdoptante);
-        txt.setText("Bienvenido " + nombreAdoptante);
-        txt.setGravity(Gravity.CENTER);
         BottomNavigationView menu = findViewById(R.id.menuInicioAdoptante);
         String finalNombreAdoptante = nombreAdoptante;
         String finalIdAdoptante = idAdoptante;
@@ -100,12 +101,6 @@ public class ActividadInicioAdoptante extends AppCompatActivity {
                 return true;
             }
 
-            if (item.getItemId() == R.id.itemSalirAdoptante) {
-                i = new Intent(this, MainActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(i);
-                return true;
-            }
             return false;
         });
     }

@@ -15,7 +15,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.patitasalrescate.R;
-import com.patitasalrescate.controllers.feed.ActividadInicioAdoptante;
+import com.patitasalrescate.controllers.feed.ActividadFeedAdoptante;
 import com.patitasalrescate.controllers.feed.ActividadInicioRefugio;
 import com.patitasalrescate.data_access.DAOAdoptante;
 import com.patitasalrescate.data_access.DAORefugio;
@@ -23,8 +23,6 @@ import com.patitasalrescate.data_access.SupabaseService;
 import com.patitasalrescate.model.Adoptante;
 import com.patitasalrescate.model.Refugio;
 import com.patitasalrescate.utils.SeguridadUtils;
-
-import java.io.IOException;
 
 public class ActividadIniciarSesion extends AppCompatActivity {
     public static final String EXTRA_TIPO_USUARIO = "tipo_usuario_key";
@@ -71,7 +69,8 @@ public class ActividadIniciarSesion extends AppCompatActivity {
         String passEncriptada = SeguridadUtils.encriptar(passPlana);
 
         button_Ingresar.setEnabled(false);
-        irAPantallaPrincipal("xd", "waos", "REFUGIO");
+        if(correo.startsWith("ad")) irAPantallaPrincipal("xd", "weon", "ADOPTANTE");
+        if(correo.startsWith("ref")) irAPantallaPrincipal("xd", "ref weon", "REFUGIO");
 //        new Thread(() -> {
 //
 //            try {
@@ -143,7 +142,7 @@ public class ActividadIniciarSesion extends AppCompatActivity {
     }
     public void irAPantallaPrincipal(String idUsuario, String nombreUsuario, String tipoUsuario) {
         boolean esAdoptante = "ADOPTANTE".equalsIgnoreCase(tipoUsuario);
-        Intent intent = new Intent(this, esAdoptante ? ActividadInicioAdoptante.class : ActividadInicioRefugio.class);
+        Intent intent = new Intent(this, esAdoptante ? ActividadFeedAdoptante.class : ActividadInicioRefugio.class);
         intent.putExtra(esAdoptante ? "nombre_adoptante_key" : "nombre_refugio_key", nombreUsuario);
         intent.putExtra(EXTRA_TIPO_USUARIO, esAdoptante ? "ADOPTANTE" : "REFUGIO");
         intent.putExtra(EXTRA_ID_USUARIO, idUsuario);

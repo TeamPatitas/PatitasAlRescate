@@ -2,23 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/fg_inicio_adoptante"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blanco"
-    tools:context=".controllers.feed.ActividadInicioAdoptante">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarInicioAdoptante"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:title="Adoptante"
-        app:titleTextColor="@color/blanco" />
+    tools:context=".controllers.feed.FragmentInicioAdoptante">
 
     <ImageView
         android:id="@+id/imgBienvenidaAdoptante"
@@ -28,7 +15,6 @@
         app:layout_constraintBottom_toTopOf="@+id/txtBienvenidoAdoptante"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarInicioAdoptante"
         app:srcCompat="@drawable/rj_logo_patitas" />
 
     <TextView
@@ -41,22 +27,9 @@
         android:text="Bienvenido"
         android:textColor="@color/marronPrimario"
         android:textSize="33sp"
-        app:layout_constraintBottom_toTopOf="@+id/menuInicioAdoptante"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgBienvenidaAdoptante"
         tools:text="BIENVENIDO LUIS" />
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/menuInicioAdoptante"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="@color/marronPrimario"
-        app:itemIconTint="@color/blanco"
-        app:itemTextColor="@color/blanco"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/menu_adoptante" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

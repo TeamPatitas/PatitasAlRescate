@@ -55,7 +55,7 @@
             android:name=".controllers.feed.ActividadRegistroExitoso"
             android:exported="false" />
         <activity
-            android:name=".controllers.feed.ActividadInicioAdoptante"
+            android:name=".controllers.feed.ActividadFeedAdoptante"
             android:exported="false" />
         <activity
             android:name=".controllers.auth.ActividadRegistrarAdoptante"
