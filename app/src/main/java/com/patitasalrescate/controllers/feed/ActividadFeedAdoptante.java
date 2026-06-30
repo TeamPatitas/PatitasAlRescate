@@ -9,11 +9,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.patitasalrescate.MainActivity;
 import com.patitasalrescate.R;
 import com.patitasalrescate.controllers.lists.ActividadBusquedaPorFiltro;
 import com.patitasalrescate.controllers.lists.ActividadListarMascotas;
