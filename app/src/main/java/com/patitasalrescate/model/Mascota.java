@@ -21,10 +21,8 @@ public class Mascota {
     @SerializedName("fotos") @Expose private List<String> fotos = new ArrayList<>();
     @SerializedName("estado") @Expose private String estado; // Disponible, En proceso, Adoptado
 
-    private transient long lastSync;
 
     public Mascota() {}
-
     public Mascota(String idMascota, String idRefugio, String nombre, String especie, String raza, String sexo,
                    int edad, String temperamento, String historia, List<String> fotos,
                    String estado, long lastSync) {
@@ -39,7 +37,6 @@ public class Mascota {
         this.historia = historia;
         this.fotos = fotos != null ? fotos : new ArrayList<>();
         this.estado = estado;
-        this.lastSync = lastSync;
     }
 
 
@@ -67,6 +64,4 @@ public class Mascota {
     public void setFotos(List<String> fotos) { this.fotos = fotos; }
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
-    public long getLastSync() { return lastSync; }
-    public void setLastSync(long lastSync) { this.lastSync = lastSync; }
 }

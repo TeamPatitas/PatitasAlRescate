@@ -29,7 +29,6 @@ public class Adopcion {
     @SerializedName("notas")
     @Expose
     private String notas;
-    private transient long lastSync;
 
     public Adopcion() {}
     public Adopcion(String idAdopcion, String idAdoptante, String idMascota, String idRefugio, String estado, String notas) {
@@ -39,7 +38,6 @@ public class Adopcion {
         this.idRefugio = idRefugio;
         this.estado = estado;
         this.notas=notas;
-        this.lastSync = System.currentTimeMillis();
     }
     public String getIdAdopcion() { return idAdopcion; }
     public void setIdAdopcion(String idAdopcion) { this.idAdopcion = idAdopcion; }
@@ -59,7 +57,4 @@ public class Adopcion {
 
     public String getNotas() { return notas; }
     public void setNotas(String notas) { this.notas = notas; }
-
-    public long getLastSync() { return lastSync; }
-    public void setLastSync(long lastSync) { this.lastSync = lastSync; }
 }

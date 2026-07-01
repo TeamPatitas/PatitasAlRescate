@@ -18,9 +18,6 @@ public class Adoptante {
     private int edad;
     private String sexo;
 
-    @SerializedName("last_sync")
-    private transient long lastSync;
-
     public Adoptante() {}
 
     public Adoptante(String idAdoptante, String nombre, String correo, String password,
@@ -32,7 +29,6 @@ public class Adoptante {
         this.numCelular = numCelular;
         this.edad = edad;
         this.sexo = sexo;
-        this.lastSync = lastSync;
     }
     public String getIdAdoptante() { return idAdoptante; }
     public void setIdAdoptante(String idAdoptante) { this.idAdoptante = idAdoptante; }
@@ -48,6 +44,4 @@ public class Adoptante {
     public void setEdad(int edad) { this.edad = edad; }
     public String getSexo() { return sexo; }
     public void setSexo(String sexo) { this.sexo = sexo; }
-    public long getLastSync() { return lastSync; }
-    public void setLastSync(long lastSync) { this.lastSync = lastSync; }
 }
