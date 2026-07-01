@@ -10,4 +10,16 @@
         android:name="com.patitasalrescate.controllers.feed.FragmentInicioAdoptante"
         android:label="fg_inicio_adoptante"
         tools:layout="@layout/fg_inicio_adoptante" />
+
+    <fragment
+        android:id="@+id/fragmentListarMascotas"
+        android:name="com.patitasalrescate.controllers.lists.FragmentListarMascotas"
+        android:label="fg_listar_mascotas"
+        tools:layout="@layout/fg_listar_mascotas" />
+
+    <fragment
+        android:id="@+id/fragmentInicioRefugio"
+        android:name="com.patitasalrescate.controllers.feed.FragmentInicioRefugio"
+        android:label="fg_inicio_refugio"
+        tools:layout="@layout/fg_inicio_refugio" />
 </navigation>

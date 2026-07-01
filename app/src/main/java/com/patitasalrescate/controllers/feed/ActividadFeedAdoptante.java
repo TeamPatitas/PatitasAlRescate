@@ -9,15 +9,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.patitasalrescate.R;
 import com.patitasalrescate.controllers.lists.ActividadBusquedaPorFiltro;
-import com.patitasalrescate.controllers.lists.ActividadListarMascotas;
 import com.patitasalrescate.controllers.lists.ActividadListarRefugios;
 import com.patitasalrescate.controllers.lists.ActividadMisFavoritos;
-import com.patitasalrescate.controllers.auth.ActividadIniciarSesion;
 
 import com.patitasalrescate.utils.PatitasSessionManager;
 import com.patitasalrescate.controllers.lists.ActividadEventosLista;
@@ -31,12 +30,9 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
 
         PatitasSessionManager session = PatitasSessionManager.getInstance(this);
         String nombreAdoptante = session.getUserName();
-        String idAdoptante = session.getUserId();
-
         NavHostFragment navHost = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentFeedAdoptante);
 
         if(navHost != null) navController = navHost.getNavController();
-
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -45,7 +41,7 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
         });
 
         if (nombreAdoptante == null || nombreAdoptante.isEmpty()) {
-            nombreAdoptante = "Adoptante (Modo Prueba)";
+            nombreAdoptante = "Adoptante Paraguayo";
         }
 
         Toolbar toolbar = findViewById(R.id.toolbarInicioAdoptante);
@@ -59,15 +55,20 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> finish());
 
         BottomNavigationView menu = findViewById(R.id.menuInicioAdoptante);
-        String finalNombreAdoptante = nombreAdoptante;
-        String finalIdAdoptante = idAdoptante;
         menu.setOnItemSelectedListener(item -> {
             Intent i;
-            if (item.getItemId() == R.id.itemInicioAdoptante) return true;
+            if (item.getItemId() == R.id.itemInicioAdoptante) {
+                NavDestination destinoActual = navController.getCurrentDestination();
+
+                if (destinoActual != null && destinoActual.getId() != R.id.fragmentInicioAdoptante) {
+                    navController.navigate(R.id.fragmentInicioAdoptante);
+                }
+                return true;
+            }
             if (item.getItemId() == R.id.itemListarMascotasAdoptante) {
-                i = new Intent(this, ActividadListarMascotas.class);
-                i.putExtra("es_refugio_key", false);
-                startActivity(i);
+                Bundle args = new Bundle();
+                args.putBoolean("es_refugio_key", false);
+                navController.navigate(R.id.fragmentListarMascotas, args);
                 return true;
             }
             if(item.getItemId()==R.id.itemListarRefugios){

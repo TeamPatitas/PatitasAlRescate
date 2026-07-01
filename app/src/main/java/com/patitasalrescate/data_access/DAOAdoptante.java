@@ -9,7 +9,7 @@ public class DAOAdoptante {
     private static List<Adoptante> mockAdoptantes = new ArrayList<>();
 
     static {
-        mockAdoptantes.add(new Adoptante("xd", "Luis", "ad@demo.com", "pass123", "987654321", 25, "Masculino"));
+        mockAdoptantes.add(new Adoptante("xd", "Luis", "ad", "pass123", "987654321", 25, "Masculino"));
     }
 
     public DAOAdoptante(Context context) {}

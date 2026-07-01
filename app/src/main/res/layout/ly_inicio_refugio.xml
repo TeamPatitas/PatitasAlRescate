@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".controllers.feed.ActividadInicioRefugio"
+    tools:context=".controllers.feed.ActividadFeedRefugio"
     android:background="@color/blanco">
 
     <androidx.appcompat.widget.Toolbar
@@ -34,30 +34,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/menu_refugio" />
 
-    <TextView
-        android:id="@+id/txtBienvenidoRefugio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/fab_margin"
-        android:layout_marginBottom="40dp"
-        android:fontFamily="@font/chewy"
-        android:text="TextView"
-        android:textAlignment="center"
-        android:textColor="@color/marronPrimario"
-        android:textSize="33sp"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentFeedRefugio"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph"
         app:layout_constraintBottom_toTopOf="@+id/menuInicioRefugio"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2"
-        tools:text="Bienvenido" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbarInicioRefugio" />
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/txtBienvenidoRefugio"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarInicioRefugio"
-        app:srcCompat="@drawable/jlbienvenidorefugio" />
 </androidx.constraintlayout.widget.ConstraintLayout>

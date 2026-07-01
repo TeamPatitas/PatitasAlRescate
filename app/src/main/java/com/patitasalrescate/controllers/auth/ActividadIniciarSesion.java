@@ -15,7 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.patitasalrescate.R;
 import com.patitasalrescate.controllers.feed.ActividadFeedAdoptante;
-import com.patitasalrescate.controllers.feed.ActividadInicioRefugio;
+import com.patitasalrescate.controllers.feed.ActividadFeedRefugio;
 import com.patitasalrescate.data_access.DAOAdoptante;
 import com.patitasalrescate.data_access.DAORefugio;
 import com.patitasalrescate.model.Adoptante;
@@ -81,7 +81,7 @@ public class ActividadIniciarSesion extends AppCompatActivity {
     public void irAPantallaPrincipal() {
         PatitasSessionManager session = PatitasSessionManager.getInstance(this);
         boolean esAdoptante = session.isAdoptante();
-        Intent intent = new Intent(this, esAdoptante ? ActividadFeedAdoptante.class : ActividadInicioRefugio.class);
+        Intent intent = new Intent(this, esAdoptante ? ActividadFeedAdoptante.class : ActividadFeedRefugio.class);
         startActivity(intent);
         finish();
     }

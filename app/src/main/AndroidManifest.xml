@@ -32,7 +32,7 @@
         <activity
             android:name=".controllers.management.ActividadRegistrarMascota"
             android:exported="false"
-            android:parentActivityName=".controllers.feed.ActividadInicioRefugio" />
+            android:parentActivityName=".controllers.feed.ActividadFeedRefugio" />
         <activity
             android:name=".controllers.management.ActividadAdopcion"
             android:exported="false" />
@@ -49,7 +49,7 @@
             android:name=".controllers.lists.ActividadMisFavoritos"
             android:exported="false" />
         <activity
-            android:name=".controllers.lists.ActividadListarMascotas"
+            android:name=".controllers.lists.FragmentListarMascotas"
             android:exported="false" />
         <activity
             android:name=".controllers.feed.ActividadRegistroExitoso"
@@ -72,7 +72,7 @@
             android:exported="false"
             android:theme="@style/Theme.PatitasAlRescate" />
         <activity
-            android:name=".controllers.feed.ActividadInicioRefugio"
+            android:name=".controllers.feed.ActividadFeedRefugio"
             android:exported="false"
             android:parentActivityName=".controllers.auth.ActividadIniciarSesion" />
 

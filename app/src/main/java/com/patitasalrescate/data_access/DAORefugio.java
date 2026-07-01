@@ -11,10 +11,10 @@ public class DAORefugio {
     static {
         Refugio r1 = new Refugio();
         r1.setIdRefugio("ref1");
-        r1.setNombre("Refugio Patitas");
+        r1.setNombre("Refugio Insano");
         r1.setDireccion("Calle 123");
         r1.setNumCelular("987654321");
-        r1.setCorreo("ref1@demo.com");
+        r1.setCorreo("re");
         r1.setPassword("pass123");
         mockRefugios.add(r1);
 

@@ -7,17 +7,6 @@
     android:layout_height="match_parent"
     android:background="#EFEBE9">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarListarMascotas"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="#5D4037"
-        android:theme="?attr/actionBarTheme"
-        app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@android:drawable/ic_menu_revert"
-        app:title="Mascotas"
-        app:titleTextColor="@android:color/white" />
-
     <LinearLayout
         android:id="@+id/layout_filtros_refugio"
         android:layout_width="match_parent"
@@ -27,9 +16,8 @@
         android:orientation="horizontal"
         android:padding="12dp"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbarListarMascotas">
+        app:layout_constraintTop_toTopOf="parent">
 
         <Button
             android:id="@+id/btn_filtro_en_adopcion"
@@ -73,8 +61,10 @@
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_filtros_refugio"
+        app:layout_constraintVertical_bias="1.0"
         tools:listitem="@layout/ly_item_cardview_mascota" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

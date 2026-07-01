@@ -1,17 +1,22 @@
 package com.patitasalrescate.controllers.lists;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,60 +29,56 @@ import com.patitasalrescate.ui.AdaptadorMascotas;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActividadListarMascotas extends AppCompatActivity {
+public class FragmentListarMascotas extends Fragment {
     private RecyclerView recycler;
     private TextView txtVacio;
-    private LinearLayout lyFiltros;
     private Button btnEnAdopcion, btnAdoptados;
     private DAOMascota dao;
     private List<Mascota> listaCacheRefugio;
     private boolean esModoRefugio = false;
     private String idUsuario;
-    private String tipoUsuario;
     private boolean verAdoptadosRefugio = false;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.ly_listar_mascotas);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fg_listar_mascotas, container, false);
+    }
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.listarmascotas), (v, insets) -> {
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        ViewCompat.setOnApplyWindowInsetsListener(view.findViewById(R.id.listarmascotas), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        dao = new DAOMascota(this);
+        dao = new DAOMascota(requireContext());
         listaCacheRefugio = new ArrayList<>();
 
-        if (getIntent().hasExtra("es_refugio_key")) {
-            esModoRefugio = getIntent().getBooleanExtra("es_refugio_key", false);
-        }
-
-        PatitasSessionManager session = PatitasSessionManager.getInstance(this);
+        PatitasSessionManager session = PatitasSessionManager.getInstance(requireContext());
+        esModoRefugio = session.isRefugio();
         idUsuario = session.getUserId();
-        tipoUsuario = session.getUserType();
 
         if (idUsuario == null || idUsuario.isEmpty()) {
-            Toast.makeText(this, "Error de sesión. Vuelve a ingresar.", Toast.LENGTH_SHORT).show();
-            finish();
+            Toast.makeText(requireContext(), "Error de sesión. Vuelve a ingresar.", Toast.LENGTH_SHORT).show();
+            if (getActivity() != null) {
+                getActivity().onBackPressed();
+            }
             return;
         }
 
-        Toolbar toolbar = findViewById(R.id.toolbarListarMascotas);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(v -> finish());
-
-        recycler = findViewById(R.id.recycler_mascotas);
-        recycler.setLayoutManager(new LinearLayoutManager(this));
-        txtVacio = findViewById(R.id.txt_lista_vacia);
-        lyFiltros = findViewById(R.id.layout_filtros_refugio);
-        btnEnAdopcion = findViewById(R.id.btn_filtro_en_adopcion);
-        btnAdoptados = findViewById(R.id.btn_filtro_adoptados);
+        recycler = view.findViewById(R.id.recycler_mascotas);
+        recycler.setLayoutManager(new LinearLayoutManager(requireContext()));
+        txtVacio = view.findViewById(R.id.txt_lista_vacia);
+        LinearLayout lyFiltros = view.findViewById(R.id.layout_filtros_refugio);
+        btnEnAdopcion = view.findViewById(R.id.btn_filtro_en_adopcion);
+        btnAdoptados = view.findViewById(R.id.btn_filtro_adoptados);
 
         if (esModoRefugio) {
-            if (getSupportActionBar() != null) getSupportActionBar().setTitle("Gestionar Mis Mascotas");
+            updateTitle("Gestionar Mis Mascotas");
             lyFiltros.setVisibility(View.VISIBLE);
 
             btnEnAdopcion.setOnClickListener(v -> {
@@ -93,14 +94,23 @@ public class ActividadListarMascotas extends AppCompatActivity {
             });
             actualizarEstiloFiltros();
         } else {
-            if (getSupportActionBar() != null) getSupportActionBar().setTitle("Mascotas en Adopción");
+            updateTitle("Mascotas en Adopción");
             lyFiltros.setVisibility(View.GONE);
         }
         cargarDatosLocales();
     }
 
+    private void updateTitle(String title) {
+        if (getActivity() instanceof AppCompatActivity) {
+            AppCompatActivity activity = (AppCompatActivity) getActivity();
+            if (activity.getSupportActionBar() != null) {
+                activity.getSupportActionBar().setTitle(title);
+            }
+        }
+    }
+
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         if (idUsuario != null) {
             cargarDatosLocales();
@@ -119,8 +129,7 @@ public class ActividadListarMascotas extends AppCompatActivity {
                 mostrarListaEnRecycler(lista);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Error cargando datos locales", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Error cargando datos locales", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -152,7 +161,7 @@ public class ActividadListarMascotas extends AppCompatActivity {
             AdaptadorMascotas adapter = new AdaptadorMascotas(
                     listaFinal,
                     esModoRefugio,
-                    this,
+                    requireContext(),
                     dao
             );
             recycler.setAdapter(adapter);
