@@ -15,12 +15,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class ApiRefugiosSimulada {
-
-
     private static final String BASE_URL = "https://patitasrefugiosapi.onrender.com";
-
-
-
 
 
     private final OkHttpClient client = new OkHttpClient();

@@ -13,152 +13,25 @@ import java.util.List;
 
 public class DAOFavoritos {
 
-    private BDConstruir dbHelper;
+    // TODO: Implementar api
 
     public DAOFavoritos(Context context) {
-        dbHelper = new BDConstruir(context);
+
     }
     public long addFavorito(String idAdoptante, String idMascota) {
-
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-
-        values.put("id_adoptante", idAdoptante);
-        values.put("id_mascota", idMascota);
-        values.put("last_sync", System.currentTimeMillis());
-
-        return db.insertWithOnConflict(
-                "favoritos",
-                null,
-                values,
-                SQLiteDatabase.CONFLICT_IGNORE
-        );
+        return 0;
     }
     public void removeFavorito(String idAdoptante, String idMascota) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.delete(
-                "favoritos",
-                "id_adoptante = ? AND id_mascota = ?",
-                new String[]{idAdoptante, idMascota}
-        );
+
     }
     public boolean esFavorito(String idAdoptante, String idMascota) {
-
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        Cursor cursor = db.query(
-                "favoritos",
-                new String[]{"id_mascota"},
-                "id_adoptante = ? AND id_mascota = ?",
-                new String[]{idAdoptante, idMascota},
-                null,
-                null,
-                null
-        );
-
-        boolean existe = (cursor.getCount() > 0);
-        cursor.close();
-
-        return existe;
+        return false;
     }
     public List<String> obtenerIdsFavoritos(String idAdoptante) {
 
-        List<String> lista = new ArrayList<>();
-
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        Cursor c = db.query(
-                "favoritos",
-                new String[]{"id_mascota"},
-                "id_adoptante = ?",
-                new String[]{idAdoptante},
-                null,
-                null,
-                null
-        );
-
-        if (c.moveToFirst()) {
-            do {
-                lista.add(
-                        c.getString(
-                                c.getColumnIndexOrThrow("id_mascota")
-                        )
-                );
-            } while (c.moveToNext());
-        }
-
-        c.close();
-        return lista;
+        return new ArrayList<>();
     }
     public List<Mascota> getFavoritosPorAdoptante(String idAdoptante) {
-
-        List<Mascota> favoritos = new ArrayList<>();
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        String query =
-                "SELECT m.* FROM mascotas m " +
-                        "JOIN favoritos f ON m.id_mascota = f.id_mascota " +
-                        "WHERE f.id_adoptante = ?";
-
-        Cursor cursor = db.rawQuery(query, new String[]{idAdoptante});
-
-        if (cursor.moveToFirst()) {
-            do {
-
-                Mascota masc = new Mascota();
-
-                masc.setIdMascota(cursor.getString(
-                        cursor.getColumnIndexOrThrow("id_mascota")));
-
-                masc.setIdRefugio(cursor.getString(
-                        cursor.getColumnIndexOrThrow("id_refugio")));
-
-                masc.setNombre(cursor.getString(
-                        cursor.getColumnIndexOrThrow("nombre")));
-
-                masc.setEspecie(cursor.getString(
-                        cursor.getColumnIndexOrThrow("especie")));
-
-                masc.setRaza(cursor.getString(
-                        cursor.getColumnIndexOrThrow("raza")));
-
-                masc.setSexo(cursor.getString(
-                        cursor.getColumnIndexOrThrow("sexo")));
-
-                masc.setEdad(cursor.getInt(
-                        cursor.getColumnIndexOrThrow("edad")));
-
-                masc.setTemperamento(cursor.getString(
-                        cursor.getColumnIndexOrThrow("temperamento")));
-
-                masc.setHistoria(cursor.getString(
-                        cursor.getColumnIndexOrThrow("historia")));
-
-                String fotosStr = cursor.getString(
-                        cursor.getColumnIndexOrThrow("fotos"));
-
-                if (fotosStr != null && !fotosStr.isEmpty()) {
-                    masc.setFotos(Arrays.asList(fotosStr.split(",")));
-                } else {
-                    masc.setFotos(new ArrayList<>());
-                }
-
-                String estado = cursor.getString(
-                        cursor.getColumnIndexOrThrow("estado"));
-
-                masc.setEstado(
-                        estado != null ? estado : "DISPONIBLE"
-                );
-
-                masc.setLastSync(cursor.getLong(
-                        cursor.getColumnIndexOrThrow("last_sync")));
-
-                favoritos.add(masc);
-
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        return favoritos;
+        return new ArrayList<>();
     }
 }
