@@ -12,10 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.patitasalrescate.R;
-import com.patitasalrescate.controllers.auth.ActividadIniciarSesion;
+import com.patitasalrescate.utils.PatitasSessionManager;
 import com.patitasalrescate.data_access.DAOFavoritos;
 import com.patitasalrescate.data_access.DAOMascota;
-import com.patitasalrescate.data_access.SupabaseService;
 import com.patitasalrescate.model.Mascota;
 import com.patitasalrescate.ui.AdaptadorMascotas;
 
@@ -26,7 +25,6 @@ public class ActividadMisFavoritos extends AppCompatActivity {
     private TextView txtVacio;
     private DAOFavoritos daoFavoritos;
     private DAOMascota daoMascota;
-    private SupabaseService supabase;
     private String idUsuario;
 
     @Override
@@ -47,24 +45,19 @@ public class ActividadMisFavoritos extends AppCompatActivity {
 
         daoFavoritos = new DAOFavoritos(this);
         daoMascota = new DAOMascota(this);
-        supabase = new SupabaseService();
 
-        idUsuario = getIntent().getStringExtra(
-                ActividadIniciarSesion.EXTRA_ID_USUARIO
-        );
-        if (idUsuario == null) {
+        idUsuario = PatitasSessionManager.getInstance(this).getUserId();
+        if (idUsuario == null || idUsuario.isEmpty()) {
             finish();
             return;
         }
         cargarFavoritos();
     }
-    private void cargarFavoritos() {
 
-        List<Mascota> favoritos =
-                daoFavoritos.getFavoritosPorAdoptante(idUsuario);
+    private void cargarFavoritos() {
+        List<Mascota> favoritos = daoFavoritos.getFavoritosPorAdoptante(idUsuario);
 
         if (favoritos == null || favoritos.isEmpty()) {
-
             recycler.setVisibility(View.GONE);
             txtVacio.setVisibility(View.VISIBLE);
             txtVacio.setText("No tienes favoritos ❤️");
@@ -74,17 +67,15 @@ public class ActividadMisFavoritos extends AppCompatActivity {
         recycler.setVisibility(View.VISIBLE);
         txtVacio.setVisibility(View.GONE);
 
-        AdaptadorMascotas adapter =
-                new AdaptadorMascotas(
-                        favoritos,
-                        this,
-                        idUsuario,
-                        daoMascota,
-                        supabase,
-                        daoFavoritos
-                );
+        AdaptadorMascotas adapter = new AdaptadorMascotas(
+                favoritos,
+                this,
+                daoMascota,
+                daoFavoritos
+        );
         recycler.setAdapter(adapter);
     }
+
     @Override
     protected void onResume() {
         super.onResume();

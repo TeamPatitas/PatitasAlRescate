@@ -16,21 +16,9 @@ import com.patitasalrescate.R;
  * create an instance of this fragment.
  */
 public class FragmentInicioAdoptante extends Fragment {
-
-
     public FragmentInicioAdoptante() {
         // Required empty public constructor
     }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragmentInicioAdoptante.
-     */
-    // TODO: Rename and change types and number of parameters
     public static FragmentInicioAdoptante newInstance(String param1, String param2) {
         FragmentInicioAdoptante fragment = new FragmentInicioAdoptante();
         Bundle args = new Bundle();

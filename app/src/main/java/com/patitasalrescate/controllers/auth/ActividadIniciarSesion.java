@@ -1,7 +1,6 @@
 package com.patitasalrescate.controllers.auth;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,20 +18,15 @@ import com.patitasalrescate.controllers.feed.ActividadFeedAdoptante;
 import com.patitasalrescate.controllers.feed.ActividadInicioRefugio;
 import com.patitasalrescate.data_access.DAOAdoptante;
 import com.patitasalrescate.data_access.DAORefugio;
-import com.patitasalrescate.data_access.SupabaseService;
 import com.patitasalrescate.model.Adoptante;
 import com.patitasalrescate.model.Refugio;
-import com.patitasalrescate.utils.SeguridadUtils;
+import com.patitasalrescate.utils.PatitasSessionManager;
 
 public class ActividadIniciarSesion extends AppCompatActivity {
-    public static final String EXTRA_TIPO_USUARIO = "tipo_usuario_key";
-    public static final String EXTRA_ID_USUARIO = "id_usuario_key";
-    public static final String EXTRA_NOMBRE_USUARIO = "nombre_usuario_key";
     private EditText textCorreo, textPassword;
     private Button button_Ingresar;
     private DAOAdoptante daoAdoptante;
     private DAORefugio daoRefugio;
-    private SupabaseService supabaseService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +42,6 @@ public class ActividadIniciarSesion extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         daoAdoptante = new DAOAdoptante(this);
         daoRefugio = new DAORefugio(this);
-        supabaseService = new SupabaseService();
         textCorreo = findViewById(R.id.rj_text_correr_inisesion);
         textPassword = findViewById(R.id.rj_text_pass_inisesion);
         button_Ingresar = findViewById(R.id.rj_button_ingresar_inisesion);
@@ -59,94 +52,36 @@ public class ActividadIniciarSesion extends AppCompatActivity {
             return insets;
         });
     }
+
     private void ejecutarLogin() {
         String correo = textCorreo.getText().toString().trim();
-        String passPlana = textPassword.getText().toString().trim();
-        if (correo.isEmpty() || passPlana.isEmpty()) {
-            Toast.makeText(this, "Completa todos los Campos", Toast.LENGTH_SHORT).show();
+        String pass = textPassword.getText().toString().trim();
+        if (correo.isEmpty() || pass.isEmpty()) {
+            Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show();
             return;
         }
-        String passEncriptada = SeguridadUtils.encriptar(passPlana);
 
-        button_Ingresar.setEnabled(false);
-        if(correo.startsWith("ad")) irAPantallaPrincipal("xd", "weon", "ADOPTANTE");
-        if(correo.startsWith("ref")) irAPantallaPrincipal("xd", "ref weon", "REFUGIO");
-//        new Thread(() -> {
-//
-//            try {
-//                Adoptante adoptanteLocal = daoAdoptante.login(correo, passEncriptada);
-//                if (adoptanteLocal != null) {
-//                    guardarSesionAdoptante(adoptanteLocal);
-//                    runOnUiThread(() -> {
-//                        irAPantallaPrincipal(adoptanteLocal.getIdAdoptante(), adoptanteLocal.getNombre(), "ADOPTANTE");
-//                        button_Ingresar.setEnabled(true);
-//                    });
-//                    return;
-//                }
-//                Adoptante adoptanteRemoto = supabaseService.loginAdoptanteRemoto(correo, passEncriptada);
-//                if (adoptanteRemoto != null) {
-//                    daoAdoptante.insertar(adoptanteRemoto);
-//                    guardarSesionAdoptante(adoptanteRemoto);
-//                    runOnUiThread(() -> {
-//                        irAPantallaPrincipal(adoptanteRemoto.getIdAdoptante(), adoptanteRemoto.getNombre(), "ADOPTANTE");
-//                        button_Ingresar.setEnabled(true);
-//                    });
-//                    return;
-//                }
-//                Refugio refugioLocal = daoRefugio.login(correo, passEncriptada);
-//                if (refugioLocal != null) {
-//                    guardarSesionRefugio(refugioLocal);
-//                    runOnUiThread(() -> {
-//                        irAPantallaPrincipal(refugioLocal.getIdRefugio(), refugioLocal.getNombre(), "REFUGIO");
-//                        button_Ingresar.setEnabled(true);
-//                    });
-//                    return;
-//                }
-//                Refugio refugioRemoto = supabaseService.loginRefugioRemoto(correo, passEncriptada);
-//                if (refugioRemoto != null) {
-//                    daoRefugio.insertar(refugioRemoto);
-//                    guardarSesionRefugio(refugioRemoto);
-//                    runOnUiThread(() -> {
-//                        irAPantallaPrincipal(refugioRemoto.getIdRefugio(), refugioRemoto.getNombre(), "REFUGIO");
-//                        button_Ingresar.setEnabled(true);
-//                    });
-//                    return;
-//                }
-//                runOnUiThread(() -> {
-//                    Toast.makeText(this, "Correo o contraseña incorrectos", Toast.LENGTH_LONG).show();
-//                    button_Ingresar.setEnabled(true);
-//                });
-//
-//            } catch (IOException e) {
-//                runOnUiThread(() -> {
-//                    Toast.makeText(this, "Error de conexión. Intenta más tarde", Toast.LENGTH_LONG).show();
-//                    button_Ingresar.setEnabled(true);
-//                });
-//                e.printStackTrace();
-//            }
-//        }).start();
+        Adoptante a = daoAdoptante.login(correo, pass);
+        if (a != null) {
+            PatitasSessionManager.getInstance(this).createSession(a.getIdAdoptante(), a.getNombre(), "ADOPTANTE");
+            irAPantallaPrincipal();
+            return;
+        }
+
+        Refugio r = daoRefugio.login(correo, pass);
+        if (r != null) {
+            PatitasSessionManager.getInstance(this).createSession(r.getIdRefugio(), r.getNombre(), "REFUGIO");
+            irAPantallaPrincipal();
+            return;
+        }
+
+        Toast.makeText(this, "Credenciales incorrectas (Demo: ad@demo.com / pass123)", Toast.LENGTH_SHORT).show();
     }
-    private void guardarSesionRefugio(Refugio refugio) {
-        SharedPreferences prefs = getSharedPreferences("sesion_refugio", MODE_PRIVATE);
-        prefs.edit()
-                .putString("id_refugio", refugio.getIdRefugio())
-                .putString("nombre_refugio", refugio.getNombre())
-                .apply();
-    }
-    private void guardarSesionAdoptante(Adoptante adoptante) {
-        SharedPreferences prefs = getSharedPreferences("sesion_adoptante", MODE_PRIVATE);
-        prefs.edit()
-                .putString("id_adoptante", adoptante.getIdAdoptante())
-                .putString("nombre_adoptante", adoptante.getNombre())
-                .apply();
-    }
-    public void irAPantallaPrincipal(String idUsuario, String nombreUsuario, String tipoUsuario) {
-        boolean esAdoptante = "ADOPTANTE".equalsIgnoreCase(tipoUsuario);
+
+    public void irAPantallaPrincipal() {
+        PatitasSessionManager session = PatitasSessionManager.getInstance(this);
+        boolean esAdoptante = session.isAdoptante();
         Intent intent = new Intent(this, esAdoptante ? ActividadFeedAdoptante.class : ActividadInicioRefugio.class);
-        intent.putExtra(esAdoptante ? "nombre_adoptante_key" : "nombre_refugio_key", nombreUsuario);
-        intent.putExtra(EXTRA_TIPO_USUARIO, esAdoptante ? "ADOPTANTE" : "REFUGIO");
-        intent.putExtra(EXTRA_ID_USUARIO, idUsuario);
-        intent.putExtra(EXTRA_NOMBRE_USUARIO, nombreUsuario);
         startActivity(intent);
         finish();
     }

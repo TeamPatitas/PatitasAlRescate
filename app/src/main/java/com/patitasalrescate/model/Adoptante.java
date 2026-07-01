@@ -5,7 +5,6 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.annotations.SerializedName;
 
 public class Adoptante {
-
     @SerializedName("id_adoptante")
     private String idAdoptante;
     private String nombre;
@@ -21,7 +20,7 @@ public class Adoptante {
     public Adoptante() {}
 
     public Adoptante(String idAdoptante, String nombre, String correo, String password,
-                     String numCelular, int edad, String sexo, long lastSync) {
+                     String numCelular, int edad, String sexo) {
         this.idAdoptante = idAdoptante;
         this.nombre = nombre;
         this.correo = correo;

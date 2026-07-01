@@ -1,6 +1,5 @@
 package com.patitasalrescate.controllers.lists;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,10 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.patitasalrescate.R;
-import com.patitasalrescate.controllers.auth.ActividadIniciarSesion;
+import com.patitasalrescate.utils.PatitasSessionManager;
 import com.patitasalrescate.data_access.DAOMascota;
-import com.patitasalrescate.data_access.DAORefugio;
-import com.patitasalrescate.data_access.SupabaseService;
 import com.patitasalrescate.model.Mascota;
 import com.patitasalrescate.ui.AdaptadorMascotas;
 
@@ -32,9 +29,7 @@ public class ActividadListarMascotas extends AppCompatActivity {
     private TextView txtVacio;
     private LinearLayout lyFiltros;
     private Button btnEnAdopcion, btnAdoptados;
-    private DAORefugio daoRefugio;
     private DAOMascota dao;
-    private SupabaseService supabase;
     private List<Mascota> listaCacheRefugio;
     private boolean esModoRefugio = false;
     private String idUsuario;
@@ -52,29 +47,18 @@ public class ActividadListarMascotas extends AppCompatActivity {
             return insets;
         });
 
-
         dao = new DAOMascota(this);
-        supabase = new SupabaseService();
-        daoRefugio = new DAORefugio(this);
         listaCacheRefugio = new ArrayList<>();
 
         if (getIntent().hasExtra("es_refugio_key")) {
             esModoRefugio = getIntent().getBooleanExtra("es_refugio_key", false);
         }
-        idUsuario = getIntent().getStringExtra(ActividadIniciarSesion.EXTRA_ID_USUARIO);
-        tipoUsuario = getIntent().getStringExtra(ActividadIniciarSesion.EXTRA_TIPO_USUARIO);
 
-        if (idUsuario == null) {
-            SharedPreferences prefs = getSharedPreferences("sesion_refugio", MODE_PRIVATE);
-            idUsuario = prefs.getString("id_refugio", null);
+        PatitasSessionManager session = PatitasSessionManager.getInstance(this);
+        idUsuario = session.getUserId();
+        tipoUsuario = session.getUserType();
 
-            if (idUsuario == null) {
-                SharedPreferences prefsAdopt = getSharedPreferences("sesion_adoptante", MODE_PRIVATE);
-                idUsuario = prefsAdopt.getString("id_adoptante", null);
-            }
-        }
-
-        if (idUsuario == null && esModoRefugio) {
+        if (idUsuario == null || idUsuario.isEmpty()) {
             Toast.makeText(this, "Error de sesión. Vuelve a ingresar.", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -113,8 +97,6 @@ public class ActividadListarMascotas extends AppCompatActivity {
             lyFiltros.setVisibility(View.GONE);
         }
         cargarDatosLocales();
-        sincronizarConNube();
-
     }
 
     @Override
@@ -171,10 +153,7 @@ public class ActividadListarMascotas extends AppCompatActivity {
                     listaFinal,
                     esModoRefugio,
                     this,
-                    idUsuario,
-                    tipoUsuario,
-                    dao,
-                    supabase
+                    dao
             );
             recycler.setAdapter(adapter);
         }
@@ -188,41 +167,5 @@ public class ActividadListarMascotas extends AppCompatActivity {
             btnEnAdopcion.setAlpha(1.0f);
             btnAdoptados.setAlpha(0.5f);
         }
-    }
-
-    private void sincronizarConNube() {
-        new Thread(() -> {
-            try {
-                List<com.patitasalrescate.model.Refugio> refugiosNube = supabase.getRefugios();
-                if (refugiosNube != null) {
-                    com.patitasalrescate.data_access.DAORefugio daoRefugio = new com.patitasalrescate.data_access.DAORefugio(this);
-                    for (com.patitasalrescate.model.Refugio r : refugiosNube) {
-                        if (daoRefugio.obtenerPorId(r.getIdRefugio()) == null) {
-                            daoRefugio.insertar(r);
-                        } else {
-                            daoRefugio.actualizar(r);
-                        }
-                    }
-                }
-                List<Mascota> nube = supabase.getMascotas();
-                if (nube != null && !nube.isEmpty()) {
-                    for (Mascota m : nube) {
-                        if (m.getIdMascota() == null) continue;
-
-                        Mascota local = dao.obtenerPorId(m.getIdMascota());
-                        if (local == null) {
-                            dao.insertar(m);
-                        } else {
-                            dao.actualizar(m);
-                        }
-                    }
-
-                    runOnUiThread(this::cargarDatosLocales);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                runOnUiThread(() -> Toast.makeText(this, "Error de sincronización", Toast.LENGTH_SHORT).show());
-            }
-        }).start();
     }
 }

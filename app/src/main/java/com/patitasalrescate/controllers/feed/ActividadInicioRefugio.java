@@ -17,6 +17,7 @@ import com.patitasalrescate.R;
 import com.patitasalrescate.controllers.management.ActividadRegistrarMascota;
 import com.patitasalrescate.controllers.auth.ActividadIniciarSesion;
 import com.patitasalrescate.controllers.lists.ActividadListarMascotas;
+import com.patitasalrescate.utils.PatitasSessionManager;
 import com.patitasalrescate.controllers.lists.ActividadEventosLista;
 
 public class ActividadInicioRefugio extends AppCompatActivity {
@@ -37,14 +38,13 @@ public class ActividadInicioRefugio extends AppCompatActivity {
 
 
 
-        String nombreRefugio = getIntent().getStringExtra(ActividadIniciarSesion.EXTRA_NOMBRE_USUARIO);
-        if (nombreRefugio == null || nombreRefugio.trim().isEmpty()) {
-            nombreRefugio = getIntent().getStringExtra("nombre_refugio_key");
-        }
+        PatitasSessionManager session = PatitasSessionManager.getInstance(this);
+        String nombreRefugio = session.getUserName();
+        String idRefugio = session.getUserId();
+
         if (nombreRefugio == null || nombreRefugio.isEmpty()) {
             nombreRefugio = "Refugio (Modo Prueba)";
         }
-        String idRefugio = getIntent().getStringExtra(ActividadIniciarSesion.EXTRA_ID_USUARIO);
 
         Toolbar oBarra= findViewById(R.id.toolbarInicioRefugio);
         setSupportActionBar(oBarra);
@@ -66,20 +66,12 @@ public class ActividadInicioRefugio extends AppCompatActivity {
             }
             if(menuItem.getItemId()==R.id.itemRegistrarMascotaRefugio){
                 oIntento= new Intent(this, ActividadRegistrarMascota.class);
-                oIntento.putExtra("nombre_refugio_key", finalNombreRefugio);
-                oIntento.putExtra(ActividadIniciarSesion.EXTRA_TIPO_USUARIO, "REFUGIO");
-                oIntento.putExtra(ActividadIniciarSesion.EXTRA_ID_USUARIO, finalIdRefugio);
-                oIntento.putExtra(ActividadIniciarSesion.EXTRA_NOMBRE_USUARIO, finalNombreRefugio);
                 startActivity(oIntento );
                 return true;
             }
             if(menuItem.getItemId()==R.id.itemListarMacostaRefugio){
                 oIntento= new Intent(this, ActividadListarMascotas.class);
                 oIntento.putExtra("es_refugio_key", true);
-                oIntento.putExtra("nombre_refugio_key", finalNombreRefugio);
-                oIntento.putExtra(ActividadIniciarSesion.EXTRA_TIPO_USUARIO, "REFUGIO");
-                oIntento.putExtra(ActividadIniciarSesion.EXTRA_ID_USUARIO, finalIdRefugio);
-                oIntento.putExtra(ActividadIniciarSesion.EXTRA_NOMBRE_USUARIO, finalNombreRefugio);
                 startActivity(oIntento );
                 return true;
             }
@@ -91,8 +83,8 @@ public class ActividadInicioRefugio extends AppCompatActivity {
             }
 
             if(menuItem.getItemId()==R.id.itemSalirRefugio){
+                session.logout();
                 oIntento= new Intent(this, MainActivity.class);
-                oIntento.putExtra("nombre_refugio_key", finalNombreRefugio);
                 oIntento.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(oIntento );
                 return true;

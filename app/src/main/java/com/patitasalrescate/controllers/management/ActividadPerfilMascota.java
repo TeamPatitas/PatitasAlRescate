@@ -16,8 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.patitasalrescate.R;
-import com.patitasalrescate.controllers.auth.ActividadIniciarSesion;
-import com.patitasalrescate.data_access.SupabaseService;
+import com.patitasalrescate.utils.PatitasSessionManager;
 import com.patitasalrescate.data_access.DAOMascota;
 import com.patitasalrescate.data_access.DAOFavoritos;
 import com.patitasalrescate.model.Mascota;
@@ -31,12 +30,10 @@ public class ActividadPerfilMascota extends AppCompatActivity {
     private Button btnFavorito;
     private DAOMascota daoMascota;
     private DAOFavoritos daoFavoritos;
-    private SupabaseService supabaseService;
     private Mascota mascotaActual;
     private String idMascota;
     private String tipoUsuario;
     private String idUsuario;
-    private boolean esModoEdicion = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,22 +45,16 @@ public class ActividadPerfilMascota extends AppCompatActivity {
             return insets;
         });
 
-
         daoMascota = new DAOMascota(this);
         daoFavoritos = new DAOFavoritos(this);
-        supabaseService = new SupabaseService();
 
         initViews();
 
         idMascota = getIntent().getStringExtra("id_mascota_key");
-        esModoEdicion = getIntent().getBooleanExtra("es_modo_edicion", false);
 
-        tipoUsuario = getIntent().getStringExtra(ActividadIniciarSesion.EXTRA_TIPO_USUARIO);
-        idUsuario = getIntent().getStringExtra(ActividadIniciarSesion.EXTRA_ID_USUARIO);
-
-        if (tipoUsuario == null || tipoUsuario.trim().isEmpty()) {
-            tipoUsuario = esModoEdicion ? "REFUGIO" : "ADOPTANTE";
-        }
+        PatitasSessionManager session = PatitasSessionManager.getInstance(this);
+        tipoUsuario = session.getUserType();
+        idUsuario = session.getUserId();
 
         if (idMascota == null || idMascota.isEmpty()) {
             Toast.makeText(this, "Error: no llegó el ID de la mascota", Toast.LENGTH_SHORT).show();
@@ -87,8 +78,8 @@ public class ActividadPerfilMascota extends AppCompatActivity {
         btnAccion = findViewById(R.id.btn_accion_principal);
         btnFavorito = findViewById(R.id.btn_favorito);
     }
-    private void cargarDatosMascota() {
 
+    private void cargarDatosMascota() {
         mascotaActual = daoMascota.obtenerPorId(idMascota);
 
         if (mascotaActual == null) {
@@ -105,7 +96,6 @@ public class ActividadPerfilMascota extends AppCompatActivity {
         txtHistoria.setText(valorSeguro(mascotaActual.getHistoria()));
 
         List<String> fotos = mascotaActual.getFotos();
-
         if (fotos != null && !fotos.isEmpty()) {
             Glide.with(this)
                     .load(fotos.get(0))
@@ -113,20 +103,19 @@ public class ActividadPerfilMascota extends AppCompatActivity {
                     .into(imgFoto);
         }
     }
+
     private String valorSeguro(String s) {
         return s == null ? "" : s;
     }
-    private void configurarModoVisualPorRol() {
 
+    private void configurarModoVisualPorRol() {
         boolean esRefugio = "REFUGIO".equalsIgnoreCase(tipoUsuario);
 
         if (esRefugio) {
-
             btnFavorito.setVisibility(View.GONE);
             habilitarCampos(false);
             btnAccion.setText("EDITAR MASCOTA");
-            btnAccion.setBackgroundColor(
-                    ContextCompat.getColor(this, android.R.color.holo_orange_dark));
+            btnAccion.setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_orange_dark));
 
             btnAccion.setOnClickListener(v -> {
                 if (!txtNombre.isEnabled()) {
@@ -138,54 +127,34 @@ public class ActividadPerfilMascota extends AppCompatActivity {
             });
             return;
         }
+
         btnFavorito.setVisibility(View.VISIBLE);
         habilitarCampos(false);
         btnFavorito.setOnClickListener(v -> {
             if (idUsuario == null) {
-                Toast.makeText(this,
-                        "No se identificó al adoptante",
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "No se identificó al adoptante", Toast.LENGTH_SHORT).show();
                 return;
             }
             long r = daoFavoritos.addFavorito(idUsuario, idMascota);
-
             if (r > 0) {
-                Toast.makeText(this,
-                        "Agregado a favoritos ❤️",
-                        Toast.LENGTH_SHORT).show();
-                // supabase
-                new Thread(() -> {
-                    try {
-                        supabaseService.insertarFavorito(
-                                idUsuario,
-                                idMascota
-                        );
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }).start();
-
+                Toast.makeText(this, "Agregado a favoritos ❤️", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this,
-                        "Ya estaba en favoritos",
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Ya estaba en favoritos", Toast.LENGTH_SHORT).show();
             }
         });
+
         String estado = mascotaActual.getEstado();
         if (estado == null) estado = "DISPONIBLE";
 
         switch (estado) {
-
             case "ADOPTADO":
                 btnAccion.setText("YA FUE ADOPTADO");
                 btnAccion.setEnabled(false);
                 break;
-
             case "EN_PROCESO":
                 btnAccion.setText("EN PROCESO DE ADOPCIÓN");
                 btnAccion.setEnabled(false);
                 break;
-
             default:
                 btnAccion.setText("¡QUIERO ADOPTARLO! 🐾");
                 btnAccion.setEnabled(true);
@@ -193,6 +162,7 @@ public class ActividadPerfilMascota extends AppCompatActivity {
                 break;
         }
     }
+
     private void habilitarCampos(boolean habilitar) {
         txtNombre.setEnabled(habilitar);
         txtEspecie.setEnabled(habilitar);
@@ -204,7 +174,6 @@ public class ActividadPerfilMascota extends AppCompatActivity {
     }
 
     private void guardarCambios() {
-
         mascotaActual.setNombre(txtNombre.getText().toString());
         mascotaActual.setEspecie(txtEspecie.getText().toString());
         mascotaActual.setRaza(txtRaza.getText().toString());
@@ -219,20 +188,13 @@ public class ActividadPerfilMascota extends AppCompatActivity {
         }
 
         daoMascota.actualizar(mascotaActual);
-
-        new Thread(() -> {
-            try {
-                supabaseService.actualizarMascota(mascotaActual);
-            } catch (Exception ignored) {}
-        }).start();
-
+        Toast.makeText(this, "Cambios guardados localmente", Toast.LENGTH_SHORT).show();
         finish();
     }
 
     private void irAAdoptar() {
         Intent i = new Intent(this, ActividadAdopcion.class);
         i.putExtra("id_mascota_key", mascotaActual.getIdMascota());
-        i.putExtra(ActividadIniciarSesion.EXTRA_ID_USUARIO, idUsuario);
         startActivity(i);
     }
 }

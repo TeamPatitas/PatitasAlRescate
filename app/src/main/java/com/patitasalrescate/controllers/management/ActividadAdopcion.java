@@ -1,7 +1,6 @@
 package com.patitasalrescate.controllers.management;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
@@ -13,12 +12,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.patitasalrescate.utils.PatitasSessionManager;
 import com.patitasalrescate.R;
-import com.patitasalrescate.controllers.auth.ActividadIniciarSesion;
 import com.patitasalrescate.data_access.DAOAdopcion;
 import com.patitasalrescate.data_access.DAOMascota;
 import com.patitasalrescate.data_access.DAORefugio;
-import com.patitasalrescate.data_access.SupabaseService;
 import com.patitasalrescate.model.Adopcion;
 import com.patitasalrescate.model.Mascota;
 import com.patitasalrescate.model.Refugio;
@@ -29,7 +27,6 @@ public class ActividadAdopcion extends AppCompatActivity {
     private DAOMascota daoMascota;
     private DAORefugio daoRefugio;
     private DAOAdopcion daoAdopcion;
-    private SupabaseService supabaseService;
 
     private String idMascota;
     private String idAdoptante;
@@ -47,39 +44,36 @@ public class ActividadAdopcion extends AppCompatActivity {
             return insets;
         });
 
-
         daoMascota = new DAOMascota(this);
         daoRefugio = new DAORefugio(this);
         daoAdopcion = new DAOAdopcion(this);
-        supabaseService = new SupabaseService();
 
         idMascota = getIntent().getStringExtra("id_mascota_key");
-        idAdoptante = getIntent().getStringExtra(ActividadIniciarSesion.EXTRA_ID_USUARIO);
+        idAdoptante = PatitasSessionManager.getInstance(this).getUserId();
 
-        if (idAdoptante == null) {
-            SharedPreferences prefs = getSharedPreferences("sesion_adoptante", MODE_PRIVATE);
-            idAdoptante = prefs.getString("id_adoptante", null);
-        }
-
-        if (idMascota == null || idAdoptante == null) {
-            Toast.makeText(this, "Error de sesión: Reinicia la app", Toast.LENGTH_SHORT).show();
+        if (idMascota == null || idAdoptante == null || idAdoptante.isEmpty()) {
+            Toast.makeText(this, "Error de sesión", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        // --- DIAGNÓSTICO DE CARGA ---
         mascota = daoMascota.obtenerPorId(idMascota);
         if (mascota == null) {
-            Toast.makeText(this, "Error: Mascota no hallada en la base local", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Mascota no encontrada", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
         refugio = daoRefugio.obtenerPorId(mascota.getIdRefugio());
         if (refugio == null) {
-            Toast.makeText(this, "Error: El refugio (" + mascota.getIdRefugio() + ") no existe localmente", Toast.LENGTH_LONG).show();
-            finish();
-            return;
+            // Si no existe, creamos uno mock para que la demo no se rompa
+            refugio = new Refugio();
+            refugio.setIdRefugio(mascota.getIdRefugio());
+            refugio.setNombre("Refugio Demo");
+            refugio.setDireccion("Calle Demo 123");
+            refugio.setNumCelular("987654321");
+            refugio.setCorreo("demo@refugio.com");
+            refugio.setPassword("123");
         }
 
         TextView txtTitulo = findViewById(R.id.txtTituloAdopcion);
@@ -103,61 +97,30 @@ public class ActividadAdopcion extends AppCompatActivity {
         if (textoIngresado.isEmpty()) {
             textoIngresado = "Hola, estoy interesado en adoptar a " + mascota.getNombre();
         }
-        final String mensajeFinalParaWhatsapp = textoIngresado;
+        
         Adopcion nuevaAdopcion = new Adopcion(
                 UUID.randomUUID().toString(),
                 idAdoptante,
                 mascota.getIdMascota(),
                 refugio.getIdRefugio(),
-                "pendiente",
-                mensajeFinalParaWhatsapp
+                "EN_PROCESO",
+                textoIngresado
         );
 
-        Toast.makeText(this, "Sincronizando con la nube...", Toast.LENGTH_SHORT).show();
-        Button btn = findViewById(R.id.btnContactarWhatsapp);
-        btn.setEnabled(false);
+        daoAdopcion.insertar(nuevaAdopcion);
+        mascota.setEstado("EN_PROCESO");
+        daoMascota.actualizar(mascota);
 
-
-        new Thread(() -> {
-            try {
-                supabaseService.insertarAdopcionDetallada(nuevaAdopcion);
-
-                boolean exitoEstadoNube = supabaseService.actualizarEstadoMascota(mascota.getIdMascota(), "EN_PROCESO");
-
-                runOnUiThread(() -> {
-                    if (exitoEstadoNube) {
-                        daoAdopcion.insertar(nuevaAdopcion);
-                        mascota.setEstado("EN_PROCESO");
-                        daoMascota.actualizar(mascota);
-
-                        Toast.makeText(getApplicationContext(), "¡Solicitud enviada con éxito! ☁️", Toast.LENGTH_LONG).show();
-                        abrirWhatsapp(mensajeFinalParaWhatsapp);
-                        finish();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "⚠️ Adopción creada pero falló actualizar estado mascota.", Toast.LENGTH_LONG).show();
-                        btn.setEnabled(true);
-                    }
-                });
-
-            } catch (Exception e) {
-                String mensajeError = e.getMessage();
-                e.printStackTrace();
-
-                runOnUiThread(() -> {
-                    Toast.makeText(getApplicationContext(), "❌ ERROR NUBE: " + mensajeError, Toast.LENGTH_LONG).show();
-                    btn.setEnabled(true);
-                });
-            }
-        }).start();
+        Toast.makeText(this, "¡Solicitud enviada (Demo)! Redirigiendo a WhatsApp...", Toast.LENGTH_SHORT).show();
+        abrirWhatsapp(textoIngresado);
+        finish();
     }
 
     private void abrirWhatsapp(String mensajeBase) {
-        if (refugio.getNumCelular() == null || refugio.getNumCelular().trim().isEmpty()) {
-            Toast.makeText(this, "El refugio no tiene WhatsApp registrado", Toast.LENGTH_SHORT).show();
-            return;
+        String telefono = "51987654321"; // Teléfono demo
+        if (refugio.getNumCelular() != null && !refugio.getNumCelular().isEmpty()) {
+             telefono = "51" + refugio.getNumCelular();
         }
-        String telefono = refugio.getNumCelular().trim().replace("+", "").replace(" ", "");
-        if (!telefono.startsWith("51")) telefono = "51" + telefono;
 
         String mensajeFinal = "👋 ¡Hola " + refugio.getNombre() + "!\n\n"
                 + "🐾 Estoy interesado en adoptar a *" + mascota.getNombre() + "*.\n\n"

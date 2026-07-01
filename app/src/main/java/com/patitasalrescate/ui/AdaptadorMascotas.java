@@ -20,8 +20,8 @@ import com.patitasalrescate.controllers.management.ActividadPerfilMascota;
 import com.patitasalrescate.R;
 import com.patitasalrescate.data_access.DAOFavoritos;
 import com.patitasalrescate.data_access.DAOMascota;
-import com.patitasalrescate.data_access.SupabaseService;
 import com.patitasalrescate.model.Mascota;
+import com.patitasalrescate.utils.PatitasSessionManager;
 
 import java.util.List;
 
@@ -35,36 +35,35 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
     private String tipoUsuario;
 
     private DAOMascota daoMascota;
-    private SupabaseService supabaseService;
     private DAOFavoritos daoFavoritos;
+
     public AdaptadorMascotas(List<Mascota> lista, boolean esModoRefugio,
-                             Context context, String idUsuario,
-                             String tipoUsuario,
-                             DAOMascota dao, SupabaseService supabase) {
+                             Context context,
+                             DAOMascota dao) {
         this.lista = lista;
         this.esModoRefugio = esModoRefugio;
         this.context = context;
-        this.idUsuario = idUsuario;
-        this.tipoUsuario = tipoUsuario;
         this.daoMascota = dao;
-        this.supabaseService = supabase;
+        
+        PatitasSessionManager session = PatitasSessionManager.getInstance(context);
+        this.idUsuario = session.getUserId();
+        this.tipoUsuario = session.getUserType();
     }
+
     public AdaptadorMascotas(List<Mascota> lista,
                              Context context,
-                             String idUsuario,
                              DAOMascota dao,
-                             SupabaseService supabase,
                              DAOFavoritos daoFavoritos) {
         this.lista = lista;
         this.context = context;
-        this.idUsuario = idUsuario;
         this.daoMascota = dao;
-        this.supabaseService = supabase;
         this.daoFavoritos = daoFavoritos;
 
+        PatitasSessionManager session = PatitasSessionManager.getInstance(context);
+        this.idUsuario = session.getUserId();
+        this.tipoUsuario = session.getUserType();
         this.esModoFavoritos = true;
         this.esModoRefugio = false;
-        this.tipoUsuario = "ADOPTANTE";
     }
 
     @NonNull
@@ -122,17 +121,8 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
                 holder.btnRapido.setText("Eliminar Favoritos");
                 holder.btnRapido.setOnClickListener(v -> {
                     daoFavoritos.removeFavorito(idUsuario, m.getIdMascota());
-                    new Thread(() -> {
-                        try {
-                            supabaseService.eliminarFavorito(idUsuario, m.getIdMascota());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }).start();
-
                     lista.remove(holder.getAdapterPosition());
                     notifyItemRemoved(holder.getAdapterPosition());
-
                     mostrarToast("Eliminado de favoritos");
                 });
 
@@ -143,36 +133,20 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
             }
         }
     }
+
     private void marcarComoAdoptado(Mascota m, int pos) {
         m.setEstado("ADOPTADO");
         daoMascota.actualizar(m);
-
-        new Thread(() -> {
-            try {
-                supabaseService.actualizarEstadoMascota(m.getIdMascota(), "ADOPTADO");
-                supabaseService.aprobarAdopcionPorMascota(m.getIdMascota());
-                mostrarToast("¡Adopción Aprobada! 🐶");
-            } catch (Exception e) { e.printStackTrace(); }
-        }).start();
-
+        mostrarToast("¡Adopción Aprobada! 🐶");
         actualizarListaVisual(m, pos);
     }
 
     private void rechazarSolicitud(Mascota m, int pos) {
         m.setEstado("DISPONIBLE");
         daoMascota.actualizar(m);
-
-        new Thread(() -> {
-            try {
-                supabaseService.actualizarEstadoMascota(m.getIdMascota(), "DISPONIBLE");
-                supabaseService.rechazarAdopcionPorMascota(m.getIdMascota());
-                mostrarToast("Solicitud Rechazada ❌");
-            } catch (Exception e) { e.printStackTrace(); }
-        }).start();
-
+        mostrarToast("Solicitud Rechazada ❌");
         actualizarListaVisual(m, pos);
     }
-
 
     private void mostrarToast(String mensaje) {
         if (context instanceof Activity) {
@@ -192,8 +166,6 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
         Intent i = new Intent(context, ActividadPerfilMascota.class);
         i.putExtra("id_mascota_key", m.getIdMascota());
         i.putExtra("es_modo_edicion", editar);
-        i.putExtra(ActividadIniciarSesion.EXTRA_TIPO_USUARIO, tipoUsuario);
-        i.putExtra(ActividadIniciarSesion.EXTRA_ID_USUARIO, idUsuario);
         context.startActivity(i);
     }
 

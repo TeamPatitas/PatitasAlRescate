@@ -1,17 +1,25 @@
 package com.patitasalrescate.data_access;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import com.patitasalrescate.model.Adopcion;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DAOAdopcion {
-    public DAOAdopcion(Context context) {
+    private static List<Adopcion> mockAdopciones = new ArrayList<>();
 
-    }
+    public DAOAdopcion(Context context) {}
 
     public long insertar(Adopcion adopcion) {
-        //TODO: Hacer con api
-        return 0;
+        mockAdopciones.add(adopcion);
+        return 1;
+    }
+
+    public List<Adopcion> listarPorRefugio(String idRefugio) {
+        List<Adopcion> result = new ArrayList<>();
+        for (Adopcion a : mockAdopciones) {
+            if (a.getIdRefugio().equals(idRefugio)) result.add(a);
+        }
+        return result;
     }
 }

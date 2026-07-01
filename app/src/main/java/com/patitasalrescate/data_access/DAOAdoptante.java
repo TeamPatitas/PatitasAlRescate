@@ -1,43 +1,53 @@
 package com.patitasalrescate.data_access;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-
 import com.patitasalrescate.model.Adoptante;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class DAOAdoptante {
-    //TODO: Implementar con api
-    public DAOAdoptante(Context context) {
+    private static List<Adoptante> mockAdoptantes = new ArrayList<>();
 
+    static {
+        mockAdoptantes.add(new Adoptante("xd", "Luis", "ad@demo.com", "pass123", "987654321", 25, "Masculino"));
     }
 
+    public DAOAdoptante(Context context) {}
+
     public long insertar(Adoptante adoptante) {
-        return 0;
+        mockAdoptantes.add(adoptante);
+        return 1;
     }
 
     public List<Adoptante> listarTodos() {
-        return new ArrayList<>();
+        return new ArrayList<>(mockAdoptantes);
     }
 
     public Adoptante login(String correo, String passwordEncriptada) {
-
+        for (Adoptante a : mockAdoptantes) {
+            if (a.getCorreo().equals(correo) && a.getPassword().equals(passwordEncriptada)) return a;
+        }
         return null;
     }
 
     public int actualizar(Adoptante adoptante) {
+        for (int i = 0; i < mockAdoptantes.size(); i++) {
+            if (mockAdoptantes.get(i).getIdAdoptante().equals(adoptante.getIdAdoptante())) {
+                mockAdoptantes.set(i, adoptante);
+                return 1;
+            }
+        }
         return 0;
     }
 
     public void eliminar(String idAdoptante) {
-
+        mockAdoptantes.removeIf(a -> a.getIdAdoptante().equals(idAdoptante));
     }
 
     public boolean existeCorreo(String correo) {
-        return true;
+        for (Adoptante a : mockAdoptantes) {
+            if (a.getCorreo().equalsIgnoreCase(correo)) return true;
+        }
+        return false;
     }
 }
