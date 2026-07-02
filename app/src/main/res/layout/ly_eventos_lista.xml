@@ -5,13 +5,13 @@
     android:id="@+id/listar_eventos"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EFEBE9">
+    android:background="@color/fondo_crema">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarListarEventos"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/marronOscuro"
+        android:background="@color/color_navegacion_claro"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@android:drawable/ic_menu_revert"

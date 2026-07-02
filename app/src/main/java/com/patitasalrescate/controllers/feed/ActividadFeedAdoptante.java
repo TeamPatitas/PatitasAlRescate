@@ -17,9 +17,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.patitasalrescate.R;
 import com.patitasalrescate.controllers.lists.ActividadBusquedaPorFiltro;
-import com.patitasalrescate.controllers.lists.ActividadListarRefugios;
 import com.patitasalrescate.controllers.lists.ActividadMisFavoritos;
-
 import com.patitasalrescate.utils.PatitasSessionManager;
 import com.patitasalrescate.controllers.lists.ActividadEventosLista;
 
@@ -49,6 +47,14 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                
+                if (destination.getId() == R.id.fragmentInicioAdoptante) {
+                    getSupportActionBar().setTitle("Inicio");
+                } else if (destination.getId() == R.id.fragmentListarMascotas) {
+                    getSupportActionBar().setTitle("Mascotas");
+                } else if (destination.getId() == R.id.fragmentListarRefugios) {
+                    getSupportActionBar().setTitle("Refugios");
+                }
             }
         });
 
@@ -66,8 +72,7 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
             }
 
             if(item.getItemId()==R.id.itemListarRefugios){
-                i= new Intent(this, ActividadListarRefugios.class);
-                startActivity(i);
+                navigate(R.id.fragmentListarRefugios);
                 return true;
             }
             if(item.getItemId()==R.id.itemBuscarFiltro){

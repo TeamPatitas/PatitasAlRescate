@@ -5,14 +5,14 @@
     android:id="@+id/registrar_organizacion_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fondo_crema"
+    android:background="@color/fondo_pre_login"
     tools:context=".controllers.auth.ActividadRegistrarOrganizacion">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarRegistrarOrganizacion"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/marronPrimario"
+        android:background="@color/color_navegacion_claro"
         app:title="Registra tu Asociación 🐶"
         app:titleTextColor="@color/blanco"
         app:navigationIcon="@drawable/rj_inicio_refugio_24"
@@ -38,7 +38,7 @@
                 android:fontFamily="@font/chewy"
                 android:gravity="center"
                 android:text="Datos de tu asociación"
-                android:textColor="@color/marronOscuro"
+                android:textColor="@color/texto_titulo"
                 android:textSize="24sp" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -46,15 +46,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:hint="Nombre de la Organización"
+                android:hint="\t\t\t\tNombre de la Organización"
                 app:boxStrokeColor="@color/marronPrimario"
-                app:hintTextColor="@color/marronPrimario"
+                app:hintTextColor="@color/textoSecundario"
                 app:startIconDrawable="@drawable/rj_persona">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/rj_text_org_nombre"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_rounded"
+                    android:textColor="@color/texto_busqueda"
                     android:inputType="textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -69,15 +71,17 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="Dirección (Ej: Av. Perú 123, Cajamarca)"
+                    android:hint="\t\t\t\tDirección (Ej: Av. Perú 123...)"
                     app:boxStrokeColor="@color/marronPrimario"
-                    app:hintTextColor="@color/marronPrimario"
+                    app:hintTextColor="@color/textoSecundario"
                     app:startIconDrawable="@android:drawable/ic_dialog_map">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/rj_text_org_direccion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@drawable/bg_input_rounded"
+                        android:textColor="@color/texto_busqueda"
                         android:inputType="textPostalAddress" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -98,14 +102,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:hint="Celular / Teléfono"
+                android:hint="\t\t\t\tCelular / Teléfono"
                 app:boxStrokeColor="@color/marronPrimario"
+                app:hintTextColor="@color/textoSecundario"
                 app:startIconDrawable="@drawable/rj_telefono">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/rj_text_org_telefono"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_rounded"
+                    android:textColor="@color/texto_busqueda"
                     android:inputType="phone"
                     android:maxLength="9" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -116,7 +123,7 @@
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/chewy"
                 android:text="Logo / Foto del Refugio"
-                android:textColor="@color/marronOscuro"
+                android:textColor="@color/texto_instruccion_adaptable"
                 android:textSize="18sp" />
 
             <LinearLayout
@@ -153,14 +160,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:hint="Correo Electrónico"
+                android:hint="\t\t\t\tCorreo Electrónico"
                 app:boxStrokeColor="@color/marronPrimario"
+                app:hintTextColor="@color/textoSecundario"
                 app:startIconDrawable="@drawable/rj_correo">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/rj_text_org_correo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_rounded"
+                    android:textColor="@color/texto_busqueda"
                     android:inputType="textEmailAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -169,8 +179,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="30dp"
-                android:hint="Contraseña"
+                android:hint="\t\t\t\tContraseña"
                 app:boxStrokeColor="@color/marronPrimario"
+                app:hintTextColor="@color/textoSecundario"
                 app:passwordToggleEnabled="true"
                 app:startIconDrawable="@drawable/rj_candadonube">
 
@@ -178,6 +189,8 @@
                     android:id="@+id/rj_text_org_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_rounded"
+                    android:textColor="@color/texto_busqueda"
                     android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
 

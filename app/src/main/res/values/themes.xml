@@ -12,6 +12,13 @@
         <item name="android:textColorPrimary">@color/textoPrincipal</item>
         <item name="android:textColorSecondary">@color/textoSecundario</item>
 
+        <!-- Configuración de Toolbar para modo claro -->
+        <item name="toolbarStyle">@style/Widget.Patitas.Toolbar</item>
+    </style>
+
+    <style name="Widget.Patitas.Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="titleTextColor">@color/blanco</item>
     </style>
 
     <style name="Theme.PatitasAlRescate" parent="Base.Theme.PatitasAlRescate" />

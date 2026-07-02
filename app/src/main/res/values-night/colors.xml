@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- MODO NOCHE: Refinamiento Final -->
+    <color name="marronPrimario">#A88E83</color>
+    <color name="marronClaro">#A88E83</color>
+    <color name="marronOscuro">#211512</color>
+
+    <color name="fondo_pre_login">#211512</color>
+    <color name="fondo_post_login">#F5F5DC</color>
+    <color name="fondo_crema">#F5F5DC</color>
+    <color name="fondo_principal">#211512</color>
+
+    <!-- Tarjetas: Fondo marrón oscuro, letras blancas (se maneja en el layout) -->
+    <color name="superficie_card">#2D1B16</color>
+    <color name="naranajBajo">#2D1B16</color>
+
+    <!-- TEXTOS -->
+    <color name="textoPrincipal">#212121</color> <!-- Oscuro sobre fondo crema post-login -->
+    <color name="textoSecundario">#5D4037</color>
+
+    <!-- Texto específico para títulos sobre fondo crema en modo oscuro -->
+    <color name="texto_titulo_sobre_crema">#211512</color>
+
+    <!-- Letras CLARAS para los CardViews en modo oscuro -->
+    <color name="texto_card_oscuro">#FFFFFF</color>
+
+    <color name="blanco">#FFFFFF</color>
+    <color name="negro">#000000</color>
+    <color name="texto_titulo">#FFFFFF</color> <!-- Para fondos pre-login oscuros -->
+
+    <!-- INPUTS -->
+    <color name="fondo_input">#FFFFFF</color>
+    <color name="color_icono_claro">#5D4037</color>
+    <color name="texto_busqueda">#212121</color>
+
+    <color name="verde_persona">#8FB2B0</color>
+    <color name="naranja_asociacion">#FFAB91</color>
+
+    <!-- Color específico para cabeceras y menú en modo oscuro -->
+    <color name="color_navegacion_claro">#5D4037</color>
+    <color name="texto_instruccion_adaptable">#FFFFFF</color> <!-- blanco para modo oscuro -->
+</resources>
