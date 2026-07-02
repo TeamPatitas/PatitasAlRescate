@@ -16,7 +16,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.patitasalrescate.R;
-import com.patitasalrescate.controllers.lists.ActividadBusquedaPorFiltro;
 import com.patitasalrescate.controllers.lists.ActividadListarRefugios;
 import com.patitasalrescate.controllers.lists.ActividadMisFavoritos;
 
@@ -71,8 +70,7 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
                 return true;
             }
             if(item.getItemId()==R.id.itemBuscarFiltro){
-                i= new Intent(this, ActividadBusquedaPorFiltro.class);
-                startActivity(i);
+                navigate(R.id.fragmentBusqueda);
                 return true;
             }
             if (item.getItemId() == R.id.itemFavoritosAdoptante) {

@@ -1,15 +1,20 @@
 package com.patitasalrescate.controllers.lists;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,40 +26,42 @@ import com.patitasalrescate.ui.AdaptadorMascotas;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActividadBusquedaPorFiltro extends AppCompatActivity {
+public class FragmentBusqueda extends Fragment {
     private Spinner spFiltro;
     private EditText txtFiltro;
     private Button btnBuscar;
     private RecyclerView recycler;
     private DAOMascota daoMascota;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.ly_busqueda_por_filtro);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fg_busqueda, container, false);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.busquedafiltro), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(view.findViewById(R.id.busquedafiltro), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        spFiltro = findViewById(R.id.spFiltro);
-        txtFiltro = findViewById(R.id.txtFiltro);
-        btnBuscar = findViewById(R.id.btnBuscar);
-        recycler = findViewById(R.id.recycler_mascotas);
+        spFiltro = view.findViewById(R.id.spFiltro);
+        txtFiltro = view.findViewById(R.id.txtFiltro);
+        btnBuscar = view.findViewById(R.id.btnBuscar);
+        recycler = view.findViewById(R.id.recycler_mascotas);
 
-        recycler.setLayoutManager(new LinearLayoutManager(this));
-        daoMascota = new DAOMascota(this);
+        recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        daoMascota = new DAOMascota(getContext());
 
         ArrayAdapter<String> adapterSpinner = new ArrayAdapter<>(
-                this,
+                requireContext(),
                 android.R.layout.simple_spinner_dropdown_item,
-                new String[]{"Nombre","Especie","Raza","Sexo"}
+                new String[]{"Nombre", "Especie", "Raza", "Sexo"}
         );
         spFiltro.setAdapter(adapterSpinner);
 
         btnBuscar.setOnClickListener(v -> buscar());
+
+        return view;
     }
 
     private void buscar() {
@@ -62,7 +69,7 @@ public class ActividadBusquedaPorFiltro extends AppCompatActivity {
         String tipoFiltro = spFiltro.getSelectedItem().toString();
         List<Mascota> lista = daoMascota.listarTodos();
         List<Mascota> resultados = new ArrayList<>();
-        
+
         for (Mascota m : lista) {
             boolean coincide = false;
             switch (tipoFiltro) {
@@ -85,7 +92,7 @@ public class ActividadBusquedaPorFiltro extends AppCompatActivity {
         AdaptadorMascotas adapter = new AdaptadorMascotas(
                 resultados,
                 false,
-                this,
+                getContext(),
                 daoMascota
         );
         recycler.setAdapter(adapter);
