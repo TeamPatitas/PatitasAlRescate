@@ -11,6 +11,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.patitasalrescate.R;
@@ -29,7 +31,6 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
         setContentView(R.layout.ly_feed_adoptante);
 
         PatitasSessionManager session = PatitasSessionManager.getInstance(this);
-        String nombreAdoptante = session.getUserName();
         NavHostFragment navHost = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentFeedAdoptante);
 
         if(navHost != null) navController = navHost.getNavController();
@@ -40,19 +41,16 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
             return insets;
         });
 
-        if (nombreAdoptante == null || nombreAdoptante.isEmpty()) {
-            nombreAdoptante = "Adoptante Paraguayo";
-        }
-
         Toolbar toolbar = findViewById(R.id.toolbarInicioAdoptante);
         setSupportActionBar(toolbar);
-
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
-
-        toolbar.setTitle("Adoptante " + nombreAdoptante);
-        toolbar.setNavigationOnClickListener(v -> finish());
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            }
+        });
 
         BottomNavigationView menu = findViewById(R.id.menuInicioAdoptante);
         menu.setOnItemSelectedListener(item -> {

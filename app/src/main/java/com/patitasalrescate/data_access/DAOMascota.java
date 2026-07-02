@@ -10,10 +10,10 @@ public class DAOMascota {
     private static List<Mascota> mockMascotas = new ArrayList<>();
 
     static {
-        mockMascotas.add(new Mascota("1", "ref1", "Firulais", "Perro", "Labrador", "Macho", 24, "Juguetón", "Rescatado de la calle", Arrays.asList("https://images.dog.ceo/breeds/labrador/n02099712_1150.jpg"), "DISPONIBLE", 0));
-        mockMascotas.add(new Mascota("2", "ref1", "Luna", "Perro", "Golden Retriever", "Hembra", 12, "Tranquila", "Buscando un hogar amoroso", Arrays.asList("https://images.dog.ceo/breeds/retriever-golden/n02099601_3167.jpg"), "DISPONIBLE", 0));
-        mockMascotas.add(new Mascota("3", "ref2", "Michi", "Gato", "Siamés", "Macho", 6, "Curioso", "Muy cariñoso", Arrays.asList("https://placekitten.com/200/300"), "DISPONIBLE", 0));
-        mockMascotas.add(new Mascota("4", "ref2", "Pelusa", "Gato", "Persa", "Hembra", 18, "Diva", "Le gusta dormir mucho", Arrays.asList("https://placekitten.com/201/301"), "ADOPTADO", 0));
+        mockMascotas.add(new Mascota("1", "ref1", "Firulais", "Perro", "Labrador", "Macho", 24, "Juguetón", "Rescatado de la calle", Arrays.asList("https://i.pinimg.com/736x/62/3c/8c/623c8c53cbf622d885d2aa313a28998f.jpg"), "DISPONIBLE", 0));
+        mockMascotas.add(new Mascota("2", "ref1", "Luna", "Perro", "Golden Retriever", "Hembra", 12, "Tranquila", "Buscando un hogar amoroso", Arrays.asList("https://i.pinimg.com/736x/cc/ee/6f/ccee6fc7dd16ab23a121845e44f232a2.jpg"), "DISPONIBLE", 0));
+        mockMascotas.add(new Mascota("3", "ref2", "Michi", "Gato", "Siamés", "Macho", 6, "Curioso", "Muy cariñoso", Arrays.asList("https://i.pinimg.com/736x/e5/b5/84/e5b5845fd3c0ae43eb58403f792e46e5.jpg"), "DISPONIBLE", 0));
+        mockMascotas.add(new Mascota("4", "ref2", "Pelusa", "Gato", "Persa", "Hembra", 18, "Diva", "Le gusta dormir mucho", Arrays.asList("https://i.pinimg.com/736x/95/a6/16/95a6161034181b3e3d1ba391e6417096.jpg"), "ADOPTADO", 0));
     }
 
     public DAOMascota(Context context) {}

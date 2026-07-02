@@ -2,6 +2,7 @@ package com.patitasalrescate.controllers.feed;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -10,11 +11,6 @@ import android.view.ViewGroup;
 
 import com.patitasalrescate.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FragmentInicioAdoptante#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class FragmentInicioAdoptante extends Fragment {
     public FragmentInicioAdoptante() {
         // Required empty public constructor
@@ -31,6 +27,7 @@ public class FragmentInicioAdoptante extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        updateTitle("Inicio");
         if (getArguments() != null) {
 //            mParam1 = getArguments().getString(ARG_PARAM1);
 //            mParam2 = getArguments().getString(ARG_PARAM2);
@@ -42,5 +39,14 @@ public class FragmentInicioAdoptante extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fg_inicio_adoptante, container, false);
+    }
+
+    private void updateTitle(String title) {
+        if (getActivity() instanceof AppCompatActivity) {
+            AppCompatActivity activity = (AppCompatActivity) getActivity();
+            if (activity.getSupportActionBar() != null) {
+                activity.getSupportActionBar().setTitle(title);
+            }
+        }
     }
 }

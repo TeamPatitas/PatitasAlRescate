@@ -75,7 +75,7 @@ public class ActividadIniciarSesion extends AppCompatActivity {
             return;
         }
 
-        Toast.makeText(this, "Credenciales incorrectas (Demo: ad@demo.com / pass123)", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show();
     }
 
     public void irAPantallaPrincipal() {
