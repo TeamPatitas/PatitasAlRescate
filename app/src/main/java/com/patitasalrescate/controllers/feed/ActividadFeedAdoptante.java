@@ -56,19 +56,15 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
         menu.setOnItemSelectedListener(item -> {
             Intent i;
             if (item.getItemId() == R.id.itemInicioAdoptante) {
-                NavDestination destinoActual = navController.getCurrentDestination();
+                navigate(R.id.fragmentInicioAdoptante);
+                return true;
+            }
 
-                if (destinoActual != null && destinoActual.getId() != R.id.fragmentInicioAdoptante) {
-                    navController.navigate(R.id.fragmentInicioAdoptante);
-                }
-                return true;
-            }
             if (item.getItemId() == R.id.itemListarMascotasAdoptante) {
-                Bundle args = new Bundle();
-                args.putBoolean("es_refugio_key", false);
-                navController.navigate(R.id.fragmentListarMascotas, args);
+                navigate(R.id.fragmentListarMascotas);
                 return true;
             }
+
             if(item.getItemId()==R.id.itemListarRefugios){
                 i= new Intent(this, ActividadListarRefugios.class);
                 startActivity(i);
@@ -93,5 +89,13 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
 
             return false;
         });
+    }
+
+    public void navigate(int id) {
+        NavDestination destinoActual = navController.getCurrentDestination();
+
+        if (destinoActual != null && destinoActual.getId() != id) {
+            navController.navigate(id);
+        }
     }
 }
