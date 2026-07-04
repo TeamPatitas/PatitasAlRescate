@@ -30,7 +30,7 @@ public class ActividadMisFavoritos extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ly_mis_favoritos);
+        setContentView(R.layout.fg_favoritos);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.misfavoritos), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
