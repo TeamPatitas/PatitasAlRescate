@@ -1,13 +1,17 @@
 package com.patitasalrescate.controllers.lists;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,35 +24,41 @@ import com.patitasalrescate.ui.AdaptadorMascotas;
 
 import java.util.List;
 
-public class ActividadMisFavoritos extends AppCompatActivity {
+public class FragmentFavoritos extends Fragment {
     private RecyclerView recycler;
     private TextView txtVacio;
     private DAOFavoritos daoFavoritos;
     private DAOMascota daoMascota;
     private String idUsuario;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fg_favoritos);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fg_favoritos, container, false);
+    }
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.misfavoritos), (v, insets) -> {
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        ViewCompat.setOnApplyWindowInsetsListener(view.findViewById(R.id.misfavoritos), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        recycler = findViewById(R.id.recycler_mascotas);
-        txtVacio = findViewById(R.id.txt_lista_vacia);
+        recycler = view.findViewById(R.id.recycler_mascotas);
+        txtVacio = view.findViewById(R.id.txt_lista_vacia);
+        recycler.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        recycler.setLayoutManager(new LinearLayoutManager(this));
+        daoFavoritos = new DAOFavoritos(requireContext());
+        daoMascota = new DAOMascota(requireContext());
 
-        daoFavoritos = new DAOFavoritos(this);
-        daoMascota = new DAOMascota(this);
-
-        idUsuario = PatitasSessionManager.getInstance(this).getUserId();
+        idUsuario = PatitasSessionManager.getInstance(requireContext()).getUserId();
         if (idUsuario == null || idUsuario.isEmpty()) {
-            finish();
+            if (getActivity() != null) {
+                getActivity().onBackPressed();
+            }
             return;
         }
         cargarFavoritos();
@@ -69,7 +79,7 @@ public class ActividadMisFavoritos extends AppCompatActivity {
 
         AdaptadorMascotas adapter = new AdaptadorMascotas(
                 favoritos,
-                this,
+                requireContext(),
                 daoMascota,
                 daoFavoritos
         );
@@ -77,7 +87,7 @@ public class ActividadMisFavoritos extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         cargarFavoritos();
     }
