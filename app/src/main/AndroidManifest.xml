@@ -46,9 +46,6 @@
             android:name=".controllers.lists.ActividadBusquedaPorFiltro"
             android:exported="false" />
         <activity
-            android:name=".controllers.lists.ActividadMisFavoritos"
-            android:exported="false" />
-        <activity
             android:name=".controllers.lists.FragmentListarMascotas"
             android:exported="false" />
         <activity
