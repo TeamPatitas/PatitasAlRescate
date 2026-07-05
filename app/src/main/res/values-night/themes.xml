@@ -2,13 +2,25 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="Base.Theme.PatitasAlRescate" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Colores Principales -->
+        <item name="colorPrimary">@color/marronPrimario</item>
+        <item name="colorOnPrimary">#211512</item>
+        <item name="colorPrimaryContainer">@color/marronClaro</item>
+        <item name="colorOnPrimaryContainer">@color/textoPrincipal</item>
 
-        <item name="colorPrimary">@color/marronClaro</item>
-        <item name="colorOnPrimary">@color/marronOscuro</item>
-        <item name="colorPrimaryContainer">@color/marronOscuro</item>
-        <item name="colorOnPrimaryContainer">@color/marronClaro</item>
+        <!-- Colores de Superficie y Fondo -->
+        <item name="android:windowBackground">@color/fondo_principal</item>
+        <item name="colorSurface">@color/superficie_card</item>
+        <item name="colorOnSurface">@color/textoPrincipal</item>
+
+        <!-- Barra de Estado -->
         <item name="android:statusBarColor">#000000</item>
-        <item name="android:windowLightStatusBar">false</item> </style>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <!-- Colores de Texto -->
+        <item name="android:textColorPrimary">@color/textoPrincipal</item>
+        <item name="android:textColorSecondary">@color/textoSecundario</item>
+    </style>
 
     <style name="Theme.PatitasAlRescate" parent="Base.Theme.PatitasAlRescate" />
 </resources>

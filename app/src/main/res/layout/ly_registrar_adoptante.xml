@@ -6,14 +6,14 @@
     android:id="@+id/registrar_adoptante"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fondo_crema"
+    android:background="@color/fondo_pre_login"
     tools:context=".controllers.auth.ActividadRegistrarAdoptante">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarRegistrarAdoptante"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/marronPrimario"
+        android:background="@color/color_navegacion_claro"
         app:title="Únete como adoptante"
         app:titleTextColor="@color/blanco"
         app:navigationIcon="@drawable/rj_inicio_refugio_24"
@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/chewy"
                 android:text="Crea tu perfil"
-                android:textColor="@color/marronOscuro"
+                android:textColor="@color/texto_titulo"
                 android:textSize="24sp"
                 android:layout_marginBottom="20dp"
                 android:gravity="center" />
@@ -48,7 +48,7 @@
                 android:layout_marginBottom="12dp"
                 android:hint="\t\t\t\tTu nombre completo"
                 app:boxStrokeColor="@color/marronPrimario"
-                app:hintTextColor="@color/marronPrimario"
+                app:hintTextColor="@color/textoSecundario"
                 app:startIconDrawable="@drawable/rj_persona">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -56,6 +56,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_input_rounded"
+                    android:textColor="@color/texto_busqueda"
                     android:inputType="textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -66,6 +67,7 @@
                 android:layout_marginBottom="12dp"
                 android:hint="\t\t\t\tTeléfono"
                 app:boxStrokeColor="@color/marronPrimario"
+                app:hintTextColor="@color/textoSecundario"
                 app:startIconDrawable="@drawable/rj_telefono">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -73,6 +75,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_input_rounded"
+                    android:textColor="@color/texto_busqueda"
                     android:inputType="phone"
                     android:maxLength="9" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -91,7 +94,7 @@
                     android:layout_weight="1"
                     android:hint="Edad"
                     app:boxStrokeColor="@color/marronPrimario"
-                    app:hintTextColor="@color/marronPrimario">
+                    app:hintTextColor="@color/textoSecundario">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/rj_text_adopt_edad"
@@ -99,6 +102,7 @@
                         android:layout_height="wrap_content"
                         android:inputType="number"
                         android:background="@drawable/bg_input_rounded"
+                        android:textColor="@color/texto_busqueda"
                         android:maxLength="3" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -115,11 +119,11 @@
                         android:layout_height="wrap_content"
                         android:text="Sexo"
                         android:textSize="12sp"
-                        android:textColor="@color/marronPrimario"
+                        android:textColor="@color/textoSecundario"
                         android:layout_marginStart="12dp"
                         android:layout_marginBottom="-8dp"
                         android:elevation="2dp"
-                        android:background="@color/fondo_crema"
+                        android:background="@color/fondo_principal"
                         android:paddingHorizontal="4dp"/>
 
                     <Spinner
@@ -136,9 +140,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:background="@drawable/bg_input_rounded"
                 android:hint="\t\t\t\tCorreo"
                 app:boxStrokeColor="@color/marronPrimario"
+                app:hintTextColor="@color/textoSecundario"
                 app:startIconDrawable="@drawable/rj_correo"
                 >
                 <!--app:startIconDrawable="@android:drawable/ic_dialog_email"-->
@@ -147,6 +151,8 @@
                     android:id="@+id/rj_text_adopt_correo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_rounded"
+                    android:textColor="@color/texto_busqueda"
                     android:inputType="textEmailAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -156,8 +162,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="30dp"
                 android:hint="\t\t\t\tContraseña"
-                android:background="@drawable/bg_input_rounded"
                 app:boxStrokeColor="@color/marronPrimario"
+                app:hintTextColor="@color/textoSecundario"
                 app:passwordToggleEnabled="true"
                 app:startIconDrawable="@drawable/rj_candadonube">
 
@@ -165,6 +171,8 @@
                     android:id="@+id/rj_text_adopt_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_rounded"
+                    android:textColor="@color/texto_busqueda"
                     android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
 

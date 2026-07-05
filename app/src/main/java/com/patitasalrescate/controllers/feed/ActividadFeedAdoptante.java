@@ -16,8 +16,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.patitasalrescate.R;
-import com.patitasalrescate.controllers.lists.ActividadListarRefugios;
-
 import com.patitasalrescate.utils.PatitasSessionManager;
 import com.patitasalrescate.controllers.lists.ActividadEventosLista;
 
@@ -64,9 +62,7 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
             }
 
             if(item.getItemId()==R.id.itemListarRefugios){
-                i= new Intent(this, ActividadListarRefugios.class);
-                startActivity(i);
-                return true;
+
             }
             if(item.getItemId()==R.id.itemBuscarFiltro){
                 navigate(R.id.fragmentBusqueda);

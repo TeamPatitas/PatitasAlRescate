@@ -10,9 +10,25 @@
     <color name="divisor">#BDBDBD</color>
     <color name="negro">#000000</color>
 
+    <!-- FONDOS ADAPTABLES -->
+    <color name="fondo_pre_login">#F5F5DC</color> <!-- Cambia según el tema -->
+    <color name="fondo_post_login">#F5F5DC</color> <!-- Siempre Crema -->
     <color name="fondo_crema">#F5F5DC</color>
+    <color name="fondo_principal">#F5F5F5</color>
+
     <color name="verde_persona">#8FB2B0</color>
     <color name="naranja_asociacion">#D48857</color>
     <color name="texto_titulo">#0A312F</color>
     <color name="naranajBajo">#ECE6E2</color>
+
+    <color name="superficie_card">#FFFFFF</color>
+    <color name="fondo_input">#FFFFFF</color>
+    <color name="color_icono_claro">#5D4037</color>
+    <color name="texto_busqueda">#212121</color>
+
+    <!-- Color específico para cabeceras y menú en modo claro -->
+    <color name="color_navegacion_claro">#5D4037</color>
+    <color name="texto_titulo_sobre_crema">#0A312F</color>
+    <color name="texto_card_oscuro">#212121</color>
+    <color name="texto_instruccion_adaptable">#0A312F</color> <!-- texto_titulo para modo claro -->
 </resources>
