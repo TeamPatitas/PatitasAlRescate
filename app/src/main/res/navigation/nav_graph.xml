@@ -28,4 +28,9 @@
         android:name="com.patitasalrescate.controllers.lists.FragmentBusqueda"
         android:label="fg_busqueda"
         tools:layout="@layout/fg_busqueda" />
+    <fragment
+        android:id="@+id/fragmentFavoritos"
+        android:name="com.patitasalrescate.controllers.lists.FragmentFavoritos"
+        android:label="fg_favoritos"
+        tools:layout="@layout/fg_favoritos" />
 </navigation>

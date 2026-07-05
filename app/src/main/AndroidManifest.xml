@@ -43,7 +43,7 @@
             android:name=".controllers.lists.ActividadListarRefugios"
             android:exported="false" />
         <activity
-            android:name=".controllers.lists.ActividadMisFavoritos"
+            android:name=".controllers.lists.ActividadBusquedaPorFiltro"
             android:exported="false" />
         <activity
             android:name=".controllers.feed.ActividadRegistroExitoso"
