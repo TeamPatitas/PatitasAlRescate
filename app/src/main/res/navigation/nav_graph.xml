@@ -22,4 +22,10 @@
         android:name="com.patitasalrescate.controllers.feed.FragmentInicioRefugio"
         android:label="fg_inicio_refugio"
         tools:layout="@layout/fg_inicio_refugio" />
+
+    <fragment
+        android:id="@+id/fragmentFavoritos"
+        android:name="com.patitasalrescate.controllers.lists.FragmentFavoritos"
+        android:label="fg_favoritos"
+        tools:layout="@layout/fg_favoritos" />
 </navigation>
