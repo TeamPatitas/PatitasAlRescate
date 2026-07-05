@@ -11,9 +11,6 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.patitasalrescate.R;
 import com.patitasalrescate.utils.PatitasSessionManager;
@@ -62,7 +59,8 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
             }
 
             if(item.getItemId()==R.id.itemListarRefugios){
-
+                navigate(R.id.fragmentListarRefugios);
+                return true;
             }
             if(item.getItemId()==R.id.itemBuscarFiltro){
                 navigate(R.id.fragmentBusqueda);

@@ -11,6 +11,7 @@ import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -60,7 +61,7 @@ public class FragmentBusqueda extends Fragment {
         spFiltro.setAdapter(adapterSpinner);
 
         btnBuscar.setOnClickListener(v -> buscar());
-
+        updateTitle("Búsqueda");
         return view;
     }
 
@@ -96,5 +97,14 @@ public class FragmentBusqueda extends Fragment {
                 daoMascota
         );
         recycler.setAdapter(adapter);
+    }
+
+    private void updateTitle(String title) {
+        if (getActivity() instanceof AppCompatActivity) {
+            AppCompatActivity activity = (AppCompatActivity) getActivity();
+            if (activity.getSupportActionBar() != null) {
+                activity.getSupportActionBar().setTitle(title);
+            }
+        }
     }
 }
