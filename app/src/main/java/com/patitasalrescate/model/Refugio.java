@@ -15,11 +15,14 @@ public class Refugio {
 
     @SerializedName("password")
     private String password;
+
     @SerializedName(value = "num_celular", alternate = {"numCelular"})
     private String numCelular;
 
     @SerializedName(value = "foto", alternate = {"fotoUrl", "FotoUrl"})
     private String fotoUrl;
+
+    private transient long lastSync;   // ← Agregado (transient para no enviarlo a la API si no es necesario)
 
     public Refugio() {}
 
@@ -34,7 +37,10 @@ public class Refugio {
         this.password = password;
         this.numCelular = numCelular;
         this.fotoUrl = fotoUrl;
+        this.lastSync = lastSync;
     }
+
+    // Getters y Setters completos
     public String getIdRefugio() { return idRefugio; }
     public void setIdRefugio(String idRefugio) { this.idRefugio = idRefugio; }
 
@@ -61,4 +67,7 @@ public class Refugio {
 
     public String getFotoUrl() { return fotoUrl; }
     public void setFotoUrl(String fotoUrl) { this.fotoUrl = fotoUrl; }
+
+    public long getLastSync() { return lastSync; }
+    public void setLastSync(long lastSync) { this.lastSync = lastSync; }
 }

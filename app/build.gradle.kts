@@ -54,6 +54,12 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
 // Glide (ya lo tenías, pero por si acaso)
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    // Room para caché persistente
+    implementation ("androidx.room:room-runtime:2.6.1")
+    annotationProcessor ("androidx.room:room-compiler:2.6.1")
+
+// WorkManager para sincronización en segundo plano (opcional pero recomendado)
+    implementation ("androidx.work:work-runtime:2.9.1")
     
 
 }
