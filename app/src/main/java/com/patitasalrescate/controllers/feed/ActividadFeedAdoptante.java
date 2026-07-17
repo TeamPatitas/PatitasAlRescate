@@ -19,7 +19,6 @@ import com.patitasalrescate.R;
 import com.patitasalrescate.controllers.lists.ActividadBusquedaPorFiltro;
 import com.patitasalrescate.controllers.lists.ActividadMisFavoritos;
 import com.patitasalrescate.utils.PatitasSessionManager;
-import com.patitasalrescate.controllers.lists.ActividadEventosLista;
 
 public class ActividadFeedAdoptante extends AppCompatActivity {
     private NavController navController;
@@ -54,6 +53,8 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
                     getSupportActionBar().setTitle("Mascotas");
                 } else if (destination.getId() == R.id.fragmentListarRefugios) {
                     getSupportActionBar().setTitle("Refugios");
+                } else if (destination.getId() == R.id.fragmentEventosLista) {
+                    getSupportActionBar().setTitle("Eventos");
                 }
             }
         });
@@ -87,8 +88,7 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
             }
 
             if (item.getItemId() == R.id.itemEventosAdoptante) {
-                i = new Intent(this, ActividadEventosLista.class);
-                startActivity(i);
+                navigate(R.id.fragmentEventosLista);
                 return true;
             }
 

@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="24dp"
-    android:background="@color/fondo_principal">
+    android:background="@color/fondo_post_login">
 
     <TextView
         android:id="@+id/txtTituloAdopcion"
@@ -16,7 +16,7 @@
         android:text="¡Estás a un paso!"
         android:textSize="28sp"
         android:textStyle="bold"
-        android:textColor="@color/textoPrincipal"
+        android:textColor="@color/texto_titulo_sobre_crema"
         android:gravity="center"
         android:layout_marginTop="24dp"
         app:layout_constraintTop_toTopOf="parent"
