@@ -1,9 +1,13 @@
 package com.patitasalrescate.controllers.management;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -11,14 +15,11 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class ActividadRegistrarMascota extends AppCompatActivity {
+public class FragmentRegistrarMascota extends Fragment {
 
     private EditText txtNombre, txtEdad, txtTemperamento, txtHistoria;
     private EditText txtOtraEspecie, txtOtraRaza;
@@ -54,55 +55,47 @@ public class ActividadRegistrarMascota extends AppCompatActivity {
     private final String[] razasConejo = {"Seleccione...", "Cabeza de León", "Belier", "Otro"};
     private final String[] sexos = {"Macho", "Hembra"};
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.ly_registrar_mascota);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.registrar_mascota_root), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fg_registrar_mascota, container, false);
 
-        daoMascota = new DAOMascota(this);
+        daoMascota = new DAOMascota(requireContext());
 
-        txtNombre = findViewById(R.id.txt_reg_nombre_mascota);
-        txtEdad = findViewById(R.id.txt_reg_edad);
-        txtTemperamento = findViewById(R.id.txt_reg_temperamento);
-        txtHistoria = findViewById(R.id.txt_reg_historia);
+        txtNombre = view.findViewById(R.id.txt_reg_nombre_mascota);
+        txtEdad = view.findViewById(R.id.txt_reg_edad);
+        txtTemperamento = view.findViewById(R.id.txt_reg_temperamento);
+        txtHistoria = view.findViewById(R.id.txt_reg_historia);
 
-        spinnerEspecie = findViewById(R.id.spinner_especie);
-        spinnerRaza = findViewById(R.id.spinner_raza);
-        spinnerSexo = findViewById(R.id.spinner_sexo);
+        spinnerEspecie = view.findViewById(R.id.spinner_especie);
+        spinnerRaza = view.findViewById(R.id.spinner_raza);
+        spinnerSexo = view.findViewById(R.id.spinner_sexo);
 
-        txtOtraEspecie = findViewById(R.id.txt_otra_especie);
-        txtOtraRaza = findViewById(R.id.txt_otra_raza);
-        lyOtraEspecie = findViewById(R.id.ly_otra_especie);
-        lyOtraRaza = findViewById(R.id.ly_otra_raza);
+        txtOtraEspecie = view.findViewById(R.id.txt_otra_especie);
+        txtOtraRaza = view.findViewById(R.id.txt_otra_raza);
+        lyOtraEspecie = view.findViewById(R.id.ly_otra_especie);
+        lyOtraRaza = view.findViewById(R.id.ly_otra_raza);
 
-        btnSeleccionarFotos = findViewById(R.id.btn_seleccionar_fotos);
-        btnGuardar = findViewById(R.id.btn_guardar_mascota);
-        recyclerFotosPreview = findViewById(R.id.recycler_fotos_preview);
+        btnSeleccionarFotos = view.findViewById(R.id.btn_seleccionar_fotos);
+        btnGuardar = view.findViewById(R.id.btn_guardar_mascota);
+        recyclerFotosPreview = view.findViewById(R.id.recycler_fotos_preview);
 
-        recyclerFotosPreview.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        recyclerFotosPreview.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerFotosPreview.setAdapter(new AdaptadorFotosPreview(urisFotosSeleccionadas));
         configurarLauncherFotos();
-
-        Toolbar tlbregistrarMascota = findViewById(R.id.toolbarRegistrarMascota);
-        setSupportActionBar(tlbregistrarMascota);
-        if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         configurarSpinners();
 
         btnGuardar.setOnClickListener(v -> registrarMascota());
+
+        return view;
     }
 
     private void configurarSpinners() {
-        ArrayAdapter<String> adapterSexo = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, sexos);
+        ArrayAdapter<String> adapterSexo = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, sexos);
         spinnerSexo.setAdapter(adapterSexo);
 
-        ArrayAdapter<String> adapterEspecie = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, especies);
+        ArrayAdapter<String> adapterEspecie = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, especies);
         spinnerEspecie.setAdapter(adapterEspecie);
 
         spinnerEspecie.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -146,7 +139,7 @@ public class ActividadRegistrarMascota extends AppCompatActivity {
             default: razas = new String[]{}; break;
         }
 
-        ArrayAdapter<String> adapterRaza = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, razas);
+        ArrayAdapter<String> adapterRaza = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, razas);
         spinnerRaza.setAdapter(adapterRaza);
     }
 
@@ -160,7 +153,7 @@ public class ActividadRegistrarMascota extends AppCompatActivity {
         String raza = "";
 
         if (especie.equals("Seleccione...")) {
-            Toast.makeText(this, "Selecciona una especie", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Selecciona una especie", Toast.LENGTH_SHORT).show();
             return;
         }
         if (especie.equals("Otro")) {
@@ -171,7 +164,7 @@ public class ActividadRegistrarMascota extends AppCompatActivity {
                 raza = spinnerRaza.getSelectedItem().toString();
             }
             if (raza.equals("Seleccione...")) {
-                Toast.makeText(this, "Selecciona una raza", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Selecciona una raza", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (raza.equals("Otro")) {
@@ -180,7 +173,7 @@ public class ActividadRegistrarMascota extends AppCompatActivity {
         }
 
         if (nombre.isEmpty() || especie.isEmpty() || raza.isEmpty()) {
-            Toast.makeText(this, "Faltan datos obligatorios", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Faltan datos obligatorios", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -188,11 +181,11 @@ public class ActividadRegistrarMascota extends AppCompatActivity {
         try {
             edad = Integer.parseInt(edadStr);
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "Edad inválida", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Edad inválida", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String idRefugio = PatitasSessionManager.getInstance(this).getUserId();
+        String idRefugio = PatitasSessionManager.getInstance(requireContext()).getUserId();
         
         List<String> fotosMock = new ArrayList<>();
         fotosMock.add("https://images.dog.ceo/breeds/labrador/n02099712_1150.jpg");
@@ -204,8 +197,11 @@ public class ActividadRegistrarMascota extends AppCompatActivity {
         );
 
         daoMascota.insertar(nuevaMascota);
-        Toast.makeText(this, "¡Mascota registrada exitosamente (Demo)!", Toast.LENGTH_SHORT).show();
-        finish();
+        Toast.makeText(requireContext(), "¡Mascota registrada exitosamente (Demo)!", Toast.LENGTH_SHORT).show();
+        
+        if (getActivity() != null) {
+            getActivity().getOnBackPressedDispatcher().onBackPressed();
+        }
     }
 
     private void configurarLauncherFotos() {
@@ -217,7 +213,9 @@ public class ActividadRegistrarMascota extends AppCompatActivity {
                 } else if (result.getData().getData() != null) {
                     urisFotosSeleccionadas.add(result.getData().getData());
                 }
-                recyclerFotosPreview.getAdapter().notifyDataSetChanged();
+                if (recyclerFotosPreview.getAdapter() != null) {
+                    recyclerFotosPreview.getAdapter().notifyDataSetChanged();
+                }
             }
         });
 

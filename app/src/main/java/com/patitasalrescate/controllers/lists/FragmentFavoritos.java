@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -62,6 +63,7 @@ public class FragmentFavoritos extends Fragment {
             return;
         }
         cargarFavoritos();
+        updateTitle("Mis Favoritos");
     }
 
     private void cargarFavoritos() {
@@ -90,5 +92,14 @@ public class FragmentFavoritos extends Fragment {
     public void onResume() {
         super.onResume();
         cargarFavoritos();
+    }
+
+    private void updateTitle(String title) {
+        if (getActivity() instanceof AppCompatActivity) {
+            AppCompatActivity activity = (AppCompatActivity) getActivity();
+            if (activity.getSupportActionBar() != null) {
+                activity.getSupportActionBar().setTitle(title);
+            }
+        }
     }
 }

@@ -5,8 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/iniciarsesion"
     android:layout_width="match_parent"
-
     android:layout_height="match_parent"
+    android:background="@color/fondo_pre_login"
     tools:context=".controllers.auth.ActividadIniciarSesion">
 
 
@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
 
-        android:background="@color/marronPrimario"
+        android:background="@color/color_navegacion_claro"
         app:title="Iniciar Sesión"
         app:titleTextColor="@color/blanco"
         app:navigationIcon="@drawable/rj_inicio_refugio_24"
@@ -46,7 +46,7 @@
             android:layout_marginBottom="8dp"
             android:fontFamily="@font/chewy"
             android:text="¡Hola de nuevo!"
-            android:textColor="@color/marronOscuro"
+            android:textColor="@color/texto_titulo"
             android:textSize="26sp" />
 
         <TextView
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
             android:text="Ingresa tus datos para continuar"
-            android:textColor="@color/texto_titulo" />
+            android:textColor="@color/texto_instruccion_adaptable" />
 
         <!-- Campo de entrada para el correo electrónico -->
         <EditText
@@ -66,6 +66,8 @@
             android:drawableStart="@drawable/rj_correo"
             android:drawablePadding="12dp"
             android:hint="Correo Electrónico"
+            android:textColor="@color/texto_busqueda"
+            android:textColorHint="@color/textoSecundario"
             android:inputType="textEmailAddress"
             android:paddingHorizontal="16dp" />
 

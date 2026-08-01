@@ -28,9 +28,28 @@
         android:name="com.patitasalrescate.controllers.lists.FragmentBusqueda"
         android:label="fg_busqueda"
         tools:layout="@layout/fg_busqueda" />
+
     <fragment
         android:id="@+id/fragmentFavoritos"
         android:name="com.patitasalrescate.controllers.lists.FragmentFavoritos"
         android:label="fg_favoritos"
         tools:layout="@layout/fg_favoritos" />
+
+    <fragment
+        android:id="@+id/fragmentListarRefugios"
+        android:name="com.patitasalrescate.controllers.lists.FragmentListarRefugios"
+        android:label="fg_listar_refugios"
+        tools:layout="@layout/fg_listar_refugios" />
+
+    <fragment
+        android:id="@+id/fragmentEventosLista"
+        android:name="com.patitasalrescate.controllers.lists.FragmentEventosLista"
+        android:label="fg_eventos_lista"
+        tools:layout="@layout/fg_eventos_lista" />
+
+    <fragment
+        android:id="@+id/fragmentRegistrarMascota"
+        android:name="com.patitasalrescate.controllers.management.FragmentRegistrarMascota"
+        android:label="fg_registrar_mascota"
+        tools:layout="@layout/fg_registrar_mascota" />
 </navigation>

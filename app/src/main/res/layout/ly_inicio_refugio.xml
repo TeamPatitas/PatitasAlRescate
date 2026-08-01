@@ -6,13 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".controllers.feed.ActividadFeedRefugio"
-    android:background="@color/blanco">
+    android:background="@color/fondo_post_login">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarInicioRefugio"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="@color/color_navegacion_claro"
         android:fontFamily="@font/chewy"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
@@ -26,7 +26,7 @@
         android:id="@+id/menuInicioRefugio"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@color/marronPrimario"
+        android:background="@color/color_navegacion_claro"
         app:itemIconTint="@color/blanco"
         app:itemTextColor="@color/blanco"
         app:layout_constraintBottom_toBottomOf="parent"
