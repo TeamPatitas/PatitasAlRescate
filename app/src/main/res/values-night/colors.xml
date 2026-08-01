@@ -10,33 +10,27 @@
     <color name="fondo_crema">#F5F5DC</color>
     <color name="fondo_principal">#211512</color>
 
-    <!-- Tarjetas: Fondo marrón oscuro, letras blancas (se maneja en el layout) -->
+    <!-- Tarjetas: Fondo chocolate, letras blancas -->
     <color name="superficie_card">#2D1B16</color>
     <color name="naranajBajo">#2D1B16</color>
 
-    <!-- TEXTOS -->
-    <color name="textoPrincipal">#212121</color> <!-- Oscuro sobre fondo crema post-login -->
+    <!-- TEXTOS SOBRE CREMA -->
+    <color name="textoPrincipal">#212121</color>
     <color name="textoSecundario">#5D4037</color>
-
-    <!-- Texto específico para títulos sobre fondo crema en modo oscuro -->
     <color name="texto_titulo_sobre_crema">#211512</color>
-
-    <!-- Letras CLARAS para los CardViews en modo oscuro -->
     <color name="texto_card_oscuro">#FFFFFF</color>
 
+    <!-- TEXTOS SOBRE OSCURO -->
     <color name="blanco">#FFFFFF</color>
     <color name="negro">#000000</color>
-    <color name="texto_titulo">#FFFFFF</color> <!-- Para fondos pre-login oscuros -->
+    <color name="texto_titulo">#FFFFFF</color>
+    <color name="texto_instruccion_adaptable">#FFFFFF</color>
 
     <!-- INPUTS -->
     <color name="fondo_input">#FFFFFF</color>
     <color name="color_icono_claro">#5D4037</color>
     <color name="texto_busqueda">#212121</color>
 
-    <color name="verde_persona">#8FB2B0</color>
-    <color name="naranja_asociacion">#FFAB91</color>
-
-    <!-- Color específico para cabeceras y menú en modo oscuro -->
-    <color name="color_navegacion_claro">#5D4037</color>
-    <color name="texto_instruccion_adaptable">#FFFFFF</color> <!-- blanco para modo oscuro -->
+    <!-- Configuración para cabeceras y menú (Modo Oscuro) -->
+    <color name="color_navegacion_claro">#211512</color>
 </resources>
