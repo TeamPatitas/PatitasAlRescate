@@ -13,7 +13,6 @@ import androidx.navigation.NavDestination;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.patitasalrescate.MainActivity;
 import com.patitasalrescate.R;
 import com.patitasalrescate.utils.PatitasSessionManager;
 
@@ -90,13 +89,6 @@ public class ActividadFeedRefugio extends AppCompatActivity {
                 return true;
             }
 
-            if (menuItem.getItemId() == R.id.itemSalirRefugio) {
-                session.logout();
-                oIntento = new Intent(this, MainActivity.class);
-                oIntento.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(oIntento);
-                return true;
-            }
             return false;
         });
     }

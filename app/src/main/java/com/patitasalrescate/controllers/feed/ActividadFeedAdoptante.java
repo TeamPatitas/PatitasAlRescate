@@ -11,6 +11,12 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+
+import android.view.Menu;
+import android.view.MenuItem;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.patitasalrescate.R;
 import com.patitasalrescate.utils.PatitasSessionManager;
@@ -71,10 +77,6 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
                 navigate(R.id.fragmentListarRefugios);
                 return true;
             }
-            if(item.getItemId()==R.id.itemBuscarFiltro){
-                navigate(R.id.fragmentBusqueda);
-                return true;
-            }
             if (item.getItemId() == R.id.itemFavoritosAdoptante) {
                 navigate(R.id.fragmentFavoritos);
                 return true;
@@ -87,6 +89,21 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
 
             return false;
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_toolbar_adoptante, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_search) {
+            navigate(R.id.fragmentBusqueda);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void navigate(int id) {
