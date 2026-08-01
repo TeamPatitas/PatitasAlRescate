@@ -40,18 +40,6 @@
             android:name=".controllers.management.ActividadPerfilMascota"
             android:exported="false" />
         <activity
-            android:name=".controllers.lists.ActividadListarRefugios"
-            android:exported="false" />
-        <activity
-            android:name=".controllers.lists.ActividadBusquedaPorFiltro"
-            android:exported="false" />
-        <activity
-            android:name=".controllers.lists.ActividadMisFavoritos"
-            android:exported="false" />
-        <activity
-            android:name=".controllers.lists.FragmentListarMascotas"
-            android:exported="false" />
-        <activity
             android:name=".controllers.feed.ActividadRegistroExitoso"
             android:exported="false" />
         <activity

@@ -11,13 +11,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.patitasalrescate.R;
-import com.patitasalrescate.controllers.lists.ActividadBusquedaPorFiltro;
-import com.patitasalrescate.controllers.lists.ActividadMisFavoritos;
 import com.patitasalrescate.utils.PatitasSessionManager;
 
 public class ActividadFeedAdoptante extends AppCompatActivity {
@@ -77,13 +72,11 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
                 return true;
             }
             if(item.getItemId()==R.id.itemBuscarFiltro){
-                i= new Intent(this, ActividadBusquedaPorFiltro.class);
-                startActivity(i);
+                navigate(R.id.fragmentBusqueda);
                 return true;
             }
             if (item.getItemId() == R.id.itemFavoritosAdoptante) {
-                i = new Intent(this, ActividadMisFavoritos.class);
-                startActivity(i);
+                navigate(R.id.fragmentFavoritos);
                 return true;
             }
 

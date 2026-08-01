@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,7 +34,7 @@ public class FragmentListarRefugios extends Fragment {
         txtVacio = view.findViewById(R.id.txt_refugios_vacio);
 
         cargarDatosLocal();
-
+        updateTitle("Refugios");
         return view;
     }
 
@@ -41,6 +42,15 @@ public class FragmentListarRefugios extends Fragment {
         if (dao != null) {
             List<Refugio> lista = dao.listarTodos();
             actualizarUI(lista);
+        }
+    }
+
+    private void updateTitle(String title) {
+        if (getActivity() instanceof AppCompatActivity) {
+            AppCompatActivity activity = (AppCompatActivity) getActivity();
+            if (activity.getSupportActionBar() != null) {
+                activity.getSupportActionBar().setTitle(title);
+            }
         }
     }
 

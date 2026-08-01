@@ -4,23 +4,23 @@
 
     <item
         android:id="@+id/itemInicioAdoptante"
-        android:icon="@android:drawable/ic_menu_view"
+        android:icon="@drawable/ic_home"
         android:title="Inicio" />
 
     <item
         android:id="@+id/itemListarMascotasAdoptante"
         android:icon="@android:drawable/ic_menu_sort_by_size"
-        android:title="Listar Mascotas" />
+        android:title="Mascotas" />
 
     <item
         android:id="@+id/itemListarRefugios"
         android:icon="@android:drawable/ic_menu_myplaces"
-        android:title="Listar Refugios" />
+        android:title="Refugios" />
 
     <item
         android:id="@+id/itemBuscarFiltro"
         android:icon="@android:drawable/ic_menu_search"
-        android:title="Buscar por Filtro" />
+        android:title="Buscar" />
 
     <item
         android:id="@+id/itemFavoritosAdoptante"
