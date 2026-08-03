@@ -87,6 +87,11 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
 
             return false;
         });
+
+        int destinoExtra = getIntent().getIntExtra("navegarA", -1);
+        if (destinoExtra != -1) {
+            navigate(destinoExtra);
+        }
     }
 
     public void navigate(int id) {

@@ -69,6 +69,10 @@
             android:name=".controllers.feed.ActividadFeedRefugio"
             android:exported="false"
             android:parentActivityName=".controllers.auth.ActividadIniciarSesion" />
+        <activity
+            android:name=".controllers.management.ActividadPerfilUsuario"
+            android:exported="false"
+            android:parentActivityName=".controllers.feed.ActividadFeedAdoptante" />
 
         <meta-data
             android:name="preloaded_fonts"
