@@ -48,37 +48,30 @@
 
     <LinearLayout
         android:id="@+id/layout_botones_registro"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="55dp"
         android:layout_marginTop="40dp"
+        android:layout_marginEnd="56dp"
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingHorizontal="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rj_text_subtitulo">
 
         <Button
-            android:id="@+id/rj_button_soypersona"
-            android:layout_width="0dp"
+            android:id="@+id/rj_button_registrarse"
+            android:layout_width="320dp"
             android:layout_height="65dp"
             android:layout_margin="8dp"
             android:layout_weight="1"
             android:backgroundTint="@color/verde_persona"
             android:fontFamily="@font/chewy"
-            android:text="SOY PERSONA"
+            android:text="REGISTRARSE"
             android:textColor="@color/blanco"
-            app:cornerRadius="25dp" />
+            app:cornerRadius="30dp" />
 
-        <Button
-            android:id="@+id/rj_button_soyasociacion"
-            android:layout_width="0dp"
-            android:layout_height="65dp"
-            android:layout_margin="8dp"
-            android:layout_weight="1"
-            android:backgroundTint="@color/naranja_asociacion"
-            android:fontFamily="@font/chewy"
-            android:text="SOY ASOCIACIÓN"
-            android:textColor="@color/blanco"
-            app:cornerRadius="25dp" />
     </LinearLayout>
 
     <LinearLayout
