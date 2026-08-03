@@ -74,10 +74,6 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
                 startActivity(i);
                 return true;
             }
-            if (item.getItemId() == R.id.itemFavoritosAdoptante) {
-                navigate(R.id.fragmentFavoritos);
-                return true;
-            }
 
             if (item.getItemId() == R.id.itemEventosAdoptante) {
                 i = new Intent(this, ActividadEventosLista.class);

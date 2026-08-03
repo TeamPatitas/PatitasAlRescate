@@ -23,11 +23,6 @@
         android:title="Buscar por Filtro" />
 
     <item
-        android:id="@+id/itemFavoritosAdoptante"
-        android:icon="@android:drawable/btn_star_big_on"
-        android:title="Favoritos" />
-
-    <item
         android:id="@+id/itemEventosAdoptante"
         android:icon="@drawable/bg_boton_detalles"
         android:title="Eventos" />
