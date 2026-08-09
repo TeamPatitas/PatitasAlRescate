@@ -11,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.NavOptions;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
@@ -77,10 +78,6 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
                 navigate(R.id.fragmentListarRefugios);
                 return true;
             }
-            if (item.getItemId() == R.id.itemFavoritosAdoptante) {
-                navigate(R.id.fragmentFavoritos);
-                return true;
-            }
 
             if (item.getItemId() == R.id.itemEventosAdoptante) {
                 navigate(R.id.fragmentEventosLista);
@@ -89,6 +86,11 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
 
             return false;
         });
+
+        int destinoExtra = getIntent().getIntExtra("navegarA", -1);
+        if (destinoExtra != -1) {
+            navigate(destinoExtra);
+        }
     }
 
     @Override
@@ -110,7 +112,13 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
         NavDestination destinoActual = navController.getCurrentDestination();
 
         if (destinoActual != null && destinoActual.getId() != id) {
-            navController.navigate(id);
+            NavOptions opciones = new NavOptions.Builder()
+                    .setEnterAnim(R.anim.slide_in_right)
+                    .setExitAnim(R.anim.slide_out_left)
+                    .setPopEnterAnim(R.anim.slide_in_left)
+                    .setPopExitAnim(R.anim.slide_out_right)
+                    .build();
+            navController.navigate(id, null, opciones);
         }
     }
 }
