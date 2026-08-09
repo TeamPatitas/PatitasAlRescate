@@ -11,10 +11,16 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.NavOptions;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+
+import android.view.Menu;
+import android.view.MenuItem;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.patitasalrescate.R;
 import com.patitasalrescate.utils.PatitasSessionManager;
-import com.patitasalrescate.controllers.lists.ActividadEventosLista;
 
 public class ActividadFeedAdoptante extends AppCompatActivity {
     private NavController navController;
@@ -42,6 +48,16 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                
+                if (destination.getId() == R.id.fragmentInicioAdoptante) {
+                    getSupportActionBar().setTitle("Inicio");
+                } else if (destination.getId() == R.id.fragmentListarMascotas) {
+                    getSupportActionBar().setTitle("Mascotas");
+                } else if (destination.getId() == R.id.fragmentListarRefugios) {
+                    getSupportActionBar().setTitle("Refugios");
+                } else if (destination.getId() == R.id.fragmentEventosLista) {
+                    getSupportActionBar().setTitle("Eventos");
+                }
             }
         });
 
@@ -62,30 +78,47 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
                 navigate(R.id.fragmentListarRefugios);
                 return true;
             }
-            if(item.getItemId()==R.id.itemBuscarFiltro){
-                navigate(R.id.fragmentBusqueda);
-                return true;
-            }
-            if (item.getItemId() == R.id.itemFavoritosAdoptante) {
-                navigate(R.id.fragmentFavoritos);
-                return true;
-            }
 
             if (item.getItemId() == R.id.itemEventosAdoptante) {
-                i = new Intent(this, ActividadEventosLista.class);
-                startActivity(i);
+                navigate(R.id.fragmentEventosLista);
                 return true;
             }
 
             return false;
         });
+
+        int destinoExtra = getIntent().getIntExtra("navegarA", -1);
+        if (destinoExtra != -1) {
+            navigate(destinoExtra);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_toolbar_adoptante, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_search) {
+            navigate(R.id.fragmentBusqueda);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void navigate(int id) {
         NavDestination destinoActual = navController.getCurrentDestination();
 
         if (destinoActual != null && destinoActual.getId() != id) {
-            navController.navigate(id);
+            NavOptions opciones = new NavOptions.Builder()
+                    .setEnterAnim(R.anim.slide_in_right)
+                    .setExitAnim(R.anim.slide_out_left)
+                    .setPopEnterAnim(R.anim.slide_in_left)
+                    .setPopExitAnim(R.anim.slide_out_right)
+                    .build();
+            navController.navigate(id, null, opciones);
         }
     }
 }

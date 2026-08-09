@@ -40,6 +40,13 @@ public class DAOAdoptante {
         return 0;
     }
 
+    public Adoptante obtenerPorId(String idAdoptante) {
+        for (Adoptante a : mockAdoptantes) {
+            if (a.getIdAdoptante().equals(idAdoptante)) return a;
+        }
+        return null;
+    }
+
     public void eliminar(String idAdoptante) {
         mockAdoptantes.removeIf(a -> a.getIdAdoptante().equals(idAdoptante));
     }
