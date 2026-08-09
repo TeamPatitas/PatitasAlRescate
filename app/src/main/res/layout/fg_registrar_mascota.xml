@@ -5,24 +5,15 @@
     android:id="@+id/registrar_mascota_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFF8E1"
-    tools:context=".controllers.management.ActividadRegistrarMascota">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarRegistrarMascota"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="#5D4037"
-        app:title="Registra una Mascota"
-        app:titleTextColor="@android:color/white"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:background="@color/fondo_post_login"
+    tools:context=".controllers.management.FragmentRegistrarMascota">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbarRegistrarMascota">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,7 +28,7 @@
                 android:gravity="center"
                 android:text="Datos de la mascota"
                 android:textStyle="bold"
-                android:textColor="#3E2723"
+                android:textColor="@color/texto_titulo_sobre_crema"
                 android:textSize="24sp" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -47,11 +38,15 @@
                 android:layout_marginBottom="12dp"
                 android:hint="   Nombre de la mascota"
                 app:startIconDrawable="@android:drawable/ic_menu_myplaces"
-                app:startIconTint="#5D4037">
+                app:startIconTint="@color/textoPrincipal"
+                app:hintTextColor="@color/textoSecundario"
+                app:boxStrokeColor="@color/marronPrimario">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txt_reg_nombre_mascota"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_rounded"
+                    android:textColor="@color/textoPrincipal"
                     android:inputType="textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -60,17 +55,17 @@
                 android:layout_height="wrap_content"
                 android:text="  Especie"
                 android:textStyle="bold"
-                android:textColor="#5D4037"
+                android:textColor="@color/textoPrincipal"
                 android:gravity="center_vertical"
                 android:drawableStart="@android:drawable/ic_menu_search"
                 android:drawablePadding="8dp"
-                android:drawableTint="#5D4037"
+                android:drawableTint="@color/marronPrimario"
                 android:layout_marginBottom="4dp"/>
             <Spinner
                 android:id="@+id/spinner_especie"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:background="@android:drawable/editbox_background"
+                android:background="@drawable/bg_input_rounded"
                 android:layout_marginBottom="12dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -80,11 +75,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 android:hint="   Escribe la especie"
-                android:visibility="gone">
+                android:visibility="gone"
+                app:hintTextColor="@color/textoSecundario"
+                app:boxStrokeColor="@color/marronPrimario">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txt_otra_especie"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_rounded"
+                    android:textColor="@color/textoPrincipal"
                     android:inputType="textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -93,17 +92,17 @@
                 android:layout_height="wrap_content"
                 android:text="  Raza"
                 android:textStyle="bold"
-                android:textColor="#5D4037"
+                android:textColor="@color/textoPrincipal"
                 android:gravity="center_vertical"
                 android:drawableStart="@android:drawable/ic_menu_sort_by_size"
                 android:drawablePadding="8dp"
-                android:drawableTint="#5D4037"
+                android:drawableTint="@color/marronPrimario"
                 android:layout_marginBottom="4dp"/>
             <Spinner
                 android:id="@+id/spinner_raza"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:background="@android:drawable/editbox_background"
+                android:background="@drawable/bg_input_rounded"
                 android:layout_marginBottom="12dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -118,6 +117,7 @@
                     android:id="@+id/txt_otra_raza"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_rounded"
                     android:inputType="textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -126,17 +126,17 @@
                 android:layout_height="wrap_content"
                 android:text="  Sexo"
                 android:textStyle="bold"
-                android:textColor="#5D4037"
+                android:textColor="@color/textoPrincipal"
                 android:gravity="center_vertical"
                 android:drawableStart="@android:drawable/ic_menu_info_details"
                 android:drawablePadding="8dp"
-                android:drawableTint="#5D4037"
+                android:drawableTint="@color/marronPrimario"
                 android:layout_marginBottom="4dp"/>
             <Spinner
                 android:id="@+id/spinner_sexo"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:background="@android:drawable/editbox_background"
+                android:background="@drawable/bg_input_rounded"
                 android:layout_marginBottom="12dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -146,11 +146,15 @@
                 android:layout_marginBottom="12dp"
                 android:hint="   Edad (meses)"
                 app:startIconDrawable="@android:drawable/ic_menu_day"
-                app:startIconTint="#5D4037">
+                app:startIconTint="@color/textoPrincipal"
+                app:hintTextColor="@color/textoSecundario"
+                app:boxStrokeColor="@color/marronPrimario">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txt_reg_edad"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_rounded"
+                    android:textColor="@color/textoPrincipal"
                     android:inputType="number"
                     android:maxLength="3" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -162,11 +166,15 @@
                 android:layout_marginBottom="12dp"
                 android:hint="   Temperamento (ej. Juguetón)"
                 app:startIconDrawable="@android:drawable/ic_menu_info_details"
-                app:startIconTint="#5D4037">
+                app:startIconTint="@color/textoPrincipal"
+                app:hintTextColor="@color/textoSecundario"
+                app:boxStrokeColor="@color/marronPrimario">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txt_reg_temperamento"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_rounded"
+                    android:textColor="@color/textoPrincipal"
                     android:inputType="textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -177,11 +185,15 @@
                 android:layout_marginBottom="20dp"
                 android:hint="   Historia de rescate"
                 app:startIconDrawable="@android:drawable/ic_menu_edit"
-                app:startIconTint="#5D4037">
+                app:startIconTint="@color/textoPrincipal"
+                app:hintTextColor="@color/textoSecundario"
+                app:boxStrokeColor="@color/marronPrimario">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txt_reg_historia"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_rounded"
+                    android:textColor="@color/textoPrincipal"
                     android:inputType="textMultiLine"
                     android:lines="5"
                     android:gravity="top" />

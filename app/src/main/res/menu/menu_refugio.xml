@@ -20,12 +20,8 @@
 
     <item
         android:id="@+id/itemEventosRefugio"
-        android:icon="@drawable/bg_boton_detalles"
+        android:icon="@android:drawable/ic_menu_today"
         android:title="Eventos" />
 
-    <item
-        android:id="@+id/itemSalirRefugio"
-        android:icon="@android:drawable/ic_lock_power_off"
-        android:title="Cerrar Sesión"
-        />
+
 </menu>

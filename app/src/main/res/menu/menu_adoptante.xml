@@ -4,27 +4,22 @@
 
     <item
         android:id="@+id/itemInicioAdoptante"
-        android:icon="@android:drawable/ic_menu_view"
+        android:icon="@drawable/rj_home"
         android:title="Inicio" />
 
     <item
         android:id="@+id/itemListarMascotasAdoptante"
-        android:icon="@android:drawable/ic_menu_sort_by_size"
-        android:title="Listar Mascotas" />
+        android:icon="@drawable/rj_patitaverificada"
+        android:title="Mascotas" />
 
     <item
         android:id="@+id/itemListarRefugios"
-        android:icon="@android:drawable/ic_menu_myplaces"
-        android:title="Listar Refugios" />
-
-    <item
-        android:id="@+id/itemBuscarFiltro"
-        android:icon="@android:drawable/ic_menu_search"
-        android:title="Buscar por Filtro" />
+        android:icon="@drawable/ic_refugio"
+        android:title="Refugios" />
 
     <item
         android:id="@+id/itemEventosAdoptante"
-        android:icon="@drawable/bg_boton_detalles"
+        android:icon="@android:drawable/ic_menu_today"
         android:title="Eventos" />
 
 </menu>

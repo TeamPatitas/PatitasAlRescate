@@ -3,7 +3,7 @@
     android:id="@+id/busquedafiltro"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F4F1E8"
+    android:background="@color/fondo_post_login"
     android:orientation="vertical"
     android:padding="20dp">
 
@@ -13,7 +13,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp"
         android:text="🐾 Búsqueda por filtro"
-        android:textColor="#5B3A29"
+        android:textColor="@color/textoPrincipal"
         android:textSize="22sp"
         android:textStyle="bold" />
 
@@ -23,7 +23,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="20dp"
         android:text="Encuentra a tu nuevo compañero"
-        android:textColor="#7A6A5E"
+        android:textColor="@color/textoSecundario"
         android:textSize="14sp" />
 
     <Spinner
@@ -37,8 +37,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:background="@android:drawable/edit_text"
+        android:background="@drawable/bg_input_rounded"
         android:hint="Ej. perro, gato, labrador"
+        android:textColor="@color/textoPrincipal"
+        android:textColorHint="@color/textoSecundario"
         android:padding="14dp" />
 
     <Button

@@ -6,13 +6,13 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blanco"
+    android:background="@color/fondo_post_login"
     tools:context=".controllers.feed.ActividadFeedAdoptante">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarInicioAdoptante"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="@color/color_navegacion_claro"
         android:minHeight="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,11 +24,12 @@
         android:id="@+id/menuInicioAdoptante"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@color/marronPrimario"
+        android:background="@color/color_navegacion_claro"
         app:itemIconTint="@color/blanco"
         app:itemTextColor="@color/blanco"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/menu_adoptante" />
 

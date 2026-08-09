@@ -15,13 +15,12 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.view.Menu;
+import android.view.MenuItem;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.patitasalrescate.R;
-import com.patitasalrescate.controllers.lists.ActividadBusquedaPorFiltro;
-import com.patitasalrescate.controllers.lists.ActividadListarRefugios;
-
 import com.patitasalrescate.utils.PatitasSessionManager;
-import com.patitasalrescate.controllers.lists.ActividadEventosLista;
 
 public class ActividadFeedAdoptante extends AppCompatActivity {
     private NavController navController;
@@ -49,6 +48,16 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                
+                if (destination.getId() == R.id.fragmentInicioAdoptante) {
+                    getSupportActionBar().setTitle("Inicio");
+                } else if (destination.getId() == R.id.fragmentListarMascotas) {
+                    getSupportActionBar().setTitle("Mascotas");
+                } else if (destination.getId() == R.id.fragmentListarRefugios) {
+                    getSupportActionBar().setTitle("Refugios");
+                } else if (destination.getId() == R.id.fragmentEventosLista) {
+                    getSupportActionBar().setTitle("Eventos");
+                }
             }
         });
 
@@ -66,19 +75,12 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
             }
 
             if(item.getItemId()==R.id.itemListarRefugios){
-                i= new Intent(this, ActividadListarRefugios.class);
-                startActivity(i);
-                return true;
-            }
-            if(item.getItemId()==R.id.itemBuscarFiltro){
-                i= new Intent(this, ActividadBusquedaPorFiltro.class);
-                startActivity(i);
+                navigate(R.id.fragmentListarRefugios);
                 return true;
             }
 
             if (item.getItemId() == R.id.itemEventosAdoptante) {
-                i = new Intent(this, ActividadEventosLista.class);
-                startActivity(i);
+                navigate(R.id.fragmentEventosLista);
                 return true;
             }
 
@@ -89,6 +91,21 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
         if (destinoExtra != -1) {
             navigate(destinoExtra);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_toolbar_adoptante, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_search) {
+            navigate(R.id.fragmentBusqueda);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void navigate(int id) {
