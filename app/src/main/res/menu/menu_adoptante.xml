@@ -18,11 +18,6 @@
         android:title="Refugios" />
 
     <item
-        android:id="@+id/itemFavoritosAdoptante"
-        android:icon="@android:drawable/btn_star_big_on"
-        android:title="Favoritos" />
-
-    <item
         android:id="@+id/itemEventosAdoptante"
         android:icon="@android:drawable/ic_menu_today"
         android:title="Eventos" />

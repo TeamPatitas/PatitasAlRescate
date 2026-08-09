@@ -88,6 +88,8 @@
                 android:drawableStart="@drawable/rj_candadonube"
                 android:drawablePadding="12dp"
                 android:hint="Contraseña"
+                android:textColor="@color/texto_busqueda"
+                android:textColorHint="@color/textoSecundario"
                 android:inputType="textPassword"
                 android:paddingHorizontal="16dp" />
         </com.google.android.material.textfield.TextInputLayout>
