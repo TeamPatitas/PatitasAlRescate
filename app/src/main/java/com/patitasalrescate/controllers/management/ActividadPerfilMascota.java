@@ -53,7 +53,7 @@ public class ActividadPerfilMascota extends AppCompatActivity {
         idMascota = getIntent().getStringExtra("id_mascota_key");
 
         PatitasSessionManager session = PatitasSessionManager.getInstance(this);
-        tipoUsuario = session.getUserType();
+        tipoUsuario = session.getSessionType();
         idUsuario = session.getUserId();
 
         if (idMascota == null || idMascota.isEmpty()) {
