@@ -15,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.patitasalrescate.controllers.auth.ActividadIniciarSesion;
 import com.patitasalrescate.controllers.management.ActividadPerfilMascota;
 import com.patitasalrescate.R;
 import com.patitasalrescate.data_access.DAOFavoritos;
@@ -47,7 +46,7 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
         
         PatitasSessionManager session = PatitasSessionManager.getInstance(context);
         this.idUsuario = session.getUserId();
-        this.tipoUsuario = session.getUserType();
+        this.tipoUsuario = session.getSessionType();
     }
 
     public AdaptadorMascotas(List<Mascota> lista,
@@ -61,7 +60,7 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
 
         PatitasSessionManager session = PatitasSessionManager.getInstance(context);
         this.idUsuario = session.getUserId();
-        this.tipoUsuario = session.getUserType();
+        this.tipoUsuario = session.getSessionType();
         this.esModoFavoritos = true;
         this.esModoRefugio = false;
     }
