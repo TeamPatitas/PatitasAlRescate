@@ -13,7 +13,7 @@ public class DAORefugio {
         r1.setIdRefugio("ref1");
         r1.setNombre("Refugio Insano");
         r1.setDireccion("Calle 123");
-        r1.setNumCelular("987654321");
+        r1.setNumCelular("918272136");
         r1.setCorreo("re");
         r1.setPassword("pass123");
         mockRefugios.add(r1);
@@ -22,7 +22,7 @@ public class DAORefugio {
         r2.setIdRefugio("ref2");
         r2.setNombre("Hogar de Huellitas");
         r2.setDireccion("Av. Principal 456");
-        r2.setNumCelular("912345678");
+        r2.setNumCelular("989361714");
         r2.setCorreo("ref2@demo.com");
         r2.setPassword("pass123");
         mockRefugios.add(r2);
