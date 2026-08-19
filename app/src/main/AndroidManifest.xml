@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PatitasAlRescate">
         <activity
-            android:name=".controllers.lists.ActividadEventosLista"
+            android:name=".controllers.management.ActividadDetalleEvento"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
@@ -29,10 +29,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".controllers.management.ActividadRegistrarMascota"
-            android:exported="false"
-            android:parentActivityName=".controllers.feed.ActividadFeedRefugio" />
         <activity
             android:name=".controllers.management.ActividadAdopcion"
             android:exported="false" />

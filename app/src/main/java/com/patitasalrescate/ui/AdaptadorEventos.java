@@ -1,6 +1,7 @@
 package com.patitasalrescate.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.patitasalrescate.R;
+import com.patitasalrescate.controllers.management.ActividadDetalleEvento;
 import com.patitasalrescate.model.Evento;
 
 import java.util.List;
@@ -53,7 +55,9 @@ public class AdaptadorEventos extends RecyclerView.Adapter<AdaptadorEventos.Even
         }
 
         holder.btnVerDetalles.setOnClickListener(v -> {
-            // Logic to see event details
+            Intent intent = new Intent(context, ActividadDetalleEvento.class);
+            intent.putExtra("evento_key", evento);
+            context.startActivity(intent);
         });
     }
 
