@@ -10,7 +10,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.patitasalrescate.R;
 import com.patitasalrescate.controllers.auth.ActividadIngresar;
-import com.patitasalrescate.controllers.auth.ActividadRegistrarOrganizacion;
 import com.patitasalrescate.controllers.feed.ActividadFeedAdoptante;
 import com.patitasalrescate.controllers.feed.ActividadFeedRefugio;
 import com.patitasalrescate.data_access.DAOAdoptante;
@@ -60,7 +59,7 @@ public class ActividadPerfilUsuario extends AppCompatActivity {
 
         Button btnCambiarModo = findViewById(R.id.btnCambiarModoRefugio);
         btnCambiarModo.setOnClickListener(v -> {
-            startActivity(new Intent(this, ActividadRegistrarOrganizacion.class));
+            startActivity(new Intent(this, ActividadFeedRefugio.class));
             finish();
         });
 

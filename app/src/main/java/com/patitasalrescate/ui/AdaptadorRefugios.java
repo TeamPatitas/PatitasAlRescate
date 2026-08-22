@@ -38,6 +38,11 @@ public class AdaptadorRefugios extends RecyclerView.Adapter<AdaptadorRefugios.Re
         holder.txtNombre.setText(r.getNombre());
         holder.txtDireccion.setText(r.getDireccion());
 
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, com.patitasalrescate.controllers.management.ActividadPerfilRefugio.class);
+            intent.putExtra("id_refugio_key", r.getIdRefugio());
+            context.startActivity(intent);
+        });
 
         if (r.getFotoUrl() != null && !r.getFotoUrl().isEmpty()) {
             Glide.with(context)
