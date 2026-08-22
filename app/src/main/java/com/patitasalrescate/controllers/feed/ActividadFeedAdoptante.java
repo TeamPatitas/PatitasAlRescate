@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.patitasalrescate.R;
 import com.patitasalrescate.utils.PatitasSessionManager;
+import com.patitasalrescate.controllers.management.ActividadPerfilUsuario;
 
 public class ActividadFeedAdoptante extends AppCompatActivity {
     private NavController navController;
@@ -103,6 +104,10 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_search) {
             navigate(R.id.fragmentBusqueda);
+            return true;
+        }
+        if (item.getItemId() == R.id.action_perfil) {
+            startActivity(new Intent(this, ActividadPerfilUsuario.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

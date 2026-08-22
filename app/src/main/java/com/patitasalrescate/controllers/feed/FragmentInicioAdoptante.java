@@ -1,6 +1,5 @@
 package com.patitasalrescate.controllers.feed;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.patitasalrescate.R;
-import com.patitasalrescate.controllers.management.ActividadPerfilUsuario;
 import com.patitasalrescate.utils.PatitasSessionManager;
 
 public class FragmentInicioAdoptante extends Fragment {
@@ -54,10 +52,6 @@ public class FragmentInicioAdoptante extends Fragment {
         String nombre = PatitasSessionManager.getInstance(requireContext()).getUserName();
         TextView txtBienvenido = view.findViewById(R.id.txtBienvenidoAdoptante);
         txtBienvenido.setText("Bienvenido " + nombre);
-
-        txtBienvenido.setOnClickListener(v -> {
-            startActivity(new Intent(requireContext(), ActividadPerfilUsuario.class));
-        });
     }
 
     private void updateTitle(String title) {
