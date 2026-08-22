@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/perfil_evento_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EFEBE9">
+
+    <ImageView
+        android:id="@+id/img_detalle_evento"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:background="#D7CCC8"
+        android:contentDescription="Foto del evento"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@android:drawable/ic_menu_gallery" />
+
+    <ImageButton
+        android:id="@+id/btn_ver_mapa_evento"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/bg_boton_detalles"
+        android:contentDescription="Ver en mapa"
+        android:elevation="6dp"
+        android:src="@android:drawable/ic_dialog_map"
+        app:layout_constraintBottom_toBottomOf="@id/img_detalle_evento"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_detalle_evento"
+        app:tint="@color/blanco" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_detalle_evento">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre del Evento"
+                android:textColor="#5D4037"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txt_detalle_nombre_evento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textColor="#3E2723"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                tools:text="Gran Campaña de Adopción" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Fecha y Hora"
+                android:textColor="#5D4037"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txt_detalle_fecha_evento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textColor="#5D4037"
+                android:textSize="18sp"
+                tools:text="20 de Octubre, 2023 - 10:00 AM" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Descripción"
+                android:textColor="#5D4037"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txt_detalle_descripcion_evento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textColor="#4E342E"
+                android:textSize="16sp"
+                tools:text="Ven a conocer a tu futuro mejor amigo en el Parque Central. Tendremos muchas sorpresas." />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
