@@ -60,7 +60,7 @@ public class ActividadPerfilUsuario extends AppCompatActivity {
 
         Button btnCambiarModo = findViewById(R.id.btnCambiarModoRefugio);
         btnCambiarModo.setOnClickListener(v -> {
-            startActivity(new Intent(this, ActividadRegistrarOrganizacion.class));
+            startActivity(new Intent(this, ActividadFeedRefugio.class));
             finish();
         });
 

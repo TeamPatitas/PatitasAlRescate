@@ -61,6 +61,9 @@
             android:exported="false"
             android:parentActivityName=".controllers.feed.ActividadFeedAdoptante" />
 
+        <activity
+            android:name=".controllers.management.ActividadPerfilRefugio"
+            android:exported="false" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
