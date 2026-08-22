@@ -1,4 +1,4 @@
-name: "Step 2: Ejecutar Merge"
+name: "Paso 2: Ejecutar Merge"
 
 on:
   workflow_dispatch:
@@ -33,7 +33,7 @@ jobs:
               git commit -m "Auto-merge definitivo de $branch hacia master" || echo "La rama ya estaba al día."
             else
               echo "⚠️ Conflicto inesperado en $branch. Abortando esta rama."
-              git merge --abort
+              git merge --abort || true
               echo "$branch" >> ramas_fallidas.txt
             fi
           done
@@ -58,6 +58,6 @@ jobs:
               git push origin $branch
             else
               echo "⚠️ Conflicto al bajar a $branch. Abortando."
-              git merge --abort
+              git merge --abort || true
             fi
           done
