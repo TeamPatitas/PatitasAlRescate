@@ -1,4 +1,4 @@
-name: "Step 1: Comprobar Conflictos"
+name: "Paso 1: Comprobar Conflictos"
 
 on:
   workflow_dispatch:
@@ -33,11 +33,10 @@ jobs:
           
             if git merge origin/$branch --no-commit --no-ff; then
               echo "✅ TODO VERDE: $branch se puede fusionar sin problemas."
-              # Como es solo simulacro, abortamos para no guardar nada
-              git merge --abort
+              git merge --abort || true
             else
               echo "⚠️ CONFLICTO DETECTADO con $branch."
-              git merge --abort
+              git merge --abort || true
           
               # Revisamos si ya existe un PR
               PR_EXISTS=$(gh pr list --head $branch --base master --json number --jq 'length')
