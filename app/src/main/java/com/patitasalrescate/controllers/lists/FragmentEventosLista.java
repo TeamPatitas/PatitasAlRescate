@@ -52,9 +52,9 @@ public class FragmentEventosLista extends Fragment {
 
     private List<Evento> obtenerEventosPrueba() {
         List<Evento> eventos = new ArrayList<>();
-        eventos.add(new Evento("1", "Gran Campaña de Adopción", "20 de Octubre, 2023", "Ven a conocer a tu futuro mejor amigo en el Parque Central.", ""));
-        eventos.add(new Evento("2", "Colecta de Alimento", "25 de Octubre, 2023", "Estaremos recibiendo donaciones de alimento para perros y gatos.", ""));
-        eventos.add(new Evento("3", "Charla sobre Tenencia Responsable", "2 de Noviembre, 2023", "Aprende todo lo necesario para cuidar a tu mascota.", ""));
+        eventos.add(new Evento("1", "Gran Campaña de Adopción", "20 de Octubre, 2023", "Ven a conocer a tu futuro mejor amigo en el Parque Central.", "", -7.1589, -78.5147));
+        eventos.add(new Evento("2", "Colecta de Alimento", "25 de Octubre, 2023", "Estaremos recibiendo donaciones de alimento para perros y gatos.", "", -7.1565, -78.5168));
+        eventos.add(new Evento("3", "Charla sobre Tenencia Responsable", "2 de Noviembre, 2023", "Aprende todo lo necesario para cuidar a tu mascota.", "", -7.1522, -78.5095));
         return eventos;
     }
 }

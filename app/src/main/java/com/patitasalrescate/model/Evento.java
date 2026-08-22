@@ -8,6 +8,9 @@ public class Evento implements Serializable {
     private String fecha;
     private String descripcion;
     private String fotoUrl;
+    private double latitud;
+    private double longitud;
+
 
     public Evento() {}
 
@@ -17,6 +20,16 @@ public class Evento implements Serializable {
         this.fecha = fecha;
         this.descripcion = descripcion;
         this.fotoUrl = fotoUrl;
+    }
+
+    public Evento(String idEvento, String nombre, String fecha, String descripcion, String fotoUrl, double latitud, double longitud) {
+        this.idEvento = idEvento;
+        this.nombre = nombre;
+        this.fecha = fecha;
+        this.descripcion = descripcion;
+        this.fotoUrl = fotoUrl;
+        this.latitud = latitud;
+        this.longitud = longitud;
     }
 
     public String getIdEvento() { return idEvento; }
@@ -33,4 +46,10 @@ public class Evento implements Serializable {
 
     public String getFotoUrl() { return fotoUrl; }
     public void setFotoUrl(String fotoUrl) { this.fotoUrl = fotoUrl; }
+
+    public double getLatitud() { return latitud; }
+    public void setLatitud(double latitud) { this.latitud = latitud; }
+
+    public double getLongitud() { return longitud; }
+    public void setLongitud(double longitud) { this.longitud = longitud; }
 }
