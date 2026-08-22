@@ -1,0 +1,55 @@
+name: "Paso 1: Comprobar Conflictos"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check-conflicts:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar usuario Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Comprobar fusiones hacia master
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git checkout master
+          
+          for branch in dev-and dev-diego dev-eve dev-jacky; do
+            echo "----------------------------------------"
+            echo "🔍 Analizando $branch..."
+          
+            if git merge origin/$branch --no-commit --no-ff; then
+              echo "✅ TODO VERDE: $branch se puede fusionar sin problemas."
+              git merge --abort || true
+            else
+              echo "⚠️ CONFLICTO DETECTADO con $branch."
+              git merge --abort || true
+          
+              # Revisamos si ya existe un PR
+              PR_EXISTS=$(gh pr list --head $branch --base master --json number --jq 'length')
+          
+              if [ "$PR_EXISTS" -eq "0" ]; then
+                echo "Creando Pull Request para revisión manual..."
+                gh pr create \
+                  --title "⚠️ Conflicto Detectado: $branch" \
+                  --body "El simulacro detectó conflictos en \`$branch\`. Por favor, resuélvelos aquí antes de ejecutar el merge definitivo." \
+                  --head $branch \
+                  --base master
+              else
+                echo "Ya existe un PR abierto para $branch."
+              fi
+            fi
+          done
