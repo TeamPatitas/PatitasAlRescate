@@ -1,0 +1,61 @@
+name: Sincronización Segura de Ramas
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sync-branches:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar usuario Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: 1. Fusionar ramas a master (Omite si hay conflictos)
+        run: |
+          # Nos movemos a master
+          git checkout master
+          
+          for branch in dev-and dev-diego dev-eve dev-jacky; do
+            echo "----------------------------------------"
+            echo "Intentando fusionar $branch en master..."
+          
+            if git merge origin/$branch --no-commit --no-ff; then
+              echo "✅ Sin conflictos. Confirmando fusión..."
+              git commit -m "Auto-merge de $branch hacia master" || echo "La rama ya estaba al día."
+            else
+              echo "⚠️ CONFLICTO DETECTADO con $branch. Abortando esta fusión."
+              git merge --abort
+            fi
+          done
+          
+          # Subimos los cambios a master
+          git push origin master
+
+      - name: 2. Sincronizar master hacia las ramas (Omite si hay conflictos)
+        run: |
+          for branch in dev-and dev-diego dev-eve dev-jacky; do
+            echo "----------------------------------------"
+            echo "Actualizando $branch con lo nuevo de master..."
+          
+            git checkout $branch || git checkout -b $branch origin/$branch
+          
+            # Mezclamos master hacia la rama del desarrollador
+            if git merge master --no-commit --no-ff; then
+              echo "✅ Sin conflictos. Confirmando actualización..."
+              git commit -m "Auto-merge de master hacia $branch" || echo "La rama ya estaba al día."
+              git push origin $branch
+            else
+              echo "⚠️ CONFLICTO DETECTADO al actualizar $branch. Abortando."
+              git merge --abort
+            fi
+          done
