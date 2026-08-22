@@ -59,9 +59,8 @@ public class ActividadPerfilUsuario extends AppCompatActivity {
 
         Button btnCambiarModo = findViewById(R.id.btnCambiarModoRefugio);
         btnCambiarModo.setOnClickListener(v -> {
-            Intent i = new Intent(this, ActividadFeedRefugio.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(i);
+            startActivity(new Intent(this, ActividadFeedRefugio.class));
+            finish();
         });
 
         Button btnCerrarSesion = findViewById(R.id.btnCerrarSesion);

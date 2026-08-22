@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/perfil_refugio_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fondo_crema">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarPerfilRefugio"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/color_navegacion_claro"
+        app:title="Detalles del Refugio"
+        app:titleTextColor="@color/blanco"
+        app:navigationIcon="@android:drawable/ic_menu_revert"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarPerfilRefugio">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/img_foto_refugio_perfil"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:background="@color/marronClaro"
+                tools:src="@android:drawable/ic_menu_gallery"/>
+
+            <TextView
+                android:id="@+id/txt_nombre_refugio_perfil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/texto_titulo_sobre_crema"
+                tools:text="Refugio de Prueba"/>
+
+            <TextView
+                android:id="@+id/txt_direccion_refugio_perfil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/textoSecundario"
+                android:textSize="14sp"
+                tools:text="Calle Principal 123"/>
+
+            <TextView
+                android:id="@+id/txt_contacto_refugio_perfil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/textoSecundario"
+                android:textSize="14sp"
+                tools:text="Celular: 999 999 999"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="16dp"
+                android:background="@color/marronClaro"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Eventos Recientes"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/marronOscuro"
+                android:layout_marginBottom="8dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_eventos_refugio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/ly_eventos_element"
+                tools:itemCount="2"/>
+
+            <TextView
+                android:id="@+id/txt_no_eventos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No hay eventos recientes"
+                android:textColor="@color/textoSecundario"
+                android:visibility="gone"
+                android:gravity="center"
+                android:padding="8dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="16dp"
+                android:background="@color/marronClaro"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Donaciones"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/marronOscuro"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Apóyanos escaneando el siguiente código QR para Yape:"
+                android:textColor="@color/textoSecundario"
+                android:layout_marginBottom="12dp"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp">
+                <ImageView
+                    android:id="@+id/img_qr_donacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="8dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/bg_circle_image"
+                    tools:src="@android:drawable/ic_menu_camera"/>
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
