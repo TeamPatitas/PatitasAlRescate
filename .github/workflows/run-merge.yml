@@ -1,0 +1,63 @@
+name: "Step 2: Ejecutar Merge"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  execute-merge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar usuario Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          touch ramas_fallidas.txt
+
+      - name: Fusionar ramas a master
+        run: |
+          git checkout master
+          
+          for branch in dev-and dev-diego dev-eve dev-jacky; do
+            echo "----------------------------------------"
+            echo "🚀 Fusionando $branch en master..."
+          
+            if git merge origin/$branch --no-commit --no-ff; then
+              git commit -m "Auto-merge definitivo de $branch hacia master" || echo "La rama ya estaba al día."
+            else
+              echo "⚠️ Conflicto inesperado en $branch. Abortando esta rama."
+              git merge --abort
+              echo "$branch" >> ramas_fallidas.txt
+            fi
+          done
+          
+          git push origin master
+
+      - name: Sincronizar master hacia las ramas
+        run: |
+          for branch in dev-and dev-diego dev-eve dev-jacky; do
+            echo "----------------------------------------"
+          
+            if grep -q "^${branch}$" ramas_fallidas.txt; then
+              echo "⏭️ Saltando $branch por fallas previas."
+              continue
+            fi
+          
+            echo "🔄 Actualizando $branch con master..."
+            git checkout $branch || git checkout -b $branch origin/$branch
+          
+            if git merge master --no-commit --no-ff; then
+              git commit -m "Auto-actualización: recibiendo master en $branch" || echo "La rama ya estaba al día."
+              git push origin $branch
+            else
+              echo "⚠️ Conflicto al bajar a $branch. Abortando."
+              git merge --abort
+            fi
+          done

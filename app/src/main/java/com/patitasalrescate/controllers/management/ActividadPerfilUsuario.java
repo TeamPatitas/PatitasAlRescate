@@ -10,7 +10,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.patitasalrescate.R;
 import com.patitasalrescate.controllers.auth.ActividadIngresar;
-import com.patitasalrescate.controllers.auth.ActividadRegistrarOrganizacion;
 import com.patitasalrescate.controllers.feed.ActividadFeedAdoptante;
 import com.patitasalrescate.controllers.feed.ActividadFeedRefugio;
 import com.patitasalrescate.data_access.DAOAdoptante;
