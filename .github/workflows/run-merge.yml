@@ -1,10 +1,10 @@
-name: Sincronización Segura de Ramas
+name: "Paso 2: Ejecutar Merge"
 
 on:
   workflow_dispatch:
 
 jobs:
-  sync-branches:
+  execute-merge:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -19,43 +19,45 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          touch ramas_fallidas.txt
 
-      - name: 1. Fusionar ramas a master (Omite si hay conflictos)
+      - name: Fusionar ramas a master
         run: |
-          # Nos movemos a master
           git checkout master
           
           for branch in dev-and dev-diego dev-eve dev-jacky; do
             echo "----------------------------------------"
-            echo "Intentando fusionar $branch en master..."
+            echo "🚀 Fusionando $branch en master..."
           
             if git merge origin/$branch --no-commit --no-ff; then
-              echo "✅ Sin conflictos. Confirmando fusión..."
-              git commit -m "Auto-merge de $branch hacia master" || echo "La rama ya estaba al día."
+              git commit -m "Auto-merge definitivo de $branch hacia master" || echo "La rama ya estaba al día."
             else
-              echo "⚠️ CONFLICTO DETECTADO con $branch. Abortando esta fusión."
-              git merge --abort
+              echo "⚠️ Conflicto inesperado en $branch. Abortando esta rama."
+              git merge --abort || true
+              echo "$branch" >> ramas_fallidas.txt
             fi
           done
           
-          # Subimos los cambios a master
           git push origin master
 
-      - name: 2. Sincronizar master hacia las ramas (Omite si hay conflictos)
+      - name: Sincronizar master hacia las ramas
         run: |
           for branch in dev-and dev-diego dev-eve dev-jacky; do
             echo "----------------------------------------"
-            echo "Actualizando $branch con lo nuevo de master..."
           
+            if grep -q "^${branch}$" ramas_fallidas.txt; then
+              echo "⏭️ Saltando $branch por fallas previas."
+              continue
+            fi
+          
+            echo "🔄 Actualizando $branch con master..."
             git checkout $branch || git checkout -b $branch origin/$branch
           
-            # Mezclamos master hacia la rama del desarrollador
             if git merge master --no-commit --no-ff; then
-              echo "✅ Sin conflictos. Confirmando actualización..."
-              git commit -m "Auto-merge de master hacia $branch" || echo "La rama ya estaba al día."
+              git commit -m "Auto-actualización: recibiendo master en $branch" || echo "La rama ya estaba al día."
               git push origin $branch
             else
-              echo "⚠️ CONFLICTO DETECTADO al actualizar $branch. Abortando."
-              git merge --abort
+              echo "⚠️ Conflicto al bajar a $branch. Abortando."
+              git merge --abort || true
             fi
           done
