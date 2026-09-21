@@ -34,7 +34,4 @@ public class RefugioRepository {
         return dataSource.actualizar(refugio);
     }
 
-    public Refugio login(String correo, String password) {
-        return dataSource.login(correo, password);
-    }
 }

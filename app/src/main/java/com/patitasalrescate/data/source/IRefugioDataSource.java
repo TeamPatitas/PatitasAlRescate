@@ -9,5 +9,4 @@ public interface IRefugioDataSource {
     Refugio obtenerPorId(String id);
     long insertar(Refugio refugio);
     int actualizar(Refugio refugio);
-    Refugio login(String correo, String password);
 }

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.patitasalrescate.R;
-import com.patitasalrescate.data_access.DAORefugio;
+import com.patitasalrescate.data.mock.DAORefugio;
 import com.patitasalrescate.model.Evento;
 import com.patitasalrescate.model.Refugio;
 import com.patitasalrescate.ui.AdaptadorEventos;
