@@ -22,4 +22,7 @@
     </style>
 
     <style name="Theme.PatitasAlRescate" parent="Base.Theme.PatitasAlRescate" />
+
+    <style name="Theme.PatitasAlRescate.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.PatitasAlRescate.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

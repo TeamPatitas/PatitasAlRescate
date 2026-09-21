@@ -15,19 +15,24 @@ public class DAORefugio implements IRefugioDataSource {
         r1.setIdRefugio("ref1");
         r1.setNombre("Refugio Insano");
         r1.setDireccion("Calle 123");
-        r1.setNumCelular("987654321");
-        r1.setCorreo("re");
-        r1.setPassword("pass123");
+        r1.setNumCelular("918272136");
+        r1.setFotoUrl("https://i.pinimg.com/736x/2f/40/2b/2f402b06b3e2ec7a3f80d8696d8828a7.jpg");
         mockRefugios.add(r1);
 
         Refugio r2 = new Refugio();
         r2.setIdRefugio("ref2");
         r2.setNombre("Hogar de Huellitas");
         r2.setDireccion("Av. Principal 456");
-        r2.setNumCelular("912345678");
-        r2.setCorreo("ref2@demo.com");
-        r2.setPassword("pass123");
+        r2.setNumCelular("989361714");
+        r1.setFotoUrl("https://i.pinimg.com/736x/c8/12/2e/c8122e45a04192a747b9ec9aa902dab9.jpg");
         mockRefugios.add(r2);
+
+        Refugio r3 = new Refugio();
+        r1.setIdRefugio("ref1");
+        r1.setNombre("Refugio cd");
+        r1.setDireccion("Calle 123");
+        r1.setNumCelular("918272136");
+        mockRefugios.add(r1);
     }
 
     public DAORefugio(Context context) {}
@@ -56,12 +61,5 @@ public class DAORefugio implements IRefugioDataSource {
 
     public List<Refugio> listarTodos() {
         return new ArrayList<>(mockRefugios);
-    }
-
-    public Refugio login(String correo, String pass) {
-        for (Refugio r : mockRefugios) {
-            if (r.getCorreo().equals(correo) && r.getPassword().equals(pass)) return r;
-        }
-        return null;
     }
 }

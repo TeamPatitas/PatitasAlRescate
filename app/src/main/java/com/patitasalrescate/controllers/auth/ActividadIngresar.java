@@ -19,19 +19,13 @@ public class ActividadIngresar extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.ly_ingresar);
-        Button button_soypersona = findViewById(R.id.rj_button_soypersona);
-        Button button_soyasociacion = findViewById(R.id.rj_button_soyasociacion);
+        Button button_registrarse = findViewById(R.id.rj_button_registrarse);
         TextView text_yatengocuenta = findViewById(R.id.rj_click_inicia_sesion);
 
         text_yatengocuenta.setPaintFlags(android.graphics.Paint.UNDERLINE_TEXT_FLAG);
 
-        button_soypersona.setOnClickListener(v->{
+        button_registrarse.setOnClickListener(v -> {
             Intent intent = new Intent(ActividadIngresar.this, ActividadRegistrarAdoptante.class);
-            startActivity(intent);
-        });
-
-        button_soyasociacion.setOnClickListener(v->{
-            Intent intent = new Intent(ActividadIngresar.this, ActividadRegistrarOrganizacion.class);
             startActivity(intent);
         });
 

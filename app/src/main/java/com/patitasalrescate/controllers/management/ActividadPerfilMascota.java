@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -49,11 +50,12 @@ public class ActividadPerfilMascota extends AppCompatActivity {
         daoFavoritos = new DAOFavoritos(this);
 
         initViews();
+        configToolbar();
 
         idMascota = getIntent().getStringExtra("id_mascota_key");
 
         PatitasSessionManager session = PatitasSessionManager.getInstance(this);
-        tipoUsuario = session.getUserType();
+        tipoUsuario = session.getSessionType();
         idUsuario = session.getUserId();
 
         if (idMascota == null || idMascota.isEmpty()) {
@@ -77,6 +79,16 @@ public class ActividadPerfilMascota extends AppCompatActivity {
         imgFoto = findViewById(R.id.img_detalle_mascota);
         btnAccion = findViewById(R.id.btn_accion_principal);
         btnFavorito = findViewById(R.id.btn_favorito);
+    }
+
+    private void configToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbarPerfilMascota);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Detalles de la Mascota");
+        }
+        toolbar.setNavigationOnClickListener(v -> finish());
     }
 
     private void cargarDatosMascota() {

@@ -1,10 +1,12 @@
 package com.patitasalrescate.controllers.feed;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.patitasalrescate.R;
+import com.patitasalrescate.controllers.management.ActividadRegistrarEvento;
 import com.patitasalrescate.utils.PatitasSessionManager;
 
 public class FragmentInicioRefugio extends Fragment {
@@ -40,5 +43,11 @@ public class FragmentInicioRefugio extends Fragment {
         TextView textobienvenida = view.findViewById(R.id.txtBienvenidoRefugio);
         textobienvenida.setText("Bienvenido refugio: " + nombreRefugio);
         textobienvenida.setGravity(Gravity.CENTER);
+
+        Button btnRegistrar = view.findViewById(R.id.btn_registrar_evento_inicio);
+        btnRegistrar.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), ActividadRegistrarEvento.class);
+            startActivity(intent);
+        });
     }
 }

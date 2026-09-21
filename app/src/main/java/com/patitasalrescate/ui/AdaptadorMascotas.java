@@ -46,7 +46,7 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
         
         PatitasSessionManager session = PatitasSessionManager.getInstance(context);
         this.idUsuario = session.getUserId();
-        this.tipoUsuario = session.getUserType();
+        this.tipoUsuario = session.getSessionType();
     }
 
     public AdaptadorMascotas(List<Mascota> lista,
@@ -60,7 +60,7 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
 
         PatitasSessionManager session = PatitasSessionManager.getInstance(context);
         this.idUsuario = session.getUserId();
-        this.tipoUsuario = session.getUserType();
+        this.tipoUsuario = session.getSessionType();
         this.esModoFavoritos = true;
         this.esModoRefugio = false;
     }

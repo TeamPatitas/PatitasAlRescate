@@ -68,20 +68,12 @@ public class ActividadIniciarSesion extends AppCompatActivity {
             return;
         }
 
-        Refugio r = daoRefugio.login(correo, pass);
-        if (r != null) {
-            PatitasSessionManager.getInstance(this).createSession(r.getIdRefugio(), r.getNombre(), "REFUGIO");
-            irAPantallaPrincipal();
-            return;
-        }
-
         Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show();
     }
 
     public void irAPantallaPrincipal() {
         PatitasSessionManager session = PatitasSessionManager.getInstance(this);
-        boolean esAdoptante = session.isAdoptante();
-        Intent intent = new Intent(this, esAdoptante ? ActividadFeedAdoptante.class : ActividadFeedRefugio.class);
+        Intent intent = new Intent(this, ActividadFeedAdoptante.class);
         startActivity(intent);
         finish();
     }

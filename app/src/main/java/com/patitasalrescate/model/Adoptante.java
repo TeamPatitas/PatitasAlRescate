@@ -16,11 +16,13 @@ public class Adoptante {
     private String numCelular;
     private int edad;
     private String sexo;
+    @SerializedName(value = "foto", alternate = {"fotoUrl", "FotoUrl"})
+    private String fotoUrl;
 
     public Adoptante() {}
 
     public Adoptante(String idAdoptante, String nombre, String correo, String password,
-                     String numCelular, int edad, String sexo) {
+                     String numCelular, int edad, String sexo, String fotoUrl) {
         this.idAdoptante = idAdoptante;
         this.nombre = nombre;
         this.correo = correo;
@@ -28,7 +30,9 @@ public class Adoptante {
         this.numCelular = numCelular;
         this.edad = edad;
         this.sexo = sexo;
+        this.fotoUrl = fotoUrl;
     }
+
     public String getIdAdoptante() { return idAdoptante; }
     public void setIdAdoptante(String idAdoptante) { this.idAdoptante = idAdoptante; }
     public String getNombre() { return nombre; }
@@ -43,4 +47,7 @@ public class Adoptante {
     public void setEdad(int edad) { this.edad = edad; }
     public String getSexo() { return sexo; }
     public void setSexo(String sexo) { this.sexo = sexo; }
+
+    public String getFotoUrl() { return fotoUrl; }
+    public void setFotoUrl(String fotoUrl) { this.fotoUrl = fotoUrl; }
 }

@@ -11,7 +11,7 @@ public class DAOAdoptante implements IAdoptanteDataSource {
     private static List<Adoptante> mockAdoptantes = new ArrayList<>();
 
     static {
-        mockAdoptantes.add(new Adoptante("xd", "Luis", "ad", "pass123", "987654321", 25, "Masculino"));
+        mockAdoptantes.add(new Adoptante("xd", "Luis", "ad", "pass123", "987654321", 25, "Masculino", "url1"));
     }
 
     public DAOAdoptante(Context context) {}
@@ -40,6 +40,13 @@ public class DAOAdoptante implements IAdoptanteDataSource {
             }
         }
         return 0;
+    }
+
+    public Adoptante obtenerPorId(String idAdoptante) {
+        for (Adoptante a : mockAdoptantes) {
+            if (a.getIdAdoptante().equals(idAdoptante)) return a;
+        }
+        return null;
     }
 
     public void eliminar(String idAdoptante) {

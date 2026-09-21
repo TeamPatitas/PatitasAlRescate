@@ -12,10 +12,6 @@ public class Refugio {
     private double latitud;
     private double longitud;
     private String correo;
-
-    @SerializedName("password")
-    private String password;
-
     @SerializedName(value = "num_celular", alternate = {"numCelular"})
     private String numCelular;
 
@@ -27,14 +23,13 @@ public class Refugio {
     public Refugio() {}
 
     public Refugio(String idRefugio, String nombre, String direccion, double latitud, double longitud,
-                   String correo, String password, String numCelular, String fotoUrl, long lastSync) {
+                   String correo, String numCelular, String fotoUrl, long lastSync) {
         this.idRefugio = idRefugio;
         this.nombre = nombre;
         this.direccion = direccion;
         this.latitud = latitud;
         this.longitud = longitud;
         this.correo = correo;
-        this.password = password;
         this.numCelular = numCelular;
         this.fotoUrl = fotoUrl;
         this.lastSync = lastSync;
@@ -58,9 +53,6 @@ public class Refugio {
 
     public String getCorreo() { return correo; }
     public void setCorreo(String correo) { this.correo = correo; }
-
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
 
     public String getNumCelular() { return numCelular; }
     public void setNumCelular(String numCelular) { this.numCelular = numCelular; }

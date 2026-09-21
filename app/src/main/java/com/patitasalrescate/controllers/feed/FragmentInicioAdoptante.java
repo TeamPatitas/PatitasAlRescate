@@ -2,14 +2,18 @@ package com.patitasalrescate.controllers.feed;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.patitasalrescate.R;
+import com.patitasalrescate.utils.PatitasSessionManager;
 
 public class FragmentInicioAdoptante extends Fragment {
     public FragmentInicioAdoptante() {
@@ -39,6 +43,15 @@ public class FragmentInicioAdoptante extends Fragment {
                              Bundle savedInstanceState) {
         updateTitle("Inicio");
         return inflater.inflate(R.layout.fg_inicio_adoptante, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        String nombre = PatitasSessionManager.getInstance(requireContext()).getUserName();
+        TextView txtBienvenido = view.findViewById(R.id.txtBienvenidoAdoptante);
+        txtBienvenido.setText("Bienvenido " + nombre);
     }
 
     private void updateTitle(String title) {

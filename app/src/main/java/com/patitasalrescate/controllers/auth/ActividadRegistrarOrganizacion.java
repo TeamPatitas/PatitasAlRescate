@@ -1,6 +1,7 @@
 package com.patitasalrescate.controllers.auth;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.widget.Button;
@@ -78,13 +79,16 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
         nuevoRefugio.setNombre(nombre);
         nuevoRefugio.setDireccion(direccion);
         nuevoRefugio.setCorreo(correo);
-        nuevoRefugio.setPassword(password);
         nuevoRefugio.setNumCelular(telefono);
 
         daoRefugio.insertar(nuevoRefugio);
         
         progressDialog.dismiss();
         Toast.makeText(this, "¡Refugio registrado exitosamente (Demo)!", Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(ActividadRegistrarOrganizacion.this, ActividadIniciarSesion.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
         finish();
     }
 }
