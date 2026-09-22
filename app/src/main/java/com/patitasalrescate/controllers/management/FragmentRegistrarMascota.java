@@ -25,7 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.patitasalrescate.R;
-import com.patitasalrescate.data_access.DAOMascota;
+import com.patitasalrescate.data.mock.DAOMascota;
 import com.patitasalrescate.model.Mascota;
 import com.patitasalrescate.ui.AdaptadorFotosPreview;
 import com.patitasalrescate.utils.PatitasSessionManager;

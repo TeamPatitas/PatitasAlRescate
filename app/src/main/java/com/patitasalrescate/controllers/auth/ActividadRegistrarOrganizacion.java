@@ -15,7 +15,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.patitasalrescate.R;
-import com.patitasalrescate.data_access.DAORefugio;
+import com.patitasalrescate.data.mock.DAORefugio;
 import com.patitasalrescate.model.Refugio;
 
 import java.util.UUID;

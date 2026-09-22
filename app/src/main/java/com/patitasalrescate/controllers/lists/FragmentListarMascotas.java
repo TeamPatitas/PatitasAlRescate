@@ -12,7 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -22,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.patitasalrescate.R;
 import com.patitasalrescate.utils.PatitasSessionManager;
-import com.patitasalrescate.data_access.DAOMascota;
+import com.patitasalrescate.data.mock.DAOMascota;
 import com.patitasalrescate.model.Mascota;
 import com.patitasalrescate.ui.AdaptadorMascotas;
 

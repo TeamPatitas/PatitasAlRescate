@@ -17,8 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.patitasalrescate.controllers.management.ActividadPerfilMascota;
 import com.patitasalrescate.R;
-import com.patitasalrescate.data_access.DAOFavoritos;
-import com.patitasalrescate.data_access.DAOMascota;
+import com.patitasalrescate.data.mock.DAOFavoritos;
+import com.patitasalrescate.data.mock.DAOMascota;
 import com.patitasalrescate.model.Mascota;
 import com.patitasalrescate.utils.PatitasSessionManager;
 
@@ -90,7 +90,7 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
 
         if (esModoRefugio) {
             holder.btnPrincipal.setVisibility(View.VISIBLE);
-            holder.btnPrincipal.setText("Editar");
+            holder.btnPrincipal.setText("Editar mascota");
             holder.btnPrincipal.setOnClickListener(v -> abrirPerfil(m, true));
 
             if (!"DISPONIBLE".equals(estado) && !"ADOPTADO".equals(estado)) {
