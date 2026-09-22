@@ -27,7 +27,6 @@ public class ActividadAdopcion extends AppCompatActivity {
     private DAOMascota daoMascota;
     private DAORefugio daoRefugio;
     private DAOAdopcion daoAdopcion;
-
     private String idMascota;
     private String idAdoptante;
     private Mascota mascota;

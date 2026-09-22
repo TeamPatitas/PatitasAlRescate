@@ -84,7 +84,7 @@ public class ActividadPerfilMascota extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Detalle de Mascota");
+            getSupportActionBar().setTitle("Detalles de la Mascota");
         }
         toolbar.setNavigationOnClickListener(v -> finish());
     }

@@ -11,8 +11,10 @@
         android:id="@+id/toolbarPerfilMascota"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#5D4037"
-        app:titleTextColor="@android:color/white"
+        android:background="@color/color_navegacion_claro"
+        app:title="Detalles de la Mascota"
+        app:titleTextColor="@color/blanco"
+        app:navigationIcon="@android:drawable/ic_menu_revert"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView

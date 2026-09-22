@@ -2,151 +2,433 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/perfilusuario"
+    android:id="@+id/perfil_usuario"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blanco"
+    android:background="@color/fondo_pre_login"
     tools:context=".controllers.management.ActividadPerfilUsuario">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarPerfilUsuario"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        app:title="Mi perfil"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/color_navegacion_claro"
+        app:title="Mi Perfil"
         app:titleTextColor="@color/blanco"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:navigationIcon="@drawable/rj_inicio_refugio_24"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/imgAvatarUsuario"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:layout_marginTop="24dp"
-        android:contentDescription="Avatar del usuario"
-        android:src="@drawable/rj_persona"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintTop_toBottomOf="@id/toolbarPerfilUsuario"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/txtNombreUsuario"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:fontFamily="@font/chewy"
-        android:textColor="@color/marronPrimario"
-        android:textSize="22sp"
-        tools:text="Luis Pérez"
-        app:layout_constraintTop_toBottomOf="@id/imgAvatarUsuario"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/txtTipoUsuario"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:textColor="@color/textoSecundario"
-        tools:text="Adoptante"
-        app:layout_constraintTop_toBottomOf="@id/txtNombreUsuario"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/lyDatosUsuario"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginHorizontal="24dp"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/txtTipoUsuario"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
+            android:orientation="vertical"
+            android:paddingBottom="32dp">
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/rj_correo"
-                android:contentDescription="Correo" />
-
-            <TextView
-                android:id="@+id/txtCorreoUsuario"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="12dp"
-                android:textColor="@color/textoPrincipal"
-                tools:text="correo@ejemplo.com" />
-        </LinearLayout>
+                android:orientation="vertical"
+                android:gravity="center"
+                android:paddingTop="32dp"
+                android:paddingBottom="20dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/rj_telefono"
-                android:contentDescription="Teléfono" />
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/imgAvatarUsuario"
+                        android:layout_width="112dp"
+                        android:layout_height="112dp"
+                        android:background="#E0E0E0"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/rj_persona"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.Patitas.Circular"
+                        app:strokeColor="@color/blanco"
+                        app:strokeWidth="4dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
 
-            <TextView
-                android:id="@+id/txtCelularUsuario"
-                android:layout_width="0dp"
+                    <ImageButton
+                        android:id="@+id/btnCambiarFoto"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/bg_boton_circular_marron"
+                        android:contentDescription="Cambiar foto de perfil"
+                        android:padding="7dp"
+                        android:src="@android:drawable/ic_menu_camera"
+                        app:tint="@color/blanco"
+                        app:layout_constraintBottom_toBottomOf="@id/imgAvatarUsuario"
+                        app:layout_constraintEnd_toEndOf="@id/imgAvatarUsuario" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/txtNombreUsuario"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:fontFamily="@font/chewy"
+                    android:textColor="@color/texto_titulo"
+                    android:textSize="22sp"
+                    tools:text="Juan Pérez" />
+
+                <TextView
+                    android:id="@+id/txtTipoUsuario"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/verde_persona"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    tools:text="Adoptante" />
+            </LinearLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="12dp"
-                android:textColor="@color/textoPrincipal"
-                tools:text="987654321" />
+                android:layout_marginHorizontal="20dp"
+                app:cardBackgroundColor="@color/blanco"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="12dp"
+                        android:text="INFORMACIÓN PERSONAL"
+                        android:textColor="@color/textoSecundario"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/bg_circulo_icono_claro"
+                            android:padding="9dp"
+                            android:src="@drawable/rj_persona"
+                            app:tint="@color/marronPrimario" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Nombre completo"
+                                android:textColor="@color/textoSecundario"
+                                android:textSize="12sp" />
+
+                            <EditText
+                                android:id="@+id/txtNombreUsuarioInput"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:enabled="false"
+                                android:inputType="textCapWords"
+                                android:padding="0dp"
+                                android:textColor="@color/texto_busqueda"
+                                android:textSize="16sp"
+                                tools:ignore="TouchTargetSizeCheck"
+                                tools:text="Juan Pérez" />
+                        </LinearLayout>
+
+                        <ImageButton
+                            android:id="@+id/btnEditarNombre"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Editar nombre"
+                            android:src="@android:drawable/ic_menu_edit"
+                            app:tint="@color/marronPrimario"
+                            tools:ignore="TouchTargetSizeCheck" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="66dp"
+                        android:background="@color/textoSecundario"
+                        android:alpha="0.15" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/bg_circulo_icono_claro"
+                            android:padding="9dp"
+                            android:src="@drawable/rj_correo"
+                            app:tint="@color/marronPrimario" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Correo electrónico"
+                                android:textColor="@color/textoSecundario"
+                                android:textSize="12sp" />
+
+                            <EditText
+                                android:id="@+id/txtCorreoUsuarioInput"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:enabled="false"
+                                android:inputType="textEmailAddress"
+                                android:padding="0dp"
+                                android:textColor="@color/texto_busqueda"
+                                android:textSize="16sp"
+                                tools:ignore="TouchTargetSizeCheck"
+                                tools:text="juan.perez@example.com" />
+                        </LinearLayout>
+
+                        <ImageButton
+                            android:id="@+id/btnEditarCorreo"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Editar correo"
+                            android:src="@android:drawable/ic_menu_edit"
+                            app:tint="@color/marronPrimario"
+                            tools:ignore="TouchTargetSizeCheck" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="66dp"
+                        android:background="@color/textoSecundario"
+                        android:alpha="0.15" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/bg_circulo_icono_claro"
+                            android:padding="9dp"
+                            android:src="@drawable/rj_telefono"
+                            app:tint="@color/marronPrimario" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Teléfono"
+                                android:textColor="@color/textoSecundario"
+                                android:textSize="12sp" />
+
+                            <EditText
+                                android:id="@+id/txtCelularUsuarioInput"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:enabled="false"
+                                android:inputType="phone"
+                                android:maxLength="9"
+                                android:padding="0dp"
+                                android:textColor="@color/texto_busqueda"
+                                android:textSize="16sp"
+                                tools:ignore="TouchTargetSizeCheck"
+                                tools:text="+51 987 654 321" />
+                        </LinearLayout>
+
+                        <ImageButton
+                            android:id="@+id/btnEditarCelular"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Editar teléfono"
+                            android:src="@android:drawable/ic_menu_edit"
+                            app:tint="@color/marronPrimario"
+                            tools:ignore="TouchTargetSizeCheck" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginHorizontal="20dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnVerFavoritos"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:checkable="true"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/blanco"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="2dp"
+                    app:strokeWidth="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <ImageView
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:background="@drawable/bg_circulo_icono_verde"
+                            android:padding="7dp"
+                            android:src="@android:drawable/btn_star_big_on"
+                            android:layout_gravity="center"
+                            app:tint="@color/verde_persona" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:fontFamily="@font/chewy"
+                            android:text="Favoritos"
+                            android:layout_gravity="center"
+                            android:textColor="@color/texto_titulo"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Ver mis mascotas"
+                            android:layout_gravity="center"
+                            android:textColor="@color/textoSecundario"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnCambiarModoRefugio"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/blanco"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="2dp"
+                    app:strokeWidth="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <ImageView
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:background="@drawable/bg_circulo_icono_verde"
+                            android:padding="7dp"
+                            android:src="@drawable/rj_inicio_refugio_24"
+                            android:layout_gravity="center"
+                            app:tint="@color/verde_persona" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:fontFamily="@font/chewy"
+                            android:text="Modo Refugio"
+                            android:layout_gravity="center"
+                            android:textColor="@color/texto_titulo"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Cambiar de perfil"
+                            android:layout_gravity="center"
+                            android:textColor="@color/textoSecundario"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnGuardarPerfil"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginHorizontal="20dp"
+                android:backgroundTint="@color/marronPrimario"
+                android:fontFamily="@font/chewy"
+                android:text="Guardar cambios"
+                android:textColor="@color/blanco"
+                android:textSize="16sp"
+                app:cornerRadius="16dp"
+                app:icon="@android:drawable/ic_menu_save"
+                app:iconTint="@color/blanco" />
+
+            <Button
+                android:id="@+id/btnCerrarSesion"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginHorizontal="20dp"
+                android:backgroundTint="@color/marronOscuro"
+                android:fontFamily="@font/chewy"
+                android:textSize="14sp"
+                android:text="Cerrar sesión"
+                android:textColor="@color/blanco"
+                app:cornerRadius="16dp" />
+
         </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/lyBotonesPerfil"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <Button
-            android:id="@+id/btnVerFavoritos"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:backgroundTint="@color/marronClaro"
-            android:text="Ver mis favoritos"
-            android:textColor="@color/marronOscuro" />
-
-        <Button
-            android:id="@+id/btnCambiarModoRefugio"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:backgroundTint="@color/naranja_asociacion"
-            android:text="Cambiar a modo refugio"
-            android:textColor="@color/blanco" />
-
-        <Button
-            android:id="@+id/btnCerrarSesion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/marronPrimario"
-            android:text="Cerrar sesión"
-            android:textColor="@color/blanco" />
-    </LinearLayout>
-
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

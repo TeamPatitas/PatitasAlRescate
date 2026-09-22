@@ -25,7 +25,7 @@ jobs:
         run: |
           git checkout master
           
-          for branch in dev-and dev-diego dev-eve dev-jacky; do
+          for branch in dev-and diego-mejoras-cache dev-eve dev-jacky; do
             echo "----------------------------------------"
             echo "🚀 Fusionando $branch en master..."
           
