@@ -1,11 +1,13 @@
-package com.patitasalrescate.data_access;
+package com.patitasalrescate.data.mock;
 
 import android.content.Context;
+
+import com.patitasalrescate.data.source.IAdoptanteDataSource;
 import com.patitasalrescate.model.Adoptante;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DAOAdoptante {
+public class DAOAdoptante implements IAdoptanteDataSource {
     private static List<Adoptante> mockAdoptantes = new ArrayList<>();
 
     static {

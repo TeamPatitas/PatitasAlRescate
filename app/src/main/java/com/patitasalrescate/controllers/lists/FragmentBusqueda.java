@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.patitasalrescate.R;
-import com.patitasalrescate.data_access.DAOMascota;
+import com.patitasalrescate.data.mock.DAOMascota;
 import com.patitasalrescate.model.Mascota;
 import com.patitasalrescate.ui.AdaptadorMascotas;
 

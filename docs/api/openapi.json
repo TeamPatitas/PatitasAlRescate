@@ -1,0 +1,1559 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "PatitasAlRescate API",
+    "version": "v1"
+  },
+  "paths": {
+    "/admin/health": {
+      "get": {
+        "tags": [
+          "Administración"
+        ],
+        "description": "Verifica el estado de la api y sus dependencias, es piola pa saber que c cayó xd",
+        "operationId": "HealthCheck",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "DevOnly",
+        "x-cooldown-policy": "HealthCheckCooldown",
+        "x-cooldown": "30 segundos"
+      }
+    },
+    "/admin/user": {
+      "get": {
+        "tags": [
+          "Administración"
+        ],
+        "description": "Obtiene la información del usuario actual, necesita que el usuario haya iniciado sesión.",
+        "operationId": "GetCurrentUser",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "User"
+      },
+      "patch": {
+        "tags": [
+          "Administración"
+        ],
+        "description": "Actualiza la información del usuario, necesita que el usuario haya iniciado sesión, pero si tienes rol dev puedes modificar cualquier cosa a cualquiera xd.",
+        "operationId": "UpdateCurrentUser",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "User"
+      }
+    },
+    "/admin/user/{id}": {
+      "delete": {
+        "tags": [
+          "Administración"
+        ],
+        "description": "CUIDADO Borra el usuario con el ID especificado, esto es irreversible usarlo con mucha cautela, si eres dev tambien puedes eliminarlo a cualquiera 🐒 ",
+        "operationId": "Borrar Usuario",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "User"
+      }
+    },
+    "/admin/add-roles": {
+      "patch": {
+        "tags": [
+          "Administración"
+        ],
+        "description": "Agrega roles a un usuario. El nombre lo dice todo 🤌",
+        "operationId": "AddRoles",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SwitchRolesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-roles-policy": "DevOnly"
+      }
+    },
+    "/admin/remove-roles": {
+      "patch": {
+        "tags": [
+          "Administración"
+        ],
+        "description": "Remueve roles de un usuario. El nombre lo dice todo 🤌",
+        "operationId": "RemoveRoles",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SwitchRolesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-roles-policy": "DevOnly"
+      }
+    },
+    "/admin/users": {
+      "get": {
+        "tags": [
+          "Administración"
+        ],
+        "description": "Obtiene todos los usuarios.",
+        "operationId": "GetAllUsers",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserSummaryResponsePagedResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "DevOnly"
+      }
+    },
+    "/admin/shelter/enable/{id}": {
+      "patch": {
+        "tags": [
+          "Administración"
+        ],
+        "description": "Habilita un shelter con el ID especificado, hace que el refugio aparezca para todos los usuarios y luego asigna el rol ShelterOwner a todos los dueños del refugio.",
+        "operationId": "EnableShelter",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShelterResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "DevOnly",
+        "x-cooldown-policy": "ShelterSwitchAviabilityCooldown",
+        "x-cooldown": "5 minutos"
+      }
+    },
+    "/admin/shelter/disable/{id}": {
+      "patch": {
+        "tags": [
+          "Administración"
+        ],
+        "description": "Deshabilita un shelter con el ID especificado, hace que el refugio no aparezca para los usuarios y luego remueve el rol ShelterOwner de todos los dueños del refugio.",
+        "operationId": "DisableShelter",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShelterResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "DevOnly",
+        "x-cooldown-policy": "ShelterSwitchAviabilityCooldown",
+        "x-cooldown": "5 minutos"
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Autenticación"
+        ],
+        "description": "Iniciar sesión pez",
+        "operationId": "Iniciar Sesión",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Autenticación"
+        ],
+        "description": "Registrarse pez",
+        "operationId": "Registrarse",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/verify-email": {
+      "get": {
+        "tags": [
+          "Autenticación"
+        ],
+        "description": "Verifica el correo del usuario, esta wea está pensada para que se redireccione desde frontend.",
+        "operationId": "Verificar Correo",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/auth/send-verification-email": {
+      "get": {
+        "tags": [
+          "Autenticación"
+        ],
+        "description": "Envía un correo de verificación al usuario",
+        "operationId": "Enviar Correo de Verificación",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-roles-policy": "User",
+        "x-cooldown-policy": "EmailVerificationCooldown",
+        "x-cooldown": "1 minuto"
+      }
+    },
+    "/pet": {
+      "post": {
+        "tags": [
+          "Mascotas"
+        ],
+        "description": "Crea una nueva mascota, es todo xd",
+        "operationId": "CreatePet",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePetRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePetRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "ShelterOwner"
+      },
+      "get": {
+        "tags": [
+          "Mascotas"
+        ],
+        "description": "Obtiene todas las mascotas.",
+        "operationId": "GetAllPets",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetSummaryResponsePagedResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "User"
+      }
+    },
+    "/pet/{petId}": {
+      "get": {
+        "tags": [
+          "Mascotas"
+        ],
+        "description": "Obtiene los detalles deuna mascota por su ID.",
+        "operationId": "GetPetById",
+        "parameters": [
+          {
+            "name": "petId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "User"
+      },
+      "patch": {
+        "tags": [
+          "Mascotas"
+        ],
+        "description": "Actualiza los datos de una mascota.",
+        "operationId": "UpdatePet",
+        "parameters": [
+          {
+            "name": "petId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePetRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "ShelterOwner"
+      },
+      "delete": {
+        "tags": [
+          "Mascotas"
+        ],
+        "description": "CUIDADO: Elimina una mascota pero tambien elimina todo lo relacionado a ella, es irreversible usarlo con cautela.",
+        "operationId": "DeletePet",
+        "parameters": [
+          {
+            "name": "petId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "x-roles-policy": "ShelterOwner"
+      }
+    },
+    "/pet/{petId}/photo/{photoIndex}": {
+      "patch": {
+        "tags": [
+          "Mascotas"
+        ],
+        "description": "Actualiza la foto de una mascota, son 3 fotos por mascota y este endpoint reemplaza el especificado.",
+        "operationId": "UpdatePetPhoto",
+        "parameters": [
+          {
+            "name": "petId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "photoIndex",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "photo"
+                ],
+                "type": "object",
+                "properties": {
+                  "photo": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "photo": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "ShelterOwner"
+      }
+    },
+    "/": {
+      "get": {
+        "tags": [
+          "PatitasAPI"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shelter": {
+      "post": {
+        "tags": [
+          "Refugios"
+        ],
+        "description": "Crea un nuevo refugio, es todo xd, luego los devs verán si activan el refugio.",
+        "operationId": "CreateShelter",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateShelterRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateShelterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShelterResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "User"
+      },
+      "get": {
+        "tags": [
+          "Refugios"
+        ],
+        "description": "Obtiene todos los refugios.",
+        "operationId": "GetAllShelters",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShelterSummaryResponsePagedResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "User"
+      }
+    },
+    "/shelter/{id}": {
+      "patch": {
+        "tags": [
+          "Refugios"
+        ],
+        "description": "Actualiza los datos de un refugio.",
+        "operationId": "UpdateShelter",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateShelterRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateShelterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShelterResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "User"
+      },
+      "get": {
+        "tags": [
+          "Refugios"
+        ],
+        "description": "Obtiene los detalles de un refugio por su ID.",
+        "operationId": "GetShelterById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShelterResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "User"
+      },
+      "delete": {
+        "tags": [
+          "Refugios"
+        ],
+        "description": "CUIDADO: Elimina un refugio, esto es irreversible y elimina todo lo relacionado a ella (adopciones, mascotas) usarlo con cautela, si eres dev tambien puedes eliminarlo a cualquiera 🐒 ",
+        "operationId": "DeleteShelter",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-roles-policy": "ShelterOwner"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AuthResponse": {
+        "required": [
+          "roles",
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "nullable": true
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreatePetRequest": {
+        "required": [
+          "breed",
+          "gender",
+          "name",
+          "species",
+          "story",
+          "temperament"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "species": {
+            "$ref": "#/components/schemas/Species"
+          },
+          "breed": {
+            "type": "string",
+            "nullable": true
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
+          },
+          "temperament": {
+            "type": "string",
+            "nullable": true
+          },
+          "story": {
+            "type": "string",
+            "nullable": true
+          },
+          "available": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "binary"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateShelterRequest": {
+        "required": [
+          "address",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "photo": {
+            "type": "string",
+            "format": "binary",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Gender": {
+        "enum": [
+          "MALE",
+          "FEMALE"
+        ],
+        "type": "string"
+      },
+      "HealthResponse": {
+        "required": [
+          "services",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "services": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/HealthServiceResult"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "HealthServiceResult": {
+        "required": [
+          "latencyMs",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "latencyMs": {
+            "type": "number",
+            "format": "double"
+          },
+          "error": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoginRequest": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PetResponse": {
+        "required": [
+          "available",
+          "breed",
+          "gender",
+          "id",
+          "name",
+          "photos",
+          "shelterId",
+          "specie",
+          "story",
+          "temperament"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "specie": {
+            "$ref": "#/components/schemas/Species"
+          },
+          "breed": {
+            "type": "string",
+            "nullable": true
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
+          },
+          "temperament": {
+            "type": "string",
+            "nullable": true
+          },
+          "story": {
+            "type": "string",
+            "nullable": true
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "available": {
+            "type": "boolean"
+          },
+          "shelterId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PetSummaryResponse": {
+        "required": [
+          "available",
+          "id",
+          "name",
+          "photos"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "available": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PetSummaryResponsePagedResponse": {
+        "required": [
+          "items",
+          "page",
+          "pageSize",
+          "totalCount",
+          "totalPages"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PetSummaryResponse"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RegisterRequest": {
+        "required": [
+          "birthDate",
+          "email",
+          "firstName",
+          "gender",
+          "lastName",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          },
+          "birthDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "gender": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "photo": {
+            "type": "string",
+            "format": "binary",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ShelterResponse": {
+        "required": [
+          "address",
+          "id",
+          "isAvailable",
+          "name",
+          "owners"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "isAvailable": {
+            "type": "boolean"
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "photoUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "owners": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ShelterSummaryResponse": {
+        "required": [
+          "id",
+          "isAvailable",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "isAvailable": {
+            "type": "boolean"
+          },
+          "photoUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ShelterSummaryResponsePagedResponse": {
+        "required": [
+          "items",
+          "page",
+          "pageSize",
+          "totalCount",
+          "totalPages"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShelterSummaryResponse"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Species": {
+        "enum": [
+          "OTHER",
+          "DOG",
+          "CAT"
+        ],
+        "type": "string"
+      },
+      "SwitchRolesRequest": {
+        "required": [
+          "roles",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdatePetRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "species": {
+            "$ref": "#/components/schemas/Species"
+          },
+          "breed": {
+            "type": "string",
+            "nullable": true
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
+          },
+          "temperament": {
+            "type": "string",
+            "nullable": true
+          },
+          "story": {
+            "type": "string",
+            "nullable": true
+          },
+          "available": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateShelterRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "photo": {
+            "type": "string",
+            "format": "binary",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateUserRequest": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "birthDate": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "gender": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "photo": {
+            "type": "string",
+            "format": "binary",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserResponse": {
+        "required": [
+          "birthDate",
+          "email",
+          "firstName",
+          "gender",
+          "id",
+          "isEmailConfirmed",
+          "lastName",
+          "photoUrl",
+          "roles"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "isEmailConfirmed": {
+            "type": "boolean"
+          },
+          "gender": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "photoUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "birthDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "shelterId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserSummaryResponse": {
+        "required": [
+          "firstName",
+          "id",
+          "lastName",
+          "roles"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserSummaryResponsePagedResponse": {
+        "required": [
+          "items",
+          "page",
+          "pageSize",
+          "totalCount",
+          "totalPages"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserSummaryResponse"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "description": "xd hola.",
+        "scheme": "Bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ],
+  "tags": [
+    {
+      "name": "Administración"
+    },
+    {
+      "name": "Autenticación"
+    },
+    {
+      "name": "Mascotas"
+    },
+    {
+      "name": "PatitasAPI"
+    },
+    {
+      "name": "Refugios"
+    }
+  ]
+}

@@ -43,6 +43,23 @@ public class ActividadDetalleEvento extends AppCompatActivity {
         evento = (Evento) getIntent().getSerializableExtra("evento_key");
 
         if (evento != null) {
+            txtNombre.setText(evento.getNombre());
+            txtFecha.setText(evento.getFecha());
+            txtDescripcion.setText(evento.getDescripcion());
+
+            if (evento.getFotoUrl() != null && !evento.getFotoUrl().isEmpty()) {
+                Glide.with(this)
+                        .load(evento.getFotoUrl())
+                        .placeholder(R.drawable.evento_default)
+                        .error(R.drawable.evento_default)
+                        .centerCrop()
+                        .into(imgDetalle);
+            } else {
+                imgDetalle.setImageResource(R.drawable.evento_default);
+            }
+
+            btnMapa.setOnClickListener(v -> verEnMapa());
+          
             cargarDatos();
             configurarSegunRol();
         } else {

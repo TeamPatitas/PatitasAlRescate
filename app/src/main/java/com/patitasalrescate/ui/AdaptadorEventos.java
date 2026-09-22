@@ -48,6 +48,8 @@ public class AdaptadorEventos extends RecyclerView.Adapter<AdaptadorEventos.Even
         if (evento.getFotoUrl() != null && !evento.getFotoUrl().isEmpty()) {
             Glide.with(context)
                     .load(evento.getFotoUrl())
+                    .placeholder(R.drawable.evento_default)
+                    .error(R.drawable.evento_default)
                     .centerCrop()
                     .into(holder.imgFoto);
         } else {

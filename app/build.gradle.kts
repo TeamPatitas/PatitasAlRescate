@@ -48,8 +48,11 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation("com.github.bumptech.glide:glide:4.16.0")
-    // Para HTTP (llamadas a Supabase REST API)
+    // Cliente HTTP y conversión del contrato de Patitas API.
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
 // Para parsear JSON (Gson es más simple que JSONObject)
     implementation("com.google.code.gson:gson:2.10.1")
 // Glide (ya lo tenías, pero por si acaso)
