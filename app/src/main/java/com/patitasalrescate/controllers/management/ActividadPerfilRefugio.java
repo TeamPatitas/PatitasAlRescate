@@ -78,14 +78,19 @@ public class ActividadPerfilRefugio extends AppCompatActivity {
             txtContacto.setText("Contacto: " + (refugio.getNumCelular() != null ? refugio.getNumCelular() : "No disponible"));
 
             if (refugio.getFotoUrl() != null && !refugio.getFotoUrl().isEmpty()) {
-                Glide.with(this).load(refugio.getFotoUrl()).centerCrop().into(imgFoto);
+                Glide.with(this).load(refugio.getFotoUrl())
+                        .placeholder(R.drawable.img_default_refugio)
+                        .error(R.drawable.img_default_refugio)
+                        .centerCrop().into(imgFoto);
+            } else {
+                imgFoto.setImageResource(R.drawable.img_default_refugio);
             }
 
             // Cargando eventos de prueba
             cargarEventosPrueba();
             
-            // Imagen QR por defecto (Simulando donación)
-            imgQR.setImageResource(R.drawable.bg_circle_image); // Reemplazar con QR real si existe
+            // Imagen QR por defecto (Yape)
+            imgQR.setImageResource(R.drawable.img_yape_default);
         }
     }
 

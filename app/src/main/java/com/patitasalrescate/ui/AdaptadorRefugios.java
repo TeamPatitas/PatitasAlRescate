@@ -47,12 +47,12 @@ public class AdaptadorRefugios extends RecyclerView.Adapter<AdaptadorRefugios.Re
         if (r.getFotoUrl() != null && !r.getFotoUrl().isEmpty()) {
             Glide.with(context)
                     .load(r.getFotoUrl())
-                    .placeholder(R.drawable.ic_launcher_foreground)
-                    .error(R.drawable.ic_launcher_foreground)
+                    .placeholder(R.drawable.img_default_refugio)
+                    .error(R.drawable.img_default_refugio)
                     .centerCrop()
                     .into(holder.imgFoto);
         } else {
-            holder.imgFoto.setImageResource(R.drawable.ic_launcher_foreground);
+            holder.imgFoto.setImageResource(R.drawable.img_default_refugio);
         }
         holder.btnWhatsapp.setOnClickListener(v -> {
             String fono = r.getNumCelular();

@@ -27,7 +27,7 @@ jobs:
         run: |
           git checkout master
           
-          for branch in dev-and dev-diego dev-eve dev-jacky; do
+          for branch in dev-and dev-eve dev-jacky diego-mejoras-cache; do
             echo "----------------------------------------"
             echo "🔍 Analizando $branch..."
           

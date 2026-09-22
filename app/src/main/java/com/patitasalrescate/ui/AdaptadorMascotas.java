@@ -90,7 +90,7 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
 
         if (esModoRefugio) {
             holder.btnPrincipal.setVisibility(View.VISIBLE);
-            holder.btnPrincipal.setText("Editar");
+            holder.btnPrincipal.setText("Editar mascota");
             holder.btnPrincipal.setOnClickListener(v -> abrirPerfil(m, true));
 
             if (!"DISPONIBLE".equals(estado) && !"ADOPTADO".equals(estado)) {
