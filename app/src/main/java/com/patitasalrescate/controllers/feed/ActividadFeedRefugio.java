@@ -16,6 +16,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.patitasalrescate.R;
+import com.patitasalrescate.controllers.management.ActividadPerfilRefugio;
 import com.patitasalrescate.controllers.management.ActividadPerfilUsuario;
 import com.patitasalrescate.utils.PatitasSessionManager;
 
@@ -105,7 +106,10 @@ public class ActividadFeedRefugio extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_perfil_refugio) {
-            startActivity(new Intent(this, ActividadPerfilUsuario.class));
+            String idRefugio = PatitasSessionManager.getInstance(this).getUserId();
+            Intent intent = new Intent(this, ActividadPerfilRefugio.class);
+            intent.putExtra("id_refugio_key", idRefugio);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
