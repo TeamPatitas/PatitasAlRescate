@@ -42,7 +42,7 @@ jobs:
 
       - name: Sincronizar master hacia las ramas
         run: |
-          for branch in dev-and dev-diego dev-eve dev-jacky; do
+          for branch in dev-and diego-mejoras-cache dev-eve dev-jacky; do
             echo "----------------------------------------"
           
             if grep -q "^${branch}$" ramas_fallidas.txt; then

@@ -18,8 +18,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.bumptech.glide.Glide;
 import com.patitasalrescate.R;
 import com.patitasalrescate.utils.PatitasSessionManager;
-import com.patitasalrescate.data_access.DAOMascota;
-import com.patitasalrescate.data_access.DAOFavoritos;
+import com.patitasalrescate.data.mock.DAOMascota;
+import com.patitasalrescate.data.mock.DAOFavoritos;
 import com.patitasalrescate.model.Mascota;
 
 import java.util.List;

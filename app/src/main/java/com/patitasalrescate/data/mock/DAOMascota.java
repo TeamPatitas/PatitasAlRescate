@@ -1,12 +1,14 @@
-package com.patitasalrescate.data_access;
+package com.patitasalrescate.data.mock;
 
 import android.content.Context;
+
+import com.patitasalrescate.data.source.IMascotaDataSource;
 import com.patitasalrescate.model.Mascota;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class DAOMascota {
+public class DAOMascota implements IMascotaDataSource {
     private static List<Mascota> mockMascotas = new ArrayList<>();
 
     static {

@@ -1,4 +1,4 @@
-package com.patitasalrescate.data_access;
+package com.patitasalrescate.data.mock;
 
 import android.content.Context;
 import com.patitasalrescate.model.Mascota;

@@ -1,11 +1,13 @@
-package com.patitasalrescate.data_access;
+package com.patitasalrescate.data.mock;
 
 import android.content.Context;
+
+import com.patitasalrescate.data.source.IRefugioDataSource;
 import com.patitasalrescate.model.Refugio;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DAORefugio {
+public class DAORefugio implements IRefugioDataSource {
     private static List<Refugio> mockRefugios = new ArrayList<>();
 
     static {
