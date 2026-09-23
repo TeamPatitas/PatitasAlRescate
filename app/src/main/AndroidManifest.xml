@@ -67,6 +67,9 @@
         <activity
             android:name=".controllers.management.ActividadPerfilRefugio"
             android:exported="false" />
+        <activity
+            android:name=".controllers.management.ActividadRegistrarEvento"
+            android:exported="false" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

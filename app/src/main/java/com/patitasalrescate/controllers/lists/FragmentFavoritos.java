@@ -18,8 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.patitasalrescate.R;
 import com.patitasalrescate.utils.PatitasSessionManager;
-import com.patitasalrescate.data_access.DAOFavoritos;
-import com.patitasalrescate.data_access.DAOMascota;
+import com.patitasalrescate.data.mock.DAOFavoritos;
+import com.patitasalrescate.data.mock.DAOMascota;
 import com.patitasalrescate.model.Mascota;
 import com.patitasalrescate.ui.AdaptadorMascotas;
 

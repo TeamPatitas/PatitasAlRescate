@@ -7,6 +7,16 @@
     android:layout_height="match_parent"
     android:background="#EFEBE9">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarPerfilMascota"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/color_navegacion_claro"
+        app:title="Detalles de la Mascota"
+        app:titleTextColor="@color/blanco"
+        app:navigationIcon="@android:drawable/ic_menu_revert"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/img_detalle_mascota"
         android:layout_width="match_parent"
@@ -14,7 +24,7 @@
         android:background="#D7CCC8"
         android:contentDescription="Foto de la mascota"
         android:scaleType="centerCrop"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarPerfilMascota"
         tools:src="@android:drawable/ic_menu_gallery" />
 
     <ScrollView

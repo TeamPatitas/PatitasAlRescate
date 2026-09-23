@@ -1,9 +1,7 @@
 package com.patitasalrescate.controllers.management;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,13 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.patitasalrescate.R;
-import com.patitasalrescate.controllers.auth.ActividadIngresar;
-import com.patitasalrescate.controllers.feed.ActividadFeedAdoptante;
 import com.patitasalrescate.data_access.DAORefugio;
 import com.patitasalrescate.model.Evento;
 import com.patitasalrescate.model.Refugio;
 import com.patitasalrescate.ui.AdaptadorEventos;
-import com.patitasalrescate.utils.PatitasSessionManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +39,6 @@ public class ActividadPerfilRefugio extends AppCompatActivity {
 
         initViews();
         configToolbar();
-        configListeners();
 
         if (idRefugio != null) {
             cargarDatosRefugio();
@@ -109,21 +103,5 @@ public class ActividadPerfilRefugio extends AppCompatActivity {
             AdaptadorEventos adaptador = new AdaptadorEventos(eventos, this);
             recyclerEventos.setAdapter(adaptador);
         }
-    }
-
-    private void configListeners() {
-        Button btnCambiarModo = findViewById(R.id.btnCambiarModoAdoptante);
-        btnCambiarModo.setOnClickListener(v -> {
-            startActivity(new Intent(this, ActividadFeedAdoptante.class));
-            finish();
-        });
-
-        Button btnCerrarSesion = findViewById(R.id.btnCerrarSesion);
-        btnCerrarSesion.setOnClickListener(v -> {
-            PatitasSessionManager.getInstance(this).logout();
-            Intent intent = new Intent(this, ActividadIngresar.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        });
     }
 }

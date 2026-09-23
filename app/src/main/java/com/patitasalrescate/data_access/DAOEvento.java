@@ -21,6 +21,21 @@ public class DAOEvento {
     public List<Evento> listarTodos() {
         return new ArrayList<>(mockEventos);
     }
+
+    public long insertar(Evento e) {
+        mockEventos.add(e);
+        return 1;
+    }
+
+    public boolean actualizar(Evento e) {
+        for (int i = 0; i < mockEventos.size(); i++) {
+            if (mockEventos.get(i).getIdEvento().equals(e.getIdEvento())) {
+                mockEventos.set(i, e);
+                return true;
+            }
+        }
+        return false;
+    }
     
     public Evento obtenerPorId(String id) {
         for (Evento e : mockEventos) {

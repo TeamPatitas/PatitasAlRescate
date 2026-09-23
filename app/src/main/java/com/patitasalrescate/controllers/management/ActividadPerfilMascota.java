@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -17,8 +18,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.bumptech.glide.Glide;
 import com.patitasalrescate.R;
 import com.patitasalrescate.utils.PatitasSessionManager;
-import com.patitasalrescate.data_access.DAOMascota;
-import com.patitasalrescate.data_access.DAOFavoritos;
+import com.patitasalrescate.data.mock.DAOMascota;
+import com.patitasalrescate.data.mock.DAOFavoritos;
 import com.patitasalrescate.model.Mascota;
 
 import java.util.List;
@@ -32,7 +33,6 @@ public class ActividadPerfilMascota extends AppCompatActivity {
     private DAOFavoritos daoFavoritos;
     private Mascota mascotaActual;
     private String idMascota;
-    private String tipoUsuario;
     private String idUsuario;
 
     @Override
@@ -49,11 +49,11 @@ public class ActividadPerfilMascota extends AppCompatActivity {
         daoFavoritos = new DAOFavoritos(this);
 
         initViews();
+        configToolbar();
 
         idMascota = getIntent().getStringExtra("id_mascota_key");
 
         PatitasSessionManager session = PatitasSessionManager.getInstance(this);
-        tipoUsuario = session.getSessionType();
         idUsuario = session.getUserId();
 
         if (idMascota == null || idMascota.isEmpty()) {
@@ -77,6 +77,16 @@ public class ActividadPerfilMascota extends AppCompatActivity {
         imgFoto = findViewById(R.id.img_detalle_mascota);
         btnAccion = findViewById(R.id.btn_accion_principal);
         btnFavorito = findViewById(R.id.btn_favorito);
+    }
+
+    private void configToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbarPerfilMascota);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Detalles de la Mascota");
+        }
+        toolbar.setNavigationOnClickListener(v -> finish());
     }
 
     private void cargarDatosMascota() {
@@ -109,7 +119,8 @@ public class ActividadPerfilMascota extends AppCompatActivity {
     }
 
     private void configurarModoVisualPorRol() {
-        boolean esRefugio = "REFUGIO".equalsIgnoreCase(tipoUsuario);
+        PatitasSessionManager session = PatitasSessionManager.getInstance(this);
+        boolean esRefugio = session.isRefugio();
 
         if (esRefugio) {
             btnFavorito.setVisibility(View.GONE);
@@ -121,6 +132,7 @@ public class ActividadPerfilMascota extends AppCompatActivity {
                 if (!txtNombre.isEnabled()) {
                     habilitarCampos(true);
                     btnAccion.setText("GUARDAR CAMBIOS");
+                    btnAccion.setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_green_dark));
                 } else {
                     guardarCambios();
                 }
@@ -164,13 +176,28 @@ public class ActividadPerfilMascota extends AppCompatActivity {
     }
 
     private void habilitarCampos(boolean habilitar) {
+        int drawableRes = habilitar ? android.R.drawable.edit_text : android.R.color.transparent;
+        
         txtNombre.setEnabled(habilitar);
+        txtNombre.setBackgroundResource(drawableRes);
+        
         txtEspecie.setEnabled(habilitar);
+        txtEspecie.setBackgroundResource(drawableRes);
+        
         txtRaza.setEnabled(habilitar);
+        txtRaza.setBackgroundResource(drawableRes);
+        
         txtSexo.setEnabled(habilitar);
+        txtSexo.setBackgroundResource(drawableRes);
+        
         txtEdad.setEnabled(habilitar);
+        txtEdad.setBackgroundResource(drawableRes);
+        
         txtTemperamento.setEnabled(habilitar);
+        txtTemperamento.setBackgroundResource(drawableRes);
+        
         txtHistoria.setEnabled(habilitar);
+        txtHistoria.setBackgroundResource(drawableRes);
     }
 
     private void guardarCambios() {
