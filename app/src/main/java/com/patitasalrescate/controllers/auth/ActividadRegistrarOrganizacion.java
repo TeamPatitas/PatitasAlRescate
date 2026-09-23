@@ -1,94 +1,94 @@
 package com.patitasalrescate.controllers.auth;
 
-import android.app.ProgressDialog;
-import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Patterns;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
+import com.bumptech.glide.Glide;
 import com.patitasalrescate.R;
-import com.patitasalrescate.data.mock.DAORefugio;
-import com.patitasalrescate.model.Refugio;
+import com.patitasalrescate.data.remote.dto.CreateShelterRequest;
+import com.patitasalrescate.data.remote.dto.ShelterResponse;
+import com.patitasalrescate.utils.ApiApp;
+import com.patitasalrescate.utils.PatitasSessionManager;
+import java.io.IOException;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-import java.util.UUID;
-
+/** Creates a shelter for the signed-in user. Approval remains a separate dev action. */
 public class ActividadRegistrarOrganizacion extends AppCompatActivity {
-    private EditText txtNombre, txtDireccion, txtTelefono, txtCorreo, txtPassword;
-    private Button btnGuardar;
-    private DAORefugio daoRefugio;
+    private EditText nombre, direccion;
+    private Button guardar;
+    private Uri foto;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    @Override protected void onCreate(Bundle state) {
+        super.onCreate(state);
         setContentView(R.layout.ly_registrar_organizacion);
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.registrar_organizacion_root), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
         Toolbar toolbar = findViewById(R.id.toolbarRegistrarOrganizacion);
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
+        if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(v -> finish());
-
-        daoRefugio = new DAORefugio(this);
-
-        txtNombre = findViewById(R.id.rj_text_org_nombre);
-        txtDireccion = findViewById(R.id.rj_text_org_direccion);
-        txtTelefono = findViewById(R.id.rj_text_org_telefono);
-        txtCorreo = findViewById(R.id.rj_text_org_correo);
-        txtPassword = findViewById(R.id.rj_text_org_password);
-        btnGuardar = findViewById(R.id.rj_button_registrar_organizacion);
-
-        btnGuardar.setOnClickListener(v -> procesarRegistro());
+        if (!ApiApp.client().session.isAuthenticated()) {
+            Toast.makeText(this, "Inicia sesión antes de registrar un refugio", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+        nombre = findViewById(R.id.rj_text_org_nombre);
+        direccion = findViewById(R.id.rj_text_org_direccion);
+        guardar = findViewById(R.id.rj_button_registrar_organizacion);
+        ocultarCampo(R.id.rj_text_org_telefono);
+        ocultarCampo(R.id.rj_text_org_correo);
+        ocultarCampo(R.id.rj_text_org_password);
+        ActivityResultLauncher<String> elegirFoto = registerForActivityResult(
+                new ActivityResultContracts.GetContent(), uri -> {
+                    foto = uri;
+                    if (uri != null) Glide.with(this).load(uri).into(
+                            (android.widget.ImageView) findViewById(R.id.img_preview_refugio));
+                });
+        findViewById(R.id.btn_seleccionar_foto).setOnClickListener(v -> elegirFoto.launch("image/*"));
+        guardar.setOnClickListener(v -> crearRefugio());
     }
 
-    private void procesarRegistro() {
-        String nombre = txtNombre.getText().toString().trim();
-        String direccion = txtDireccion.getText().toString().trim();
-        String telefono = txtTelefono.getText().toString().trim();
-        String correo = txtCorreo.getText().toString().trim();
-        String password = txtPassword.getText().toString().trim();
+    private void ocultarCampo(int id) {
+        View field = findViewById(id);
+        android.view.ViewParent parent = field.getParent();
+        while (parent instanceof View && !(parent instanceof com.google.android.material.textfield.TextInputLayout))
+            parent = parent.getParent();
+        if (parent instanceof View) ((View) parent).setVisibility(View.GONE);
+    }
 
-        if (nombre.isEmpty()) { txtNombre.setError("Ingrese el nombre"); return; }
-        if (direccion.isEmpty()) { txtDireccion.setError("Ingrese la dirección"); return; }
-        if (telefono.length() != 9) { txtTelefono.setError("Ingrese un teléfono válido de 9 dígitos"); return; }
-        if (correo.isEmpty()) { txtCorreo.setError("Ingrese el correo"); return; }
-        if (!Patterns.EMAIL_ADDRESS.matcher(correo).matches()) { txtCorreo.setError("Correo inválido"); return; }
-        if (password.length() < 6) { txtPassword.setError("Mínimo 6 caracteres"); return; }
-
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Registrando organización (Demo)...");
-        progressDialog.show();
-
-        Refugio nuevoRefugio = new Refugio();
-        nuevoRefugio.setIdRefugio(UUID.randomUUID().toString());
-        nuevoRefugio.setNombre(nombre);
-        nuevoRefugio.setDireccion(direccion);
-        nuevoRefugio.setCorreo(correo);
-        nuevoRefugio.setNumCelular(telefono);
-
-        daoRefugio.insertar(nuevoRefugio);
-        
-        progressDialog.dismiss();
-        Toast.makeText(this, "¡Refugio registrado exitosamente (Demo)!", Toast.LENGTH_SHORT).show();
-
-        Intent intent = new Intent(ActividadRegistrarOrganizacion.this, ActividadIniciarSesion.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        finish();
+    private void crearRefugio() {
+        CreateShelterRequest request = new CreateShelterRequest();
+        request.name = nombre.getText().toString().trim();
+        request.address = direccion.getText().toString().trim();
+        if (request.name.isEmpty()) { nombre.setError("Ingresa un nombre"); return; }
+        if (request.address.isEmpty()) { direccion.setError("Ingresa una dirección"); return; }
+        try { if (foto != null) request.photo = ApiApp.upload(this, foto); }
+        catch (IOException error) { Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show(); return; }
+        guardar.setEnabled(false);
+        ApiApp.client().shelters.createShelter(request).enqueue(new Callback<ShelterResponse>() {
+            @Override public void onResponse(Call<ShelterResponse> call, Response<ShelterResponse> response) {
+                if (isFinishing() || isDestroyed()) return;
+                guardar.setEnabled(true);
+                if (response.isSuccessful()) {
+                    Toast.makeText(ActividadRegistrarOrganizacion.this,
+                            "Refugio enviado. Un administrador debe habilitarlo.", Toast.LENGTH_LONG).show();
+                    finish();
+                } else Toast.makeText(ActividadRegistrarOrganizacion.this,
+                        "Error al registrar (" + response.code() + ")", Toast.LENGTH_LONG).show();
+            }
+            @Override public void onFailure(Call<ShelterResponse> call, Throwable error) {
+                if (isFinishing() || isDestroyed()) return;
+                guardar.setEnabled(true);
+                Toast.makeText(ActividadRegistrarOrganizacion.this,
+                        "Sin conexión con refugios", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

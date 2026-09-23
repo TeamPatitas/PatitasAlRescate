@@ -15,6 +15,11 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.patitasalrescate.R;
 import com.patitasalrescate.utils.PatitasSessionManager;
+import com.patitasalrescate.utils.ApiApp;
+import com.patitasalrescate.controllers.auth.ActividadIngresar;
+import com.patitasalrescate.controllers.management.ActividadPerfilUsuario;
+import android.view.Menu;
+import android.view.MenuItem;
 
 public class ActividadFeedRefugio extends AppCompatActivity {
 
@@ -24,6 +29,11 @@ public class ActividadFeedRefugio extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ly_inicio_refugio);
+        if (!ApiApp.client().session.isAuthenticated()) {
+            startActivity(new Intent(this, ActividadIngresar.class));
+            finish();
+            return;
+        }
 
         NavHostFragment navHost = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentFeedRefugio);
         if (navHost != null) {
@@ -95,6 +105,19 @@ public class ActividadFeedRefugio extends AppCompatActivity {
 
     private void navigate(int id) {
         navigate(id, null);
+    }
+
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add("Perfil").setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        return true;
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        if ("Perfil".contentEquals(item.getTitle())) {
+            startActivity(new Intent(this, ActividadPerfilUsuario.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void navigate(int id, Bundle args) {

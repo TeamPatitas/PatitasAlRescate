@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.patitasalrescate.R;
+import com.patitasalrescate.utils.ApiApp;
 import com.patitasalrescate.utils.PatitasSessionManager;
 import com.patitasalrescate.data.mock.DAOFavoritos;
 import com.patitasalrescate.data.mock.DAOMascota;
@@ -56,7 +57,7 @@ public class FragmentFavoritos extends Fragment {
         daoMascota = new DAOMascota(requireContext());
 
         idUsuario = PatitasSessionManager.getInstance(requireContext()).getUserId();
-        if (idUsuario == null || idUsuario.isEmpty()) {
+        if (!ApiApp.client().session.isAuthenticated()) {
             if (getActivity() != null) {
                 getActivity().onBackPressed();
             }
@@ -67,25 +68,9 @@ public class FragmentFavoritos extends Fragment {
     }
 
     private void cargarFavoritos() {
-        List<Mascota> favoritos = daoFavoritos.getFavoritosPorAdoptante(idUsuario);
-
-        if (favoritos == null || favoritos.isEmpty()) {
-            recycler.setVisibility(View.GONE);
-            txtVacio.setVisibility(View.VISIBLE);
-            txtVacio.setText("No tienes favoritos ❤️");
-            return;
-        }
-
-        recycler.setVisibility(View.VISIBLE);
-        txtVacio.setVisibility(View.GONE);
-
-        AdaptadorMascotas adapter = new AdaptadorMascotas(
-                favoritos,
-                requireContext(),
-                daoMascota,
-                daoFavoritos
-        );
-        recycler.setAdapter(adapter);
+        recycler.setVisibility(View.GONE);
+        txtVacio.setVisibility(View.VISIBLE);
+        txtVacio.setText("La API todavía no ofrece favoritos");
     }
 
     @Override

@@ -20,6 +20,10 @@ import com.patitasalrescate.data_access.DAOEvento;
 import com.patitasalrescate.model.Evento;
 import com.patitasalrescate.ui.AdaptadorEventos;
 import com.patitasalrescate.utils.PatitasSessionManager;
+import com.patitasalrescate.utils.ApiApp;
+import com.patitasalrescate.utils.ApiPages;
+import com.patitasalrescate.data.remote.dto.EventSummaryResponse;
+import java.util.ArrayList;
 
 import java.util.List;
 
@@ -44,8 +48,6 @@ public class FragmentEventosLista extends Fragment {
         recycler.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         configurarAccesoPorRol();
-        cargarEventos();
-
         return view;
     }
 
@@ -62,17 +64,27 @@ public class FragmentEventosLista extends Fragment {
     }
 
     private void cargarEventos() {
-        List<Evento> listaEventos = daoEvento.listarTodos();
-
-        if (listaEventos.isEmpty()) {
-            recycler.setVisibility(View.GONE);
-            txtVacio.setVisibility(View.VISIBLE);
-        } else {
-            recycler.setVisibility(View.VISIBLE);
-            txtVacio.setVisibility(View.GONE);
-            adaptador = new AdaptadorEventos(listaEventos, requireContext());
-            recycler.setAdapter(adaptador);
-        }
+        if (recycler == null) return;
+        recycler.setVisibility(View.GONE);
+        txtVacio.setVisibility(View.VISIBLE);
+        txtVacio.setText("Cargando eventos...");
+        ApiPages.load(page -> ApiApp.client().events.getAllEvents(page, 50),
+                data -> data.totalPages, data -> data.items,
+                events -> {
+                    if (!isAdded()) return;
+                    List<Evento> lista = new ArrayList<>();
+                    for (EventSummaryResponse event : events) lista.add(ApiApp.event(event));
+                    if (lista.isEmpty()) {
+                        txtVacio.setText("No hay eventos disponibles");
+                    } else {
+                        recycler.setVisibility(View.VISIBLE);
+                        txtVacio.setVisibility(View.GONE);
+                        adaptador = new AdaptadorEventos(lista, requireContext());
+                        recycler.setAdapter(adaptador);
+                    }
+                }, error -> {
+                    if (isAdded()) txtVacio.setText("No se pudieron cargar los eventos");
+                });
     }
 
     @Override

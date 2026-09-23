@@ -23,6 +23,14 @@ import com.patitasalrescate.R;
 import com.patitasalrescate.data.mock.DAOMascota;
 import com.patitasalrescate.model.Mascota;
 import com.patitasalrescate.ui.AdaptadorMascotas;
+import com.patitasalrescate.utils.ApiApp;
+import com.patitasalrescate.utils.ApiPages;
+import com.patitasalrescate.data.remote.dto.PetSummaryResponse;
+import com.patitasalrescate.data.remote.dto.PetResponse;
+import android.widget.Toast;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,23 +76,51 @@ public class FragmentBusqueda extends Fragment {
     private void buscar() {
         String texto = txtFiltro.getText().toString().toLowerCase();
         String tipoFiltro = spFiltro.getSelectedItem().toString();
-        List<Mascota> lista = daoMascota.listarTodos();
-        List<Mascota> resultados = new ArrayList<>();
+        btnBuscar.setEnabled(false);
+        ApiPages.load(page -> ApiApp.client().pets.getAllPets(page, 50),
+                data -> data.totalPages, data -> data.items,
+                summaries -> cargarDetalles(summaries, 0, new ArrayList<>(), texto, tipoFiltro),
+                error -> {
+                    if (!isAdded()) return;
+                    btnBuscar.setEnabled(true);
+                    Toast.makeText(requireContext(), "No se pudo buscar en la API", Toast.LENGTH_SHORT).show();
+                });
+    }
 
+    private void cargarDetalles(List<PetSummaryResponse> summaries, int index, List<Mascota> lista,
+                                String texto, String tipoFiltro) {
+        if (!isAdded()) return;
+        if (index < summaries.size()) {
+            ApiApp.client().pets.getPetById(summaries.get(index).id).enqueue(new Callback<PetResponse>() {
+                @Override public void onResponse(Call<PetResponse> call, Response<PetResponse> response) {
+                    if (!isAdded()) return;
+                    if (response.isSuccessful() && response.body() != null) lista.add(ApiApp.pet(response.body()));
+                    cargarDetalles(summaries, index + 1, lista, texto, tipoFiltro);
+                }
+                @Override public void onFailure(Call<PetResponse> call, Throwable error) {
+                    if (!isAdded()) return;
+                    btnBuscar.setEnabled(true);
+                    Toast.makeText(requireContext(), "No se pudieron cargar los detalles", Toast.LENGTH_SHORT).show();
+                }
+            });
+            return;
+        }
+        btnBuscar.setEnabled(true);
+        List<Mascota> resultados = new ArrayList<>();
         for (Mascota m : lista) {
             boolean coincide = false;
             switch (tipoFiltro) {
                 case "Nombre":
-                    coincide = m.getNombre().toLowerCase().contains(texto);
+                    coincide = m.getNombre() != null && m.getNombre().toLowerCase().contains(texto);
                     break;
                 case "Especie":
-                    coincide = m.getEspecie().toLowerCase().contains(texto);
+                    coincide = m.getEspecie() != null && m.getEspecie().toLowerCase().contains(texto);
                     break;
                 case "Raza":
-                    coincide = m.getRaza().toLowerCase().contains(texto);
+                    coincide = m.getRaza() != null && m.getRaza().toLowerCase().contains(texto);
                     break;
                 case "Sexo":
-                    coincide = m.getSexo().toLowerCase().contains(texto);
+                    coincide = m.getSexo() != null && m.getSexo().toLowerCase().contains(texto);
                     break;
             }
             if (coincide) resultados.add(m);

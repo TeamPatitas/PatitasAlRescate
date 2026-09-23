@@ -14,6 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.patitasalrescate.R;
 import com.patitasalrescate.data.mock.DAORefugio;
 import com.patitasalrescate.model.Refugio;
+import com.patitasalrescate.data.remote.dto.ShelterSummaryResponse;
+import com.patitasalrescate.utils.ApiApp;
+import com.patitasalrescate.utils.ApiPages;
+import java.util.ArrayList;
 import com.patitasalrescate.ui.AdaptadorRefugios;
 
 import java.util.List;
@@ -33,16 +37,27 @@ public class FragmentListarRefugios extends Fragment {
         recycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         txtVacio = view.findViewById(R.id.txt_refugios_vacio);
 
-        cargarDatosLocal();
+        cargarDatosApi();
         updateTitle("Refugios");
         return view;
     }
 
-    private void cargarDatosLocal() {
-        if (dao != null) {
-            List<Refugio> lista = dao.listarTodos();
-            actualizarUI(lista);
-        }
+    private void cargarDatosApi() {
+        txtVacio.setText("Cargando refugios...");
+        txtVacio.setVisibility(View.VISIBLE);
+        recycler.setVisibility(View.GONE);
+        ApiPages.load(page -> ApiApp.client().shelters.getAllShelters(page, 50),
+                data -> data.totalPages, data -> data.items,
+                shelters -> {
+                    if (!isAdded()) return;
+                    List<Refugio> lista = new ArrayList<>();
+                    for (ShelterSummaryResponse shelter : shelters) {
+                        if (Boolean.TRUE.equals(shelter.isAvailable)) lista.add(ApiApp.shelter(shelter));
+                    }
+                    actualizarUI(lista);
+                }, error -> {
+                    if (isAdded()) txtVacio.setText("No se pudieron cargar los refugios");
+                });
     }
 
     private void updateTitle(String title) {

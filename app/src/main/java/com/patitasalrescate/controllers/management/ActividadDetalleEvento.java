@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +19,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.patitasalrescate.R;
 import com.patitasalrescate.model.Evento;
 import com.patitasalrescate.utils.PatitasSessionManager;
+import com.patitasalrescate.utils.ApiApp;
+import com.patitasalrescate.data.remote.dto.EventResponse;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ActividadDetalleEvento extends AppCompatActivity {
 
@@ -25,6 +32,7 @@ public class ActividadDetalleEvento extends AppCompatActivity {
     private Button btnMapa;
     private FloatingActionButton fabEditar;
     private Evento evento;
+    private boolean puedeEditar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +69,6 @@ public class ActividadDetalleEvento extends AppCompatActivity {
             btnMapa.setOnClickListener(v -> verEnMapa());
           
             cargarDatos();
-            configurarSegunRol();
         } else {
             Toast.makeText(this, "Error al cargar el evento", Toast.LENGTH_SHORT).show();
             finish();
@@ -96,8 +103,7 @@ public class ActividadDetalleEvento extends AppCompatActivity {
     }
 
     private void configurarSegunRol() {
-        // Por ahora lo dejamos visible para que puedas probar el diseño y la edición
-        fabEditar.setVisibility(View.VISIBLE);
+        fabEditar.setVisibility(puedeEditar ? View.VISIBLE : View.GONE);
         fabEditar.setOnClickListener(v -> {
             Intent intent = new Intent(this, ActividadRegistrarEvento.class);
             intent.putExtra("evento_editar_key", evento);
@@ -108,15 +114,61 @@ public class ActividadDetalleEvento extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Recargar datos por si se editó
-        if (evento != null) {
-            com.patitasalrescate.data_access.DAOEvento dao = new com.patitasalrescate.data_access.DAOEvento(this);
-            Evento actualizado = dao.obtenerPorId(evento.getIdEvento());
-            if (actualizado != null) {
-                evento = actualizado;
+        if (evento != null) cargarEventoApi();
+    }
+
+    private void cargarEventoApi() {
+        ApiApp.client().events.getEventById(evento.getIdEvento()).enqueue(new Callback<EventResponse>() {
+            @Override public void onResponse(Call<EventResponse> call, Response<EventResponse> response) {
+                if (isFinishing() || isDestroyed()) return;
+                if (!response.isSuccessful() || response.body() == null) {
+                    Toast.makeText(ActividadDetalleEvento.this, "No se pudo cargar el evento", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                evento = ApiApp.event(response.body());
+                puedeEditar = Boolean.TRUE.equals(response.body().isYours);
+                invalidateOptionsMenu();
                 cargarDatos();
+                configurarSegunRol();
             }
+            @Override public void onFailure(Call<EventResponse> call, Throwable error) {
+                if (!isFinishing()) Toast.makeText(ActividadDetalleEvento.this, "Sin conexión con eventos", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
+        if (puedeEditar) menu.add(0, 9001, 0, "Eliminar evento");
+        return true;
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == 9001 && evento != null && puedeEditar) {
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setMessage("¿Eliminar este evento de forma permanente?")
+                    .setNegativeButton("Cancelar", null)
+                    .setPositiveButton("Eliminar", (dialog, which) -> eliminarEvento())
+                    .show();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void eliminarEvento() {
+        ApiApp.client().events.deleteEvent(evento.getIdEvento()).enqueue(new Callback<String>() {
+            @Override public void onResponse(Call<String> call, Response<String> response) {
+                if (isFinishing() || isDestroyed()) return;
+                if (response.isSuccessful()) {
+                    Toast.makeText(ActividadDetalleEvento.this, "Evento eliminado", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else Toast.makeText(ActividadDetalleEvento.this,
+                        "No se pudo eliminar (" + response.code() + ")", Toast.LENGTH_LONG).show();
+            }
+            @Override public void onFailure(Call<String> call, Throwable error) {
+                if (!isFinishing()) Toast.makeText(ActividadDetalleEvento.this,
+                        "Sin conexión al eliminar", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void verEnMapa() {

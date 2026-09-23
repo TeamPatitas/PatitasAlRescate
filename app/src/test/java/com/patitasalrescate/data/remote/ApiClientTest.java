@@ -164,6 +164,30 @@ public class ApiClientTest {
         assertNull(server.takeRequest().getHeader("Authorization"));
     }
 
+    @Test public void allFiveEventOperations() throws Exception {
+        CreateEventRequest create = new CreateEventRequest();
+        create.name = "Feria";
+        create.eventDate = "2026-10-01T10:00:00-05:00";
+        create.isActive = true;
+        create.image = photo("feria.png");
+        String body = check(api.events.createEvent(create), "POST", "/event", 201, "{}")
+                .getBody().readUtf8();
+        assertTrue(body.contains("name=\"eventDate\""));
+        assertTrue(body.contains("filename=\"feria.png\""));
+        check(api.events.getAllEvents(1, 20), "GET", "/event?page=1&pageSize=20", 200,
+                "{\"items\":[],\"totalPages\":0}");
+        check(api.events.getEventById(ID), "GET", "/event/" + ID, 200,
+                "{\"id\":\"" + ID + "\",\"name\":\"Feria\",\"isYours\":true}");
+        UpdateEventRequest update = new UpdateEventRequest();
+        update.name = "Feria nueva";
+        update.isActive = false;
+        String patch = check(api.events.updateEvent(ID, update), "PATCH", "/event/" + ID, 200, "{}")
+                .getBody().readUtf8();
+        assertTrue(patch.contains("false"));
+        assertFalse(patch.contains("name=\"description\""));
+        check(api.events.deleteEvent(ID), "DELETE", "/event/" + ID, 200, "\"Eliminado\"");
+    }
+
     @Test public void deserializeWireNamesPaginationAndSessionLifecycle() throws Exception {
         server.enqueue(new MockResponse().setBody("{\"token\":\"new-jwt\",\"roles\":[\"User\"]}"));
         LoginRequest login = new LoginRequest();
