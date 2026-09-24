@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.patitasalrescate.R;
-import com.patitasalrescate.data.mock.DAORefugio;
+import com.patitasalrescate.data_access.DAORefugio;
 import com.patitasalrescate.model.Evento;
 import com.patitasalrescate.model.Refugio;
 import com.patitasalrescate.ui.AdaptadorEventos;
@@ -78,19 +78,14 @@ public class ActividadPerfilRefugio extends AppCompatActivity {
             txtContacto.setText("Contacto: " + (refugio.getNumCelular() != null ? refugio.getNumCelular() : "No disponible"));
 
             if (refugio.getFotoUrl() != null && !refugio.getFotoUrl().isEmpty()) {
-                Glide.with(this).load(refugio.getFotoUrl())
-                        .placeholder(R.drawable.img_default_refugio)
-                        .error(R.drawable.img_default_refugio)
-                        .centerCrop().into(imgFoto);
-            } else {
-                imgFoto.setImageResource(R.drawable.img_default_refugio);
+                Glide.with(this).load(refugio.getFotoUrl()).centerCrop().into(imgFoto);
             }
 
             // Cargando eventos de prueba
             cargarEventosPrueba();
             
-            // Imagen QR por defecto (Yape)
-            imgQR.setImageResource(R.drawable.img_yape_default);
+            // Imagen QR por defecto (Simulando donación)
+            imgQR.setImageResource(R.drawable.bg_circle_image); // Reemplazar con QR real si existe
         }
     }
 

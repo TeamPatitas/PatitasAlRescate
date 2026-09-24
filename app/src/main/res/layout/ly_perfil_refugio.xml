@@ -56,6 +56,8 @@
                 android:textSize="14sp"
                 tools:text="Calle Principal 123"/>
 
+
+
             <TextView
                 android:id="@+id/txt_contacto_refugio_perfil"
                 android:layout_width="match_parent"
@@ -136,6 +138,32 @@
                     tools:src="@android:drawable/ic_menu_camera"/>
             </androidx.cardview.widget.CardView>
 
+            <Button
+                android:id="@+id/btnCambiarModoAdoptante"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/marronPrimario"
+                android:fontFamily="@font/chewy"
+                android:textSize="14sp"
+                android:text="Modo Adoptante"
+                android:textColor="@color/blanco"
+                app:cornerRadius="16dp" />
+
+            <Button
+                android:id="@+id/btnCerrarSesion"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginHorizontal="20dp"
+                android:backgroundTint="@color/marronOscuro"
+                android:fontFamily="@font/chewy"
+                android:textSize="14sp"
+                android:text="Cerrar sesión"
+                android:textColor="@color/blanco"
+                app:cornerRadius="16dp" />
         </LinearLayout>
     </ScrollView>
 

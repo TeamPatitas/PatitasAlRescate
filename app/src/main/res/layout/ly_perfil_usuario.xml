@@ -64,9 +64,9 @@
                         android:contentDescription="Cambiar foto de perfil"
                         android:padding="7dp"
                         android:src="@android:drawable/ic_menu_camera"
-                        app:tint="@color/blanco"
                         app:layout_constraintBottom_toBottomOf="@id/imgAvatarUsuario"
-                        app:layout_constraintEnd_toEndOf="@id/imgAvatarUsuario" />
+                        app:layout_constraintEnd_toEndOf="@id/imgAvatarUsuario"
+                        app:tint="@color/blanco" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
@@ -126,6 +126,7 @@
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:background="@drawable/bg_circulo_icono_claro"
+                            android:contentDescription="NombreIcon"
                             android:padding="9dp"
                             android:src="@drawable/rj_persona"
                             app:tint="@color/marronPrimario" />
@@ -160,13 +161,12 @@
 
                         <ImageButton
                             android:id="@+id/btnEditarNombre"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:contentDescription="Editar nombre"
                             android:src="@android:drawable/ic_menu_edit"
-                            app:tint="@color/marronPrimario"
-                            tools:ignore="TouchTargetSizeCheck" />
+                            app:tint="@color/marronPrimario" />
                     </LinearLayout>
 
                     <View
@@ -187,6 +187,7 @@
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:background="@drawable/bg_circulo_icono_claro"
+                            android:contentDescription="CorreoIcon"
                             android:padding="9dp"
                             android:src="@drawable/rj_correo"
                             app:tint="@color/marronPrimario" />
@@ -212,22 +213,21 @@
                                 android:background="@android:color/transparent"
                                 android:enabled="false"
                                 android:inputType="textEmailAddress"
-                                android:padding="0dp"
+                                android:minWidth="48dp"
+                                android:minHeight="48dp"
                                 android:textColor="@color/texto_busqueda"
                                 android:textSize="16sp"
-                                tools:ignore="TouchTargetSizeCheck"
                                 tools:text="juan.perez@example.com" />
                         </LinearLayout>
 
                         <ImageButton
                             android:id="@+id/btnEditarCorreo"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:contentDescription="Editar correo"
                             android:src="@android:drawable/ic_menu_edit"
-                            app:tint="@color/marronPrimario"
-                            tools:ignore="TouchTargetSizeCheck" />
+                            app:tint="@color/marronPrimario" />
                     </LinearLayout>
 
                     <View
@@ -248,6 +248,7 @@
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:background="@drawable/bg_circulo_icono_claro"
+                            android:contentDescription="TelefonoIcon"
                             android:padding="9dp"
                             android:src="@drawable/rj_telefono"
                             app:tint="@color/marronPrimario" />
@@ -273,23 +274,22 @@
                                 android:background="@android:color/transparent"
                                 android:enabled="false"
                                 android:inputType="phone"
-                                android:maxLength="9"
+                                android:minWidth="48dp"
+                                android:minHeight="48dp"
                                 android:padding="0dp"
                                 android:textColor="@color/texto_busqueda"
                                 android:textSize="16sp"
-                                tools:ignore="TouchTargetSizeCheck"
                                 tools:text="+51 987 654 321" />
                         </LinearLayout>
 
                         <ImageButton
                             android:id="@+id/btnEditarCelular"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:contentDescription="Editar teléfono"
                             android:src="@android:drawable/ic_menu_edit"
-                            app:tint="@color/marronPrimario"
-                            tools:ignore="TouchTargetSizeCheck" />
+                            app:tint="@color/marronPrimario"/>
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -325,10 +325,11 @@
                         <ImageView
                             android:layout_width="34dp"
                             android:layout_height="34dp"
+                            android:layout_gravity="center"
                             android:background="@drawable/bg_circulo_icono_verde"
+                            android:contentDescription="FavoritosIcon"
                             android:padding="7dp"
                             android:src="@android:drawable/btn_star_big_on"
-                            android:layout_gravity="center"
                             app:tint="@color/verde_persona" />
 
                         <TextView
@@ -374,10 +375,11 @@
                         <ImageView
                             android:layout_width="34dp"
                             android:layout_height="34dp"
+                            android:layout_gravity="center"
                             android:background="@drawable/bg_circulo_icono_verde"
+                            android:contentDescription="ModoRefugioIcon"
                             android:padding="7dp"
                             android:src="@drawable/rj_inicio_refugio_24"
-                            android:layout_gravity="center"
                             app:tint="@color/verde_persona" />
 
                         <TextView
