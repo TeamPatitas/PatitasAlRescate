@@ -17,6 +17,13 @@ import com.patitasalrescate.data_access.DAORefugio;
 import com.patitasalrescate.model.Evento;
 import com.patitasalrescate.model.Refugio;
 import com.patitasalrescate.ui.AdaptadorEventos;
+import com.patitasalrescate.utils.ApiApp;
+import com.patitasalrescate.utils.ApiPages;
+import com.patitasalrescate.data.remote.dto.ShelterResponse;
+import com.patitasalrescate.data.remote.dto.EventSummaryResponse;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,29 +78,39 @@ public class ActividadPerfilRefugio extends AppCompatActivity {
     }
 
     private void cargarDatosRefugio() {
-        Refugio refugio = daoRefugio.obtenerPorId(idRefugio);
-        if (refugio != null) {
+        ApiApp.client().shelters.getShelterById(idRefugio).enqueue(new Callback<ShelterResponse>() {
+            @Override public void onResponse(Call<ShelterResponse> call, Response<ShelterResponse> response) {
+                if (isFinishing() || isDestroyed()) return;
+                if (!response.isSuccessful() || response.body() == null) {
+                    Toast.makeText(ActividadPerfilRefugio.this, "No se pudo cargar el refugio", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Refugio refugio = ApiApp.shelter(response.body());
             txtNombre.setText(refugio.getNombre());
             txtDireccion.setText(refugio.getDireccion());
-            txtContacto.setText("Contacto: " + (refugio.getNumCelular() != null ? refugio.getNumCelular() : "No disponible"));
+            txtContacto.setText("Contacto: no disponible en la API");
 
             if (refugio.getFotoUrl() != null && !refugio.getFotoUrl().isEmpty()) {
-                Glide.with(this).load(refugio.getFotoUrl()).centerCrop().into(imgFoto);
+                Glide.with(ActividadPerfilRefugio.this).load(refugio.getFotoUrl())
+                        .placeholder(R.drawable.img_default_refugio)
+                        .error(R.drawable.img_default_refugio)
+                        .centerCrop().into(imgFoto);
+            } else {
+                imgFoto.setImageResource(R.drawable.img_default_refugio);
             }
 
-            // Cargando eventos de prueba
-            cargarEventosPrueba();
+            cargarEventos();
             
-            // Imagen QR por defecto (Simulando donación)
-            imgQR.setImageResource(R.drawable.bg_circle_image); // Reemplazar con QR real si existe
-        }
+            // Imagen QR por defecto (Yape)
+            imgQR.setImageResource(R.drawable.img_yape_default);
+            }
+            @Override public void onFailure(Call<ShelterResponse> call, Throwable error) {
+                if (!isFinishing()) Toast.makeText(ActividadPerfilRefugio.this, "Sin conexión con refugios", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void cargarEventosPrueba() {
-        List<Evento> eventos = new ArrayList<>();
-        eventos.add(new Evento("101", "Feria de Adopción Local", "12 Nov", "¡Te esperamos!", ""));
-        eventos.add(new Evento("102", "Gran Colecta de Alimentos", "20 Nov", "Apóyanos con comida para los peluditos.", ""));
-
+    private void mostrarEventos(List<Evento> eventos) {
         if (eventos.isEmpty()) {
             txtNoEventos.setVisibility(View.VISIBLE);
             recyclerEventos.setVisibility(View.GONE);
@@ -103,5 +120,19 @@ public class ActividadPerfilRefugio extends AppCompatActivity {
             AdaptadorEventos adaptador = new AdaptadorEventos(eventos, this);
             recyclerEventos.setAdapter(adaptador);
         }
+    }
+
+    private void cargarEventos() {
+        ApiPages.load(page -> ApiApp.client().events.getAllEvents(page, 50),
+                data -> data.totalPages, data -> data.items,
+                items -> {
+                    if (isFinishing() || isDestroyed()) return;
+                    List<Evento> eventos = new ArrayList<>();
+                    for (EventSummaryResponse item : items)
+                        if (idRefugio.equals(item.shelterId)) eventos.add(ApiApp.event(item));
+                    mostrarEventos(eventos);
+                }, error -> {
+                    if (!isFinishing()) txtNoEventos.setText("No se pudieron cargar los eventos");
+                });
     }
 }

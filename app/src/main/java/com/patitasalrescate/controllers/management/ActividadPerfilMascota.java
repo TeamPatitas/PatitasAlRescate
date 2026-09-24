@@ -21,6 +21,14 @@ import com.patitasalrescate.utils.PatitasSessionManager;
 import com.patitasalrescate.data.mock.DAOMascota;
 import com.patitasalrescate.data.mock.DAOFavoritos;
 import com.patitasalrescate.model.Mascota;
+import com.patitasalrescate.utils.ApiApp;
+import com.patitasalrescate.data.remote.dto.PetResponse;
+import com.patitasalrescate.data.remote.dto.UpdatePetRequest;
+import com.patitasalrescate.data.remote.dto.Species;
+import com.patitasalrescate.data.remote.dto.Gender;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.util.List;
 
@@ -63,7 +71,6 @@ public class ActividadPerfilMascota extends AppCompatActivity {
         }
 
         cargarDatosMascota();
-        configurarModoVisualPorRol();
     }
 
     private void initViews() {
@@ -90,18 +97,30 @@ public class ActividadPerfilMascota extends AppCompatActivity {
     }
 
     private void cargarDatosMascota() {
-        mascotaActual = daoMascota.obtenerPorId(idMascota);
+        ApiApp.client().pets.getPetById(idMascota).enqueue(new Callback<PetResponse>() {
+            @Override public void onResponse(Call<PetResponse> call, Response<PetResponse> response) {
+                if (isFinishing() || isDestroyed()) return;
+                if (!response.isSuccessful() || response.body() == null) {
+                    Toast.makeText(ActividadPerfilMascota.this, "Mascota no encontrada", Toast.LENGTH_SHORT).show();
+                    finish();
+                    return;
+                }
+                mascotaActual = ApiApp.pet(response.body());
+                mostrarMascota();
+                configurarModoVisualPorRol();
+            }
+            @Override public void onFailure(Call<PetResponse> call, Throwable error) {
+                if (!isFinishing()) Toast.makeText(ActividadPerfilMascota.this, "Sin conexión con mascotas", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
-        if (mascotaActual == null) {
-            Toast.makeText(this, "Mascota no encontrada", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
+    private void mostrarMascota() {
         txtNombre.setText(valorSeguro(mascotaActual.getNombre()));
         txtEspecie.setText(valorSeguro(mascotaActual.getEspecie()));
         txtRaza.setText(valorSeguro(mascotaActual.getRaza()));
         txtSexo.setText(valorSeguro(mascotaActual.getSexo()));
-        txtEdad.setText(String.valueOf(mascotaActual.getEdad()));
+        txtEdad.setText("No disponible");
         txtTemperamento.setText(valorSeguro(mascotaActual.getTemperamento()));
         txtHistoria.setText(valorSeguro(mascotaActual.getHistoria()));
 
@@ -124,6 +143,7 @@ public class ActividadPerfilMascota extends AppCompatActivity {
 
         if (esRefugio) {
             btnFavorito.setVisibility(View.GONE);
+            txtEdad.setEnabled(false);
             habilitarCampos(false);
             btnAccion.setText("EDITAR MASCOTA");
             btnAccion.setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_orange_dark));
@@ -140,20 +160,8 @@ public class ActividadPerfilMascota extends AppCompatActivity {
             return;
         }
 
-        btnFavorito.setVisibility(View.VISIBLE);
+        btnFavorito.setVisibility(View.GONE);
         habilitarCampos(false);
-        btnFavorito.setOnClickListener(v -> {
-            if (idUsuario == null) {
-                Toast.makeText(this, "No se identificó al adoptante", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            long r = daoFavoritos.addFavorito(idUsuario, idMascota);
-            if (r > 0) {
-                Toast.makeText(this, "Agregado a favoritos ❤️", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Ya estaba en favoritos", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         String estado = mascotaActual.getEstado();
         if (estado == null) estado = "DISPONIBLE";
@@ -170,7 +178,8 @@ public class ActividadPerfilMascota extends AppCompatActivity {
             default:
                 btnAccion.setText("¡QUIERO ADOPTARLO! 🐾");
                 btnAccion.setEnabled(true);
-                btnAccion.setOnClickListener(v -> irAAdoptar());
+                btnAccion.setOnClickListener(v -> Toast.makeText(this,
+                        "La API aún no permite solicitar adopciones", Toast.LENGTH_LONG).show());
                 break;
         }
     }
@@ -192,6 +201,7 @@ public class ActividadPerfilMascota extends AppCompatActivity {
         
         txtEdad.setEnabled(habilitar);
         txtEdad.setBackgroundResource(drawableRes);
+        txtEdad.setEnabled(false);
         
         txtTemperamento.setEnabled(habilitar);
         txtTemperamento.setBackgroundResource(drawableRes);
@@ -201,22 +211,32 @@ public class ActividadPerfilMascota extends AppCompatActivity {
     }
 
     private void guardarCambios() {
-        mascotaActual.setNombre(txtNombre.getText().toString());
-        mascotaActual.setEspecie(txtEspecie.getText().toString());
-        mascotaActual.setRaza(txtRaza.getText().toString());
-        mascotaActual.setSexo(txtSexo.getText().toString());
-        mascotaActual.setTemperamento(txtTemperamento.getText().toString());
-        mascotaActual.setHistoria(txtHistoria.getText().toString());
-
+        UpdatePetRequest update = new UpdatePetRequest();
+        update.name = txtNombre.getText().toString().trim();
+        update.breed = txtRaza.getText().toString().trim();
+        update.temperament = txtTemperamento.getText().toString().trim();
+        update.story = txtHistoria.getText().toString().trim();
         try {
-            mascotaActual.setEdad(Integer.parseInt(txtEdad.getText().toString()));
-        } catch (Exception e) {
-            mascotaActual.setEdad(0);
+            update.species = Species.valueOf(txtEspecie.getText().toString().trim().toUpperCase());
+            update.gender = Gender.valueOf(txtSexo.getText().toString().trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            Toast.makeText(this, "Especie o sexo inválidos", Toast.LENGTH_SHORT).show();
+            return;
         }
-
-        daoMascota.actualizar(mascotaActual);
-        Toast.makeText(this, "Cambios guardados localmente", Toast.LENGTH_SHORT).show();
-        finish();
+        btnAccion.setEnabled(false);
+        ApiApp.client().pets.updatePet(idMascota, update).enqueue(new Callback<PetResponse>() {
+            @Override public void onResponse(Call<PetResponse> call, Response<PetResponse> response) {
+                btnAccion.setEnabled(true);
+                if (response.isSuccessful()) {
+                    Toast.makeText(ActividadPerfilMascota.this, "Mascota actualizada", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else Toast.makeText(ActividadPerfilMascota.this, "Error al guardar (" + response.code() + ")", Toast.LENGTH_LONG).show();
+            }
+            @Override public void onFailure(Call<PetResponse> call, Throwable error) {
+                btnAccion.setEnabled(true);
+                Toast.makeText(ActividadPerfilMascota.this, "Sin conexión al guardar", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void irAAdoptar() {

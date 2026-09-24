@@ -24,6 +24,15 @@ import com.patitasalrescate.R;
 import com.patitasalrescate.controllers.feed.ActividadRegistroExitoso;
 import com.patitasalrescate.data.mock.DAOAdoptante;
 import com.patitasalrescate.model.Adoptante;
+import com.patitasalrescate.utils.ApiApp;
+import com.patitasalrescate.data.remote.dto.RegisterRequest;
+import com.patitasalrescate.data.remote.dto.AuthResponse;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
+import java.util.Locale;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -127,8 +136,7 @@ public class ActividadRegistrarAdoptante extends AppCompatActivity {
         String nombre = etNombre.getText().toString().trim();
         String correo = etCorreo.getText().toString().trim();
         String pass = etPass.getText().toString().trim();
-        String telefono = etTelefono.getText().toString().trim();
-        String edadStr = etEdad.getText().toString().trim();
+        String birthDate = etEdad.getText().toString().trim();
 
         int seleccion = spSexo.getSelectedItemPosition();
         if (seleccion == 0) {
@@ -141,29 +149,44 @@ public class ActividadRegistrarAdoptante extends AppCompatActivity {
         if (pass.length() < 6) { etPass.setError("Mínimo 6 caracteres"); return; }
         if (correo.isEmpty()) { etCorreo.setError("Ingrese su CORREO"); return; }
         if (!Patterns.EMAIL_ADDRESS.matcher(correo).matches()) { etCorreo.setError("Correo inválido"); return; }
-        if (daoAdoptante.existeCorreo(correo)) { etCorreo.setError("Correo ya registrado"); return; }
-        if (telefono.length() != 9) { etTelefono.setError("Teléfono de 9 dígitos"); return; }
-        if (edadStr.isEmpty()) { etEdad.setError("Ingrese su EDAD"); return; }
-
-        int edad;
-        try { edad = Integer.parseInt(edadStr); } catch (Exception e) { return; }
-
-        Adoptante nuevoAdoptante = new Adoptante(
-                UUID.randomUUID().toString(),
-                nombre,
-                correo,
-                pass,
-                telefono,
-                edad,
-                sexo,
-                uriFotoSeleccionada != null ? uriFotoSeleccionada.toString() : null
-        );
-
-        daoAdoptante.insertar(nuevoAdoptante);
-        
-        Intent intent = new Intent(this, ActividadRegistroExitoso.class);
-        intent.putExtra("USUARIO_NOMBRE", nombre);
-        startActivity(intent);
-        finish();
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            format.setLenient(false);
+            if (format.parse(birthDate) == null || birthDate.length() != 10) throw new ParseException("Fecha inválida", 0);
+        } catch (ParseException error) {
+            etEdad.setError("Usa AAAA-MM-DD");
+            return;
+        }
+        String[] names = nombre.split("\\s+", 2);
+        if (names.length < 2) { etNombre.setError("Ingresa nombre y apellido"); return; }
+        RegisterRequest request = new RegisterRequest();
+        request.firstName = names[0];
+        request.lastName = names[1];
+        request.email = correo;
+        request.password = pass;
+        request.birthDate = birthDate;
+        // El OpenAPI declara un entero; confirmar con backend el orden de estos valores.
+        request.gender = seleccion - 1;
+        try { if (uriFotoSeleccionada != null) request.photo = ApiApp.upload(this, uriFotoSeleccionada); }
+        catch (IOException error) { Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show(); return; }
+        findViewById(R.id.rj_button_registrar_adoptante).setEnabled(false);
+        ApiApp.client().auth.register(request).enqueue(new Callback<AuthResponse>() {
+            @Override public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
+                if (isFinishing() || isDestroyed()) return;
+                findViewById(R.id.rj_button_registrar_adoptante).setEnabled(true);
+                if (response.isSuccessful()) {
+                    Intent intent = new Intent(ActividadRegistrarAdoptante.this, ActividadRegistroExitoso.class);
+                    intent.putExtra("USUARIO_NOMBRE", nombre);
+                    startActivity(intent);
+                    finish();
+                } else Toast.makeText(ActividadRegistrarAdoptante.this,
+                        "No se pudo registrar (" + response.code() + ")", Toast.LENGTH_LONG).show();
+            }
+            @Override public void onFailure(Call<AuthResponse> call, Throwable error) {
+                if (isFinishing() || isDestroyed()) return;
+                findViewById(R.id.rj_button_registrar_adoptante).setEnabled(true);
+                Toast.makeText(ActividadRegistrarAdoptante.this, "Sin conexión al registrar", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

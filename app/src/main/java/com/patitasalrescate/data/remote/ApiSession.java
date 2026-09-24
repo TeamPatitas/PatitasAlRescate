@@ -22,5 +22,7 @@ public final class ApiSession {
 
     String token() { return token; }
 
+    public boolean isAuthenticated() { return token != null; }
+
     public void logout() { token = null; }
 }

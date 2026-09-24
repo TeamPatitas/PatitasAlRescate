@@ -65,7 +65,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:hint="\t\t\t\tTeléfono"
+                android:hint="Teléfono (API pendiente)"
+                android:visibility="gone"
                 app:boxStrokeColor="@color/marronPrimario"
                 app:hintTextColor="@color/textoSecundario"
                 app:startIconDrawable="@drawable/rj_telefono">
@@ -130,7 +131,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="Edad"
+                    android:hint="Nacimiento (AAAA-MM-DD)"
                     app:boxStrokeColor="@color/marronPrimario"
                     app:hintTextColor="@color/textoSecundario">
 
@@ -138,7 +139,7 @@
                         android:id="@+id/rj_text_adopt_edad"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="number"
+                        android:inputType="date"
                         android:background="@drawable/bg_input_rounded"
                         android:textColor="@color/texto_busqueda"
                         android:maxLength="3" />

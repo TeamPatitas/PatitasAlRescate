@@ -50,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:hint="Fecha y Hora"
+                android:hint="Fecha y hora (AAAA-MM-DD HH:MM)"
                 app:boxStrokeColor="@color/marronPrimario"
                 app:hintTextColor="@color/marronOscuro">
 
@@ -130,7 +130,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:hint="Foto (URL)"
+                android:hint="Toca para seleccionar foto"
                 app:boxStrokeColor="@color/marronPrimario"
                 app:hintTextColor="@color/marronOscuro">
 

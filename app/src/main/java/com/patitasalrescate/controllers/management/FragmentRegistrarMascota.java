@@ -29,6 +29,16 @@ import com.patitasalrescate.data.mock.DAOMascota;
 import com.patitasalrescate.model.Mascota;
 import com.patitasalrescate.ui.AdaptadorFotosPreview;
 import com.patitasalrescate.utils.PatitasSessionManager;
+import com.patitasalrescate.utils.ApiApp;
+import com.patitasalrescate.data.remote.dto.CreatePetRequest;
+import com.patitasalrescate.data.remote.dto.PetResponse;
+import com.patitasalrescate.data.remote.dto.Species;
+import com.patitasalrescate.data.remote.dto.Gender;
+import com.patitasalrescate.data.remote.dto.UploadFile;
+import java.io.IOException;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -177,31 +187,41 @@ public class FragmentRegistrarMascota extends Fragment {
             return;
         }
 
-        int edad;
-        try {
-            edad = Integer.parseInt(edadStr);
-        } catch (NumberFormatException e) {
-            Toast.makeText(requireContext(), "Edad inválida", Toast.LENGTH_SHORT).show();
+        CreatePetRequest request = new CreatePetRequest();
+        request.name = nombre;
+        request.species = "Perro".equals(especie) ? Species.DOG : "Gato".equals(especie) ? Species.CAT : Species.OTHER;
+        request.breed = raza;
+        request.gender = "Macho".equalsIgnoreCase(sexo) ? Gender.MALE : Gender.FEMALE;
+        request.temperament = temperamento;
+        request.story = historia;
+        request.available = true;
+        request.photos = new ArrayList<>();
+        if (urisFotosSeleccionadas.size() > 3) {
+            Toast.makeText(requireContext(), "La API admite hasta 3 fotos", Toast.LENGTH_LONG).show();
             return;
         }
-
-        String idRefugio = PatitasSessionManager.getInstance(requireContext()).getUserId();
-        
-        List<String> fotosMock = new ArrayList<>();
-        fotosMock.add("https://images.dog.ceo/breeds/labrador/n02099712_1150.jpg");
-
-        Mascota nuevaMascota = new Mascota(
-                UUID.randomUUID().toString(), idRefugio, nombre, especie, raza, sexo,
-                edad, temperamento, historia, fotosMock,
-                "DISPONIBLE", System.currentTimeMillis()
-        );
-
-        daoMascota.insertar(nuevaMascota);
-        Toast.makeText(requireContext(), "¡Mascota registrada exitosamente (Demo)!", Toast.LENGTH_SHORT).show();
-        
-        if (getActivity() != null) {
-            getActivity().getOnBackPressedDispatcher().onBackPressed();
+        try {
+            for (Uri uri : urisFotosSeleccionadas) request.photos.add(ApiApp.upload(requireContext(), uri));
+        } catch (IOException e) {
+            Toast.makeText(requireContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            return;
         }
+        btnGuardar.setEnabled(false);
+        ApiApp.client().pets.createPet(request).enqueue(new Callback<PetResponse>() {
+            @Override public void onResponse(Call<PetResponse> call, Response<PetResponse> response) {
+                if (!isAdded()) return;
+                btnGuardar.setEnabled(true);
+                if (response.isSuccessful()) {
+                    Toast.makeText(requireContext(), "Mascota registrada", Toast.LENGTH_SHORT).show();
+                    requireActivity().getOnBackPressedDispatcher().onBackPressed();
+                } else Toast.makeText(requireContext(), "Error al registrar (" + response.code() + ")", Toast.LENGTH_LONG).show();
+            }
+            @Override public void onFailure(Call<PetResponse> call, Throwable error) {
+                if (!isAdded()) return;
+                btnGuardar.setEnabled(true);
+                Toast.makeText(requireContext(), "Sin conexión al registrar mascota", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void configurarLauncherFotos() {

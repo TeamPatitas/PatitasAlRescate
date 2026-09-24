@@ -78,7 +78,7 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
         Mascota m = lista.get(position);
 
         holder.txtNombre.setText(m.getNombre());
-        holder.txtRaza.setText(m.getRaza() + " (" + m.getEdad() + " meses)");
+        holder.txtRaza.setText(m.getRaza() == null ? "" : m.getRaza());
 
         if (m.getFotos() != null && !m.getFotos().isEmpty()) {
             Glide.with(context).load(m.getFotos().get(0))
@@ -93,18 +93,8 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
             holder.btnPrincipal.setText("Editar mascota");
             holder.btnPrincipal.setOnClickListener(v -> abrirPerfil(m, true));
 
-            if (!"DISPONIBLE".equals(estado) && !"ADOPTADO".equals(estado)) {
-                holder.btnRapido.setVisibility(View.VISIBLE);
-                holder.btnRapido.setText("Aprobar Adopción");
-                holder.btnRapido.setOnClickListener(v -> marcarComoAdoptado(m, holder.getAdapterPosition()));
-
-                holder.btnRechazar.setVisibility(View.VISIBLE);
-                holder.btnRechazar.setText("Rechazar Adopción");
-                holder.btnRechazar.setOnClickListener(v -> rechazarSolicitud(m, holder.getAdapterPosition()));
-            } else {
-                holder.btnRapido.setVisibility(View.GONE);
-                holder.btnRechazar.setVisibility(View.GONE);
-            }
+            holder.btnRapido.setVisibility(View.GONE);
+            holder.btnRechazar.setVisibility(View.GONE);
 
         } else {
             if ("DISPONIBLE".equals(estado)) {

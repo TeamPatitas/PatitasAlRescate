@@ -22,6 +22,8 @@ public final class PetResponse {
     public java.util.List<String> photos;
     @SerializedName("available")
     public Boolean available;
+    @SerializedName("isYours")
+    public Boolean isYours;
     @SerializedName("shelterId")
     public String shelterId;
 }

@@ -21,6 +21,8 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.patitasalrescate.R;
 import com.patitasalrescate.utils.PatitasSessionManager;
+import com.patitasalrescate.utils.ApiApp;
+import com.patitasalrescate.controllers.auth.ActividadIngresar;
 import com.patitasalrescate.controllers.management.ActividadPerfilUsuario;
 
 public class ActividadFeedAdoptante extends AppCompatActivity {
@@ -29,6 +31,11 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ly_feed_adoptante);
+        if (!ApiApp.client().session.isAuthenticated()) {
+            startActivity(new Intent(this, ActividadIngresar.class));
+            finish();
+            return;
+        }
 
         PatitasSessionManager session = PatitasSessionManager.getInstance(this);
         NavHostFragment navHost = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentFeedAdoptante);

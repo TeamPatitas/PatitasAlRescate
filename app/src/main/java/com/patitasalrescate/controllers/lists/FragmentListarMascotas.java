@@ -22,6 +22,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.patitasalrescate.R;
 import com.patitasalrescate.utils.PatitasSessionManager;
 import com.patitasalrescate.data.mock.DAOMascota;
+import com.patitasalrescate.data.remote.dto.PetSummaryResponse;
+import com.patitasalrescate.utils.ApiApp;
+import com.patitasalrescate.utils.ApiPages;
 import com.patitasalrescate.model.Mascota;
 import com.patitasalrescate.ui.AdaptadorMascotas;
 
@@ -61,7 +64,7 @@ public class FragmentListarMascotas extends Fragment {
         esModoRefugio = session.isRefugio();
         idUsuario = session.getUserId();
 
-        if (idUsuario == null || idUsuario.isEmpty()) {
+        if (!ApiApp.client().session.isAuthenticated()) {
             Toast.makeText(requireContext(), "Error de sesión. Vuelve a ingresar.", Toast.LENGTH_SHORT).show();
             if (getActivity() != null) {
                 getActivity().onBackPressed();
@@ -96,7 +99,6 @@ public class FragmentListarMascotas extends Fragment {
             updateTitle("Mascotas en Adopción");
             lyFiltros.setVisibility(View.GONE);
         }
-        cargarDatosLocales();
     }
 
     private void updateTitle(String title) {
@@ -111,25 +113,60 @@ public class FragmentListarMascotas extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (idUsuario != null) {
-            cargarDatosLocales();
+        if (ApiApp.client().session.isAuthenticated()) {
+            cargarDatosApi();
         }
     }
 
-    private void cargarDatosLocales() {
-        try {
-            if (esModoRefugio) {
-                if (idUsuario != null) {
-                    listaCacheRefugio = dao.listarPorRefugio(idUsuario);
-                    filtrarYMostrarRefugio();
-                }
-            } else {
-                List<Mascota> lista = dao.listarDisponibles();
-                mostrarListaEnRecycler(lista);
-            }
-        } catch (Exception e) {
-            Toast.makeText(requireContext(), "Error cargando datos locales", Toast.LENGTH_SHORT).show();
+    private void cargarDatosApi() {
+        if (recycler == null) return;
+        txtVacio.setVisibility(View.VISIBLE);
+        txtVacio.setText("Cargando mascotas...");
+        recycler.setVisibility(View.GONE);
+        ApiPages.load(page -> ApiApp.client().pets.getAllPets(page, 50),
+                data -> data.totalPages, data -> data.items,
+                pets -> {
+                    if (!isAdded() || getView() == null) return;
+                    List<Mascota> lista = new ArrayList<>();
+                    for (PetSummaryResponse pet : pets) {
+                        Mascota item = ApiApp.pet(pet);
+                        if (!esModoRefugio && !"DISPONIBLE".equals(item.getEstado())) continue;
+                        lista.add(item);
+                    }
+                    if (esModoRefugio) {
+                        // El resumen de /pet no incluye shelterId; cargar detalle para filtrar por refugio.
+                        cargarMascotasDelRefugio(lista, 0, new ArrayList<>());
+                    } else mostrarListaEnRecycler(lista);
+                }, error -> {
+                    if (!isAdded()) return;
+                    txtVacio.setText("No se pudieron cargar las mascotas");
+                    Toast.makeText(requireContext(), "Error de conexión con mascotas", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void cargarMascotasDelRefugio(List<Mascota> resumenes, int index, List<Mascota> propias) {
+        if (!isAdded()) return;
+        if (index >= resumenes.size()) {
+            listaCacheRefugio = propias;
+            filtrarYMostrarRefugio();
+            return;
         }
+        ApiApp.client().pets.getPetById(resumenes.get(index).getIdMascota())
+                .enqueue(new retrofit2.Callback<com.patitasalrescate.data.remote.dto.PetResponse>() {
+                    @Override public void onResponse(retrofit2.Call<com.patitasalrescate.data.remote.dto.PetResponse> call,
+                                                     retrofit2.Response<com.patitasalrescate.data.remote.dto.PetResponse> response) {
+                        if (!isAdded()) return;
+                        if (response.isSuccessful() && response.body() != null
+                                && idUsuario != null && PatitasSessionManager.getInstance(requireContext())
+                                .getShelterId().equals(response.body().shelterId)) {
+                            propias.add(ApiApp.pet(response.body()));
+                        }
+                        cargarMascotasDelRefugio(resumenes, index + 1, propias);
+                    }
+                    @Override public void onFailure(retrofit2.Call<com.patitasalrescate.data.remote.dto.PetResponse> call, Throwable error) {
+                        if (isAdded()) txtVacio.setText("No se pudieron cargar las mascotas del refugio");
+                    }
+                });
     }
 
     private void filtrarYMostrarRefugio() {

@@ -10,7 +10,7 @@
         "tags": [
           "Administración"
         ],
-        "description": "Verifica el estado de la api y sus dependencias, es piola pa saber que c cayó xd",
+        "description": "Verifica el estado de la API y sus dependencias, es piola pa saber que c cayó xd",
         "operationId": "HealthCheck",
         "responses": {
           "200": {
@@ -34,7 +34,7 @@
         "tags": [
           "Administración"
         ],
-        "description": "Obtiene la información del usuario actual, necesita que el usuario haya iniciado sesión.",
+        "description": "Obtiene la información del usuario actual, necesita que el usuario haya iniciado sesión, si eres dev puedes obtener la información de cualquier usuario.",
         "operationId": "GetCurrentUser",
         "responses": {
           "200": {
@@ -54,7 +54,7 @@
         "tags": [
           "Administración"
         ],
-        "description": "Actualiza la información del usuario, necesita que el usuario haya iniciado sesión, pero si tienes rol dev puedes modificar cualquier cosa a cualquiera xd.",
+        "description": "Actualiza la información del usuario, necesita que el usuario haya iniciado sesión, pero si tienes rol dev puedes modificar cualquier cosa a cualquiera.",
         "operationId": "UpdateCurrentUser",
         "requestBody": {
           "content": {
@@ -90,7 +90,7 @@
         "tags": [
           "Administración"
         ],
-        "description": "CUIDADO Borra el usuario con el ID especificado, esto es irreversible usarlo con mucha cautela, si eres dev tambien puedes eliminarlo a cualquiera 🐒 ",
+        "description": "$important{CUIDADO: Esto es irreversible} usarlo con mucha cautela, elimina en cascada todo lo relacionado al usuario (adopciones, mascotas). si eres dev tambien puedes eliminarlo a cualquiera 🐒",
         "operationId": "Borrar Usuario",
         "parameters": [
           {
@@ -213,7 +213,7 @@
         "tags": [
           "Administración"
         ],
-        "description": "Habilita un shelter con el ID especificado, hace que el refugio aparezca para todos los usuarios y luego asigna el rol ShelterOwner a todos los dueños del refugio.",
+        "description": "Habilita un shelter con el ID especificado osea cambia $code{IsAviable=true}, luego hace que el refugio aparezca para todos los usuarios y agrega el rol $code{ShelterOwner} a todos los dueños del refugio.",
         "operationId": "EnableShelter",
         "parameters": [
           {
@@ -248,7 +248,7 @@
         "tags": [
           "Administración"
         ],
-        "description": "Deshabilita un shelter con el ID especificado, hace que el refugio no aparezca para los usuarios y luego remueve el rol ShelterOwner de todos los dueños del refugio.",
+        "description": "Deshabilita un shelter con el ID especificado osea cambia $code{IsAviable=false}, luego hace que el refugio no aparezca para todos los usuarios y quita el rol $code{ShelterOwner} de todos los dueños del refugio.",
         "operationId": "DisableShelter",
         "parameters": [
           {
@@ -283,8 +283,8 @@
         "tags": [
           "Autenticación"
         ],
-        "description": "Iniciar sesión pez",
-        "operationId": "Iniciar Sesión",
+        "description": "Iniciar sesión pez, el token JWT se renueva cada $bold{20 dias}, osea que cada 20 dias hay que volver a iniciar sesión, guardar el token porque es lo que se va a usar para la mayoría de endpoints.",
+        "operationId": "Login",
         "requestBody": {
           "content": {
             "application/json": {
@@ -314,8 +314,8 @@
         "tags": [
           "Autenticación"
         ],
-        "description": "Registrarse pez",
-        "operationId": "Registrarse",
+        "description": "Registrarse pez.",
+        "operationId": "Register",
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -349,8 +349,8 @@
         "tags": [
           "Autenticación"
         ],
-        "description": "Verifica el correo del usuario, esta wea está pensada para que se redireccione desde frontend.",
-        "operationId": "Verificar Correo",
+        "description": "Verifica el correo del usuario, esta wea está pensada para que redireccione a frontend.",
+        "operationId": "VerifyEmail",
         "parameters": [
           {
             "name": "userId",
@@ -382,8 +382,8 @@
         "tags": [
           "Autenticación"
         ],
-        "description": "Envía un correo de verificación al usuario",
-        "operationId": "Enviar Correo de Verificación",
+        "description": "Envía un correo de verificación al usuario.",
+        "operationId": "SendVerificationEmail",
         "responses": {
           "200": {
             "description": "OK"
@@ -392,6 +392,189 @@
         "x-roles-policy": "User",
         "x-cooldown-policy": "EmailVerificationCooldown",
         "x-cooldown": "1 minuto"
+      }
+    },
+    "/event": {
+      "post": {
+        "tags": [
+          "Eventos"
+        ],
+        "description": "Crea un nuevo evento asociado al refugio del usuario.",
+        "operationId": "CreateEvent",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEventRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEventRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "ShelterOwner"
+      },
+      "get": {
+        "tags": [
+          "Eventos"
+        ],
+        "description": "Obtiene todos los eventos. Los usuarios ven solo los eventos activos ($code{IsActive == true}), dueños ven activos globales más inactivos propios, devs ven todo.",
+        "operationId": "GetAllEvents",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventSummaryResponsePagedResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "User"
+      }
+    },
+    "/event/{eventId}": {
+      "get": {
+        "tags": [
+          "Eventos"
+        ],
+        "description": "Obtiene los detalles de un evento por su ID, los Devs pueden obtener cualquier evento, los dueños de refugio pueden obtener cualquier evento activo o inactivo de su refugio, y los usuarios normales solo pueden obtener eventos activos.",
+        "operationId": "GetEventById",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "User"
+      },
+      "patch": {
+        "tags": [
+          "Eventos"
+        ],
+        "description": "Actualiza los datos de un evento del refugio del usuario.",
+        "operationId": "UpdateEvent",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEventRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEventRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "ShelterOwner"
+      },
+      "delete": {
+        "tags": [
+          "Eventos"
+        ],
+        "description": "Elimina un evento. Si eres dev puedes eliminar cualquiera, si no solo los de tu refugio.",
+        "operationId": "DeleteEvent",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "ShelterOwner"
       }
     },
     "/pet": {
@@ -545,7 +728,7 @@
         "tags": [
           "Mascotas"
         ],
-        "description": "CUIDADO: Elimina una mascota pero tambien elimina todo lo relacionado a ella, es irreversible usarlo con cautela.",
+        "description": "$important{CUIDADO: Usarlo con cautela}. Elimina una mascota pero también elimina todo lo relacionado a ella, es irreversible.",
         "operationId": "DeletePet",
         "parameters": [
           {
@@ -559,8 +742,8 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "200": {
+            "description": "OK"
           }
         },
         "x-roles-policy": "ShelterOwner"
@@ -655,7 +838,7 @@
         "tags": [
           "Refugios"
         ],
-        "description": "Crea un nuevo refugio, es todo xd, luego los devs verán si activan el refugio.",
+        "description": "Crea un nuevo refugio, es todo xd, el refugio se crea con un el atributo $code{IsActive = false}, luego dependerá de los desarrolladores si se cambia a $code{true}.",
         "operationId": "CreateShelter",
         "requestBody": {
           "content": {
@@ -689,7 +872,7 @@
         "tags": [
           "Refugios"
         ],
-        "description": "Obtiene todos los refugios.",
+        "description": "Obtiene todos los refugios, si eres Dev se obtiene todos los refugios, si eres usuario se obtienen solo los refugios activos.",
         "operationId": "GetAllShelters",
         "parameters": [
           {
@@ -805,7 +988,7 @@
         "tags": [
           "Refugios"
         ],
-        "description": "CUIDADO: Elimina un refugio, esto es irreversible y elimina todo lo relacionado a ella (adopciones, mascotas) usarlo con cautela, si eres dev tambien puedes eliminarlo a cualquiera 🐒 ",
+        "description": "$important{CUIDADO: Esto es irreversible} y elimina todo lo relacionado a ella (adopciones, mascotas) usarlo con cautela, si eres dev tambien puedes eliminarlo a cualquiera 🐒 ",
         "operationId": "DeleteShelter",
         "parameters": [
           {
@@ -845,6 +1028,50 @@
             "items": {
               "type": "string"
             },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateEventRequest": {
+        "required": [
+          "eventDate",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "eventDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "string",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "image": {
+            "type": "string",
+            "format": "binary",
             "nullable": true
           }
         },
@@ -931,6 +1158,139 @@
         },
         "additionalProperties": false
       },
+      "EventResponse": {
+        "required": [
+          "createdAt",
+          "eventDate",
+          "id",
+          "isActive",
+          "isYours",
+          "name",
+          "shelterId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "eventDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "string",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "string",
+            "nullable": true
+          },
+          "photoUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "shelterId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "isYours": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EventSummaryResponse": {
+        "required": [
+          "eventDate",
+          "id",
+          "isActive",
+          "isYours",
+          "name",
+          "shelterId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "eventDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "photoUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "shelterId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "isYours": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EventSummaryResponsePagedResponse": {
+        "required": [
+          "items",
+          "page",
+          "pageSize",
+          "totalCount",
+          "totalPages"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventSummaryResponse"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "Gender": {
         "enum": [
           "MALE",
@@ -1005,6 +1365,7 @@
           "breed",
           "gender",
           "id",
+          "isYours",
           "name",
           "photos",
           "shelterId",
@@ -1050,6 +1411,9 @@
           "available": {
             "type": "boolean"
           },
+          "isYours": {
+            "type": "boolean"
+          },
           "shelterId": {
             "type": "string",
             "format": "uuid"
@@ -1061,6 +1425,7 @@
         "required": [
           "available",
           "id",
+          "isYours",
           "name",
           "photos"
         ],
@@ -1080,6 +1445,9 @@
               "type": "string"
             },
             "nullable": true
+          },
+          "isYours": {
+            "type": "boolean"
           },
           "available": {
             "type": "boolean"
@@ -1302,6 +1670,47 @@
             "items": {
               "type": "string"
             },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateEventRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "eventDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "string",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "image": {
+            "type": "string",
+            "format": "binary",
             "nullable": true
           }
         },
@@ -1545,6 +1954,9 @@
     },
     {
       "name": "Autenticación"
+    },
+    {
+      "name": "Eventos"
     },
     {
       "name": "Mascotas"
