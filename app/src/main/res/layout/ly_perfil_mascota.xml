@@ -157,33 +157,6 @@
                         android:textColor="#5D4037" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Edad (meses)"
-                        android:textColor="#5D4037"
-                        android:textStyle="bold" />
-
-                    <EditText
-                        android:id="@+id/txt_edit_edad"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
-                        android:enabled="false"
-                        android:hint="12"
-                        android:importantForAutofill="no"
-                        android:inputType="number"
-                        android:minHeight="48dp"
-                        android:padding="8dp"
-                        android:textColor="#5D4037" />
-                </LinearLayout>
             </LinearLayout>
 
             <TextView
@@ -228,6 +201,74 @@
                 android:minLines="3"
                 android:padding="8dp"
                 android:textColor="#4E342E" />
+
+            <LinearLayout
+                android:id="@+id/layout_fotos_mascota"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fotos (máx. 3)"
+                    android:textColor="#5D4037"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Toca un recuadro para cambiar esa foto (índices 1, 2, 3). Se suben al guardar."
+                    android:textColor="#757575"
+                    android:textSize="12sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <ImageView
+                        android:id="@+id/foto_mascota_slot_0"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_marginEnd="6dp"
+                        android:layout_weight="1"
+                        android:background="#D7CCC8"
+                        android:contentDescription="Foto 1 (índice 1)"
+                        android:padding="24dp"
+                        android:scaleType="centerInside"
+                        android:src="@android:drawable/ic_menu_camera" />
+
+                    <ImageView
+                        android:id="@+id/foto_mascota_slot_1"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_marginHorizontal="3dp"
+                        android:layout_weight="1"
+                        android:background="#D7CCC8"
+                        android:contentDescription="Foto 2 (índice 2)"
+                        android:padding="24dp"
+                        android:scaleType="centerInside"
+                        android:src="@android:drawable/ic_menu_camera" />
+
+                    <ImageView
+                        android:id="@+id/foto_mascota_slot_2"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:background="#D7CCC8"
+                        android:contentDescription="Foto 3 (índice 3)"
+                        android:padding="24dp"
+                        android:scaleType="centerInside"
+                        android:src="@android:drawable/ic_menu_camera" />
+                </LinearLayout>
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

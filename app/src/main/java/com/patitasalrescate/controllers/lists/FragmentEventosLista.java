@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.patitasalrescate.R;
 import com.patitasalrescate.controllers.management.ActividadRegistrarEvento;
-import com.patitasalrescate.data_access.DAOEvento;
 import com.patitasalrescate.model.Evento;
 import com.patitasalrescate.ui.AdaptadorEventos;
 import com.patitasalrescate.utils.PatitasSessionManager;
@@ -33,14 +32,12 @@ public class FragmentEventosLista extends Fragment {
     private AdaptadorEventos adaptador;
     private TextView txtVacio;
     private FloatingActionButton fabAgregar;
-    private DAOEvento daoEvento;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fg_eventos_lista, container, false);
 
-        daoEvento = new DAOEvento(requireContext());
         recycler = view.findViewById(R.id.recycler_eventos);
         txtVacio = view.findViewById(R.id.txt_lista_eventos_vacia);
         fabAgregar = view.findViewById(R.id.fab_agregar_evento);
@@ -64,26 +61,41 @@ public class FragmentEventosLista extends Fragment {
     }
 
     private void cargarEventos() {
-        if (recycler == null) return;
+        if (recycler == null || txtVacio == null) return;
         recycler.setVisibility(View.GONE);
         txtVacio.setVisibility(View.VISIBLE);
         txtVacio.setText("Cargando eventos...");
         ApiPages.load(page -> ApiApp.client().events.getAllEvents(page, 50),
                 data -> data.totalPages, data -> data.items,
                 events -> {
-                    if (!isAdded()) return;
+                    if (!isAdded() || getContext() == null) return;
                     List<Evento> lista = new ArrayList<>();
-                    for (EventSummaryResponse event : events) lista.add(ApiApp.event(event));
+                    if (events != null) {
+                        for (EventSummaryResponse event : events) {
+                            if (event == null || event.id == null || event.id.isEmpty()) continue;
+                            // El resumen no trae descripción; el detalle la carga por id.
+                            if (Boolean.FALSE.equals(event.isActive)) continue;
+                            Evento item = ApiApp.event(event);
+                            if (item.getDescripcion() == null) item.setDescripcion("");
+                            lista.add(item);
+                        }
+                    }
                     if (lista.isEmpty()) {
+                        recycler.setVisibility(View.GONE);
+                        txtVacio.setVisibility(View.VISIBLE);
                         txtVacio.setText("No hay eventos disponibles");
                     } else {
                         recycler.setVisibility(View.VISIBLE);
                         txtVacio.setVisibility(View.GONE);
-                        adaptador = new AdaptadorEventos(lista, requireContext());
+                        adaptador = new AdaptadorEventos(lista, getContext(),
+                                PatitasSessionManager.getInstance(getContext()).isRefugio());
                         recycler.setAdapter(adaptador);
                     }
                 }, error -> {
-                    if (isAdded()) txtVacio.setText("No se pudieron cargar los eventos");
+                    if (!isAdded() || txtVacio == null) return;
+                    if (recycler != null) recycler.setVisibility(View.GONE);
+                    txtVacio.setVisibility(View.VISIBLE);
+                    txtVacio.setText("No se pudieron cargar los eventos");
                 });
     }
 

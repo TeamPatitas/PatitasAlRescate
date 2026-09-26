@@ -25,7 +25,7 @@
             android:layout_height="40dp"
             android:layout_marginEnd="12dp"
             android:backgroundTint="#5D4037"
-            android:text="En Adopción"
+            android:text="Disponibles"
             android:textColor="@android:color/white"
             android:textSize="12sp" />
 
@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:backgroundTint="#A1887F"
-            android:text="Adoptados"
+            android:text="No disponibles"
             android:textColor="@android:color/white"
             android:textSize="12sp" />
     </LinearLayout>

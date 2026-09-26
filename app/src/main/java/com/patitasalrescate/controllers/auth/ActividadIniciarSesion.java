@@ -26,7 +26,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ActividadIniciarSesion extends AppCompatActivity {
+public class ActividadIniciarSesion extends com.patitasalrescate.controllers.base.BaseActivity {
     private EditText textCorreo, textPassword;
     private Button button_Ingresar;
 
@@ -78,6 +78,8 @@ public class ActividadIniciarSesion extends AppCompatActivity {
                     return;
                 }
                 ApiApp.client().session.authenticate(response.body());
+                PatitasSessionManager.getInstance(ActividadIniciarSesion.this)
+                        .setAuthToken(response.body().token);
                 ApiApp.client().admin.getCurrentUser().enqueue(new Callback<UserResponse>() {
                     @Override public void onResponse(Call<UserResponse> call, Response<UserResponse> userResponse) {
                         if (isFinishing() || isDestroyed()) return;

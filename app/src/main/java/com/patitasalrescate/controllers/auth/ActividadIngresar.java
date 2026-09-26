@@ -13,7 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.patitasalrescate.R;
 
-public class ActividadIngresar extends AppCompatActivity {
+public class ActividadIngresar extends com.patitasalrescate.controllers.base.BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

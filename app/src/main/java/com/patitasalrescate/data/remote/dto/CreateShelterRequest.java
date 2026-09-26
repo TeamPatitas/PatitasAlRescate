@@ -8,6 +8,8 @@ public final class CreateShelterRequest {
     public String name;
     @SerializedName("address")
     public String address;
+    @SerializedName("phoneNumber")
+    public String phoneNumber;
     @SerializedName("latitude")
     public Double latitude;
     @SerializedName("longitude")

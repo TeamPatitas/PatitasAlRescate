@@ -22,9 +22,9 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.patitasalrescate.R;
 import com.patitasalrescate.controllers.feed.ActividadRegistroExitoso;
-import com.patitasalrescate.data.mock.DAOAdoptante;
 import com.patitasalrescate.model.Adoptante;
 import com.patitasalrescate.utils.ApiApp;
+import com.patitasalrescate.utils.PatitasSessionManager;
 import com.patitasalrescate.data.remote.dto.RegisterRequest;
 import com.patitasalrescate.data.remote.dto.AuthResponse;
 import retrofit2.Call;
@@ -41,10 +41,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
-public class ActividadRegistrarAdoptante extends AppCompatActivity {
+public class ActividadRegistrarAdoptante extends com.patitasalrescate.controllers.base.BaseActivity {
     private EditText etNombre, etCorreo, etPass, etTelefono, etEdad;
     private Spinner spSexo;
-    private DAOAdoptante daoAdoptante;
 
     private ShapeableImageView imgAvatar;
     private Uri uriFotoSeleccionada;
@@ -69,8 +68,6 @@ public class ActividadRegistrarAdoptante extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
         toolbar1.setNavigationOnClickListener(v -> finish());
-
-        daoAdoptante = new DAOAdoptante(this);
 
         etNombre = findViewById(R.id.rj_text_adopt_nombre);
         etCorreo = findViewById(R.id.rj_text_adopt_correo);
@@ -133,6 +130,7 @@ public class ActividadRegistrarAdoptante extends AppCompatActivity {
     }
 
     private void registrarUsuario() {
+        if (!ApiApp.exigirOnline(this)) return;
         String nombre = etNombre.getText().toString().trim();
         String correo = etCorreo.getText().toString().trim();
         String pass = etPass.getText().toString().trim();
@@ -174,7 +172,11 @@ public class ActividadRegistrarAdoptante extends AppCompatActivity {
             @Override public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
                 if (isFinishing() || isDestroyed()) return;
                 findViewById(R.id.rj_button_registrar_adoptante).setEnabled(true);
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body() != null && response.body().token != null) {
+                    // Guardar token en almacenamiento cifrado persistente
+                    PatitasSessionManager.getInstance(ActividadRegistrarAdoptante.this)
+                            .setAuthToken(response.body().token);
+                    ApiApp.client().session.authenticate(response.body());
                     Intent intent = new Intent(ActividadRegistrarAdoptante.this, ActividadRegistroExitoso.class);
                     intent.putExtra("USUARIO_NOMBRE", nombre);
                     startActivity(intent);

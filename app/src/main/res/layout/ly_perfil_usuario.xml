@@ -48,11 +48,13 @@
                         android:layout_width="112dp"
                         android:layout_height="112dp"
                         android:background="#E0E0E0"
-                        android:scaleType="centerCrop"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="false"
+                        android:padding="6dp"
                         android:src="@drawable/rj_persona"
                         app:shapeAppearanceOverlay="@style/ShapeAppearance.Patitas.Circular"
                         app:strokeColor="@color/blanco"
-                        app:strokeWidth="4dp"
+                        app:strokeWidth="2dp"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent" />
 
@@ -88,6 +90,16 @@
                     android:textSize="13sp"
                     android:textStyle="bold"
                     tools:text="Adoptante" />
+
+                <LinearLayout
+                    android:id="@+id/layoutRolesBadges"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
             </LinearLayout>
 
             <com.google.android.material.card.MaterialCardView
@@ -141,12 +153,12 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Nombre completo"
+                                android:text="Nombres"
                                 android:textColor="@color/textoSecundario"
                                 android:textSize="12sp" />
 
                             <EditText
-                                android:id="@+id/txtNombreUsuarioInput"
+                                android:id="@+id/txtNombresUsuarioInput"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@android:color/transparent"
@@ -156,15 +168,76 @@
                                 android:textColor="@color/texto_busqueda"
                                 android:textSize="16sp"
                                 tools:ignore="TouchTargetSizeCheck"
-                                tools:text="Juan Pérez" />
+                                tools:text="Juan" />
                         </LinearLayout>
 
                         <ImageButton
-                            android:id="@+id/btnEditarNombre"
+                            android:id="@+id/btnEditarNombres"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="Editar nombre"
+                            android:contentDescription="Editar nombres"
+                            android:src="@android:drawable/ic_menu_edit"
+                            app:tint="@color/marronPrimario" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="66dp"
+                        android:background="@color/textoSecundario"
+                        android:alpha="0.15" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/bg_circulo_icono_claro"
+                            android:contentDescription="ApellidosIcon"
+                            android:padding="9dp"
+                            android:src="@drawable/rj_persona"
+                            app:tint="@color/marronPrimario" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Apellidos"
+                                android:textColor="@color/textoSecundario"
+                                android:textSize="12sp" />
+
+                            <EditText
+                                android:id="@+id/txtApellidosUsuarioInput"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:enabled="false"
+                                android:inputType="textCapWords"
+                                android:padding="0dp"
+                                android:textColor="@color/texto_busqueda"
+                                android:textSize="16sp"
+                                tools:ignore="TouchTargetSizeCheck"
+                                tools:text="Pérez" />
+                        </LinearLayout>
+
+                        <ImageButton
+                            android:id="@+id/btnEditarApellidos"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Editar apellidos"
                             android:src="@android:drawable/ic_menu_edit"
                             app:tint="@color/marronPrimario" />
                     </LinearLayout>
@@ -248,9 +321,9 @@
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:background="@drawable/bg_circulo_icono_claro"
-                            android:contentDescription="TelefonoIcon"
+                            android:contentDescription="NacimientoIcon"
                             android:padding="9dp"
-                            android:src="@drawable/rj_telefono"
+                            android:src="@android:drawable/ic_menu_today"
                             app:tint="@color/marronPrimario" />
 
                         <LinearLayout
@@ -263,33 +336,96 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Teléfono"
+                                android:text="Fecha de nacimiento"
                                 android:textColor="@color/textoSecundario"
                                 android:textSize="12sp" />
 
                             <EditText
-                                android:id="@+id/txtCelularUsuarioInput"
+                                android:id="@+id/txtNacimientoUsuarioInput"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@android:color/transparent"
                                 android:enabled="false"
-                                android:inputType="phone"
+                                android:focusable="false"
+                                android:inputType="none"
                                 android:minWidth="48dp"
                                 android:minHeight="48dp"
                                 android:padding="0dp"
                                 android:textColor="@color/texto_busqueda"
                                 android:textSize="16sp"
-                                tools:text="+51 987 654 321" />
+                                tools:text="6, Ago 2026" />
                         </LinearLayout>
 
                         <ImageButton
-                            android:id="@+id/btnEditarCelular"
+                            android:id="@+id/btnEditarNacimiento"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="Editar teléfono"
+                            android:contentDescription="Editar fecha de nacimiento"
                             android:src="@android:drawable/ic_menu_edit"
-                            app:tint="@color/marronPrimario"/>
+                            app:tint="@color/marronPrimario" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="66dp"
+                        android:background="@color/textoSecundario"
+                        android:alpha="0.15" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/bg_circulo_icono_claro"
+                            android:contentDescription="SexoIcon"
+                            android:padding="9dp"
+                            android:src="@drawable/rj_persona"
+                            app:tint="@color/marronPrimario" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Sexo"
+                                android:textColor="@color/textoSecundario"
+                                android:textSize="12sp" />
+
+                            <EditText
+                                android:id="@+id/txtSexoUsuarioInput"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:enabled="false"
+                                android:focusable="false"
+                                android:minWidth="48dp"
+                                android:minHeight="48dp"
+                                android:padding="0dp"
+                                android:textColor="@color/texto_busqueda"
+                                android:textSize="16sp"
+                                tools:text="Masculino" />
+                        </LinearLayout>
+
+                        <ImageButton
+                            android:id="@+id/btnEditarSexo"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Editar sexo"
+                            android:src="@android:drawable/ic_menu_edit"
+                            app:tint="@color/marronPrimario" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

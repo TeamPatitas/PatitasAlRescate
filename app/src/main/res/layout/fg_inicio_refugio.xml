@@ -19,33 +19,18 @@
 
     <TextView
         android:id="@+id/txtBienvenidoRefugio"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:layout_marginHorizontal="24dp"
         android:fontFamily="@font/chewy"
         android:textAlignment="center"
         android:textColor="@color/marronOscuro"
         android:textSize="33sp"
-        app:layout_constraintBottom_toTopOf="@+id/btn_registrar_evento_inicio"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2"
-        tools:text="Bienvenido" />
-
-    <Button
-        android:id="@+id/btn_registrar_evento_inicio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:backgroundTint="@color/marronPrimario"
-        android:paddingHorizontal="24dp"
-        android:paddingVertical="12dp"
-        android:text="REGISTRAR NUEVO EVENTO"
-        android:textColor="@color/blanco"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtBienvenidoRefugio" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView2"
+        tools:text="Mi Refugio" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

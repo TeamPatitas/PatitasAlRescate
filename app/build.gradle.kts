@@ -53,16 +53,9 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
-// Para parsear JSON (Gson es más simple que JSONObject)
+    // Para parsear JSON (Gson es más simple que JSONObject)
     implementation("com.google.code.gson:gson:2.10.1")
-// Glide (ya lo tenías, pero por si acaso)
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    // Room para caché persistente
-    implementation ("androidx.room:room-runtime:2.6.1")
-    annotationProcessor ("androidx.room:room-compiler:2.6.1")
-
-// WorkManager para sincronización en segundo plano (opcional pero recomendado)
-    implementation ("androidx.work:work-runtime:2.9.1")
-    
+    // Security: EncryptedSharedPreferences para guardar token JWT
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
 }

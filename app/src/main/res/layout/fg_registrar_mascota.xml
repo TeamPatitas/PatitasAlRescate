@@ -200,23 +200,76 @@
                     android:gravity="top" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
-                android:id="@+id/btn_seleccionar_fotos"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Seleccionar Fotos"
-                android:textColor="#388E3C"
-                app:strokeColor="#388E3C"
+                android:text="  Fotos (máx. 3, jpeg/png/webp)"
+                android:textStyle="bold"
+                android:textColor="@color/textoPrincipal"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Toca un recuadro para elegir esa foto. Mantén presionado para quitarla. Se suben al registrar, una por índice (1, 2, 3)."
+                android:textColor="@color/textoSecundario"
+                android:textSize="12sp"
                 android:layout_marginBottom="8dp"/>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_fotos_preview"
+            <LinearLayout
+                android:id="@+id/layout_fotos_slots"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:orientation="horizontal"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                android:weightSum="3">
+
+                <ImageView
+                    android:id="@+id/foto_slot_0"
+                    android:layout_width="0dp"
+                    android:layout_height="110dp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_input_rounded"
+                    android:contentDescription="Foto 1 (índice 1)"
+                    android:padding="28dp"
+                    android:scaleType="centerInside"
+                    android:src="@android:drawable/ic_menu_camera" />
+
+                <ImageView
+                    android:id="@+id/foto_slot_1"
+                    android:layout_width="0dp"
+                    android:layout_height="110dp"
+                    android:layout_marginHorizontal="3dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_input_rounded"
+                    android:contentDescription="Foto 2 (índice 2)"
+                    android:padding="28dp"
+                    android:scaleType="centerInside"
+                    android:src="@android:drawable/ic_menu_camera" />
+
+                <ImageView
+                    android:id="@+id/foto_slot_2"
+                    android:layout_width="0dp"
+                    android:layout_height="110dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_input_rounded"
+                    android:contentDescription="Foto 3 (índice 3)"
+                    android:padding="28dp"
+                    android:scaleType="centerInside"
+                    android:src="@android:drawable/ic_menu_camera" />
+            </LinearLayout>
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switch_disponible"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:checked="true"
+                android:text="Disponible para adopción"
+                android:textColor="@color/textoPrincipal"
+                android:textSize="16sp" />
 
             <Button
                 android:id="@+id/btn_guardar_mascota"

@@ -147,17 +147,24 @@ public class ApiClientTest {
         CreateShelterRequest create = new CreateShelterRequest();
         create.name = "Refugio";
         create.address = "Lima";
+        create.phoneNumber = "999888777";
         create.latitude = -12.0;
         create.longitude = -77.0;
         create.photo = photo("refugio.png");
         String form = check(api.shelters.createShelter(create), "POST", "/shelter", 201, "{}")
                 .getBody().readUtf8();
         assertTrue(form.contains("-12.0"));
+        assertTrue(form.contains("999888777"));
         check(api.shelters.getAllShelters(1, 20), "GET", "/shelter?page=1&pageSize=20", 200, "{\"items\":[]}");
         check(api.shelters.getShelterById(ID), "GET", "/shelter/" + ID, 200, "{}");
         UpdateShelterRequest update = new UpdateShelterRequest();
         update.name = "Nuevo nombre";
-        check(api.shelters.updateShelter(ID, update), "PATCH", "/shelter/" + ID, 200, "{}");
+        update.yapeQrImage = photo("yape.png");
+        String patch = check(api.shelters.updateShelter(ID, update), "PATCH", "/shelter/" + ID, 200, "{}")
+                .getBody().readUtf8();
+        assertTrue(patch.contains("name=\"yapeQrImage\"; filename=\"yape.png\""));
+        assertTrue(patch.contains("Content-Type: image/png"));
+        assertTrue(patch.contains("name=\"name\""));
         check(api.shelters.deleteShelter(ID), "DELETE", "/shelter/" + ID, 200, "");
         server.enqueue(new MockResponse().setBody("Hola pez"));
         assertEquals("Hola pez", api.status.getStatus().execute().body());

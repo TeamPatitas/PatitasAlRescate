@@ -1,5 +1,6 @@
 package com.patitasalrescate.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -14,8 +15,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.patitasalrescate.R;
+import com.patitasalrescate.data.remote.dto.ShelterResponse;
 import com.patitasalrescate.model.Refugio;
+import com.patitasalrescate.utils.ApiApp;
 import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AdaptadorRefugios extends RecyclerView.Adapter<AdaptadorRefugios.RefugioViewHolder> {
     private Context context;
@@ -36,7 +42,9 @@ public class AdaptadorRefugios extends RecyclerView.Adapter<AdaptadorRefugios.Re
         Refugio r = listaRefugios.get(position);
 
         holder.txtNombre.setText(r.getNombre());
-        holder.txtDireccion.setText(r.getDireccion());
+        // El resumen no trae address: se muestra al abrir el detalle/mapa.
+        holder.txtDireccion.setText(r.getDireccion() == null || r.getDireccion().isEmpty()
+                ? "Toca para ver detalles" : r.getDireccion());
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, com.patitasalrescate.controllers.management.ActividadPerfilRefugio.class);
@@ -54,52 +62,105 @@ public class AdaptadorRefugios extends RecyclerView.Adapter<AdaptadorRefugios.Re
         } else {
             holder.imgFoto.setImageResource(R.drawable.img_default_refugio);
         }
-        holder.btnWhatsapp.setOnClickListener(v -> {
-            String fono = r.getNumCelular();
-            if (fono != null && !fono.isEmpty()) {
-                fono = fono.replace(" ", "").replace("+", "");
-                if (!fono.startsWith("51")) fono = "51" + fono;
+        holder.btnWhatsapp.setOnClickListener(v -> contactarRefugio(r));
 
-                String url = "https://wa.me/" + fono + "?text=" + Uri.encode("¡Hola! Vi su refugio en Patitas al Rescate 🐾");
-                try {
-                    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-                } catch (Exception e) {
-                    Toast.makeText(context, "WhatsApp no instalado", Toast.LENGTH_SHORT).show();
+        holder.btnMapa.setOnClickListener(v -> abrirMapa(r));
+    }
+
+    /** Normaliza el phoneNumber a formato WhatsApp (51 + 9 dígitos). Null si no hay. */
+    private String normalizarTelefono(String crudo) {
+        if (crudo == null) return null;
+        String digitos = crudo.replaceAll("[^0-9]", "");
+        if (digitos.startsWith("51") && digitos.length() > 9) return digitos;
+        if (digitos.length() == 9) return "51" + digitos;
+        return digitos.isEmpty() ? null : digitos;
+    }
+
+    private void contactarRefugio(Refugio r) {
+        String fono = normalizarTelefono(r.getNumCelular());
+        if (fono != null) {
+            abrirWhatsapp(fono);
+            return;
+        }
+        // El resumen de la lista no trae phoneNumber: se pide el detalle una sola vez.
+        if (r.getIdRefugio() == null || r.getIdRefugio().isEmpty()) {
+            Toast.makeText(context, "Número no disponible", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Toast.makeText(context, "Obteniendo contacto…", Toast.LENGTH_SHORT).show();
+        ApiApp.client().shelters.getShelterById(r.getIdRefugio()).enqueue(new Callback<ShelterResponse>() {
+            @Override public void onResponse(Call<ShelterResponse> call, Response<ShelterResponse> response) {
+                if (!response.isSuccessful() || response.body() == null) {
+                    Toast.makeText(context, "No se pudo obtener el contacto", Toast.LENGTH_SHORT).show();
+                    return;
                 }
-            } else {
-                Toast.makeText(context, "Número no disponible", Toast.LENGTH_SHORT).show();
+                r.setNumCelular(response.body().phoneNumber);
+                String fonoDetalle = normalizarTelefono(response.body().phoneNumber);
+                if (fonoDetalle != null) {
+                    abrirWhatsapp(fonoDetalle);
+                } else {
+                    Toast.makeText(context, "El refugio no tiene teléfono registrado", Toast.LENGTH_LONG).show();
+                }
+            }
+            @Override public void onFailure(Call<ShelterResponse> call, Throwable error) {
+                Toast.makeText(context, "Sin conexión al obtener el contacto", Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
-        holder.btnMapa.setOnClickListener(v -> {
-            String direccionGuardada = r.getDireccion();
+    private void abrirWhatsapp(String fono) {
+        if (context instanceof Activity && ((Activity) context).isFinishing()) return;
+        String url = "https://wa.me/" + fono + "?text=" + Uri.encode("¡Hola! Vi su refugio en Patitas al Rescate 🐾");
+        try {
+            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+        } catch (Exception e) {
+            Toast.makeText(context, "WhatsApp no instalado", Toast.LENGTH_SHORT).show();
+        }
+    }
 
-            if (direccionGuardada != null && !direccionGuardada.trim().isEmpty()) {
-
-                String direccionLimpia = direccionGuardada
-                        .replaceAll("(?i)\\b e \\b", " y ")
-                        .replace("/", " y ");
-
-                String direccionBuscada = direccionLimpia + ", Cajamarca, Perú";
-
-                Uri uriMapa = Uri.parse("geo:0,0?q=" + Uri.encode(direccionBuscada));
-
-                Intent intent = new Intent(Intent.ACTION_VIEW, uriMapa);
-                intent.setPackage("com.google.android.apps.maps");
-
-                try {
-                    context.startActivity(intent);
-                } catch (Exception e) {
-                    try {
-                        context.startActivity(new Intent(Intent.ACTION_VIEW, uriMapa));
-                    } catch (Exception ex) {
-                        Toast.makeText(context, "No hay aplicación de mapas instalada", Toast.LENGTH_SHORT).show();
-                    }
+    private void abrirMapa(Refugio r) {
+        String direccion = r.getDireccion();
+        if (direccion != null && !direccion.trim().isEmpty()) {
+            abrirMapaConDireccion(direccion.trim());
+            return;
+        }
+        // El resumen de la lista no trae address: se pide el detalle una sola vez.
+        if (r.getIdRefugio() == null || r.getIdRefugio().isEmpty()) {
+            Toast.makeText(context, "Dirección no disponible", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Toast.makeText(context, "Obteniendo dirección…", Toast.LENGTH_SHORT).show();
+        ApiApp.client().shelters.getShelterById(r.getIdRefugio()).enqueue(new Callback<ShelterResponse>() {
+            @Override public void onResponse(Call<ShelterResponse> call, Response<ShelterResponse> response) {
+                if (!response.isSuccessful() || response.body() == null
+                        || response.body().address == null || response.body().address.trim().isEmpty()) {
+                    Toast.makeText(context, "Dirección no disponible", Toast.LENGTH_SHORT).show();
+                    return;
                 }
-            } else {
-                Toast.makeText(context, "Dirección no disponible", Toast.LENGTH_SHORT).show();
+                r.setDireccion(response.body().address);
+                if (response.body().phoneNumber != null) r.setNumCelular(response.body().phoneNumber);
+                abrirMapaConDireccion(response.body().address.trim());
+            }
+            @Override public void onFailure(Call<ShelterResponse> call, Throwable error) {
+                Toast.makeText(context, "Sin conexión al obtener la dirección", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void abrirMapaConDireccion(String direccion) {
+        // Se usa el address tal cual: Maps lo geocodifica (sin ciudad hardcodeada).
+        Uri uriMapa = Uri.parse("geo:0,0?q=" + Uri.encode(direccion));
+        Intent intent = new Intent(Intent.ACTION_VIEW, uriMapa);
+        intent.setPackage("com.google.android.apps.maps");
+        try {
+            context.startActivity(intent);
+        } catch (Exception e) {
+            try {
+                context.startActivity(new Intent(Intent.ACTION_VIEW, uriMapa));
+            } catch (Exception ex) {
+                Toast.makeText(context, "No hay aplicación de mapas instalada", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override

@@ -36,6 +36,7 @@ public final class ApiClient {
                 .retryOnConnectionFailure(false)
                 .followRedirects(false)
                 .followSslRedirects(false)
+                .addInterceptor(new ApiCacheInterceptor())
                 .addInterceptor(chain -> {
                     Request request = chain.request();
                     String path = request.url().encodedPath();

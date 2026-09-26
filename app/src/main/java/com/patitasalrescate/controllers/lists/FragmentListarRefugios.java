@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.patitasalrescate.R;
-import com.patitasalrescate.data.mock.DAORefugio;
 import com.patitasalrescate.model.Refugio;
 import com.patitasalrescate.data.remote.dto.ShelterSummaryResponse;
 import com.patitasalrescate.utils.ApiApp;
@@ -24,14 +23,11 @@ import java.util.List;
 
 public class FragmentListarRefugios extends Fragment {
     private RecyclerView recycler;
-    private DAORefugio dao;
     private TextView txtVacio;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fg_listar_refugios, container, false);
-
-        dao = new DAORefugio(requireContext());
 
         recycler = view.findViewById(R.id.recycler_refugios);
         recycler.setLayoutManager(new LinearLayoutManager(requireContext()));

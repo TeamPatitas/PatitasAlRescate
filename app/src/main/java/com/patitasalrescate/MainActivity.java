@@ -12,22 +12,17 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.patitasalrescate.controllers.auth.ActividadIngresar;
+import com.patitasalrescate.controllers.feed.ActividadFeedAdoptante;
+import com.patitasalrescate.utils.ApiApp;
+import com.patitasalrescate.utils.PatitasSessionManager;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends com.patitasalrescate.controllers.base.BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        com.patitasalrescate.utils.ApiApp.init(this);
         setContentView(R.layout.ly_splash_screen);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(MainActivity.this, ActividadIngresar.class);
-                startActivity(intent);
-                finish();
-            }
-        }, 3000);
 
         ImageView logo_bienvenida = findViewById(R.id.rj_logo_patitas);
         TextView texto_bienvenida = findViewById(R.id.rj_text_cargando);
@@ -53,5 +48,27 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        new Handler().postDelayed(() -> {
+            PatitasSessionManager session = PatitasSessionManager.getInstance(this);
+            if (session.hasValidToken()) {
+                String token = session.getAuthToken();
+                ApiApp.client().session.setToken(token);
+
+                // Al reabrir, el modo siempre vuelve a usuario (adoptante): evita que
+                // fragmentos como "Mascotas" arranquen en modo refugio por sesión vieja.
+                session.createSession(session.getUserId(), session.getUserName(),
+                        "ADOPTANTE", session.getShelterId(), session.canManageShelter());
+
+                // Al reabrir siempre se entra al feed del usuario (adoptante).
+                Intent intent = new Intent(this, ActividadFeedAdoptante.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(MainActivity.this, ActividadIngresar.class);
+                startActivity(intent);
+            }
+            finish();
+        }, 2000);
     }
 }

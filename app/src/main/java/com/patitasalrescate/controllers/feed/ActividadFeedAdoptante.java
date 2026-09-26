@@ -15,18 +15,34 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.graphics.drawable.Drawable;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.patitasalrescate.R;
+import com.patitasalrescate.data.remote.dto.UserResponse;
 import com.patitasalrescate.utils.PatitasSessionManager;
 import com.patitasalrescate.utils.ApiApp;
 import com.patitasalrescate.controllers.auth.ActividadIngresar;
 import com.patitasalrescate.controllers.management.ActividadPerfilUsuario;
 
-public class ActividadFeedAdoptante extends AppCompatActivity {
+import androidx.activity.OnBackPressedCallback;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class ActividadFeedAdoptante extends com.patitasalrescate.controllers.base.BaseActivity {
     private NavController navController;
+    private Menu menuToolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,12 +115,55 @@ public class ActividadFeedAdoptante extends AppCompatActivity {
         if (destinoExtra != -1) {
             navigate(destinoExtra);
         }
+
+        // El botón volver del celular no regresa al modo anterior: minimiza la app.
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override public void handleOnBackPressed() {
+                moveTaskToBack(true);
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_toolbar_adoptante, menu);
+        menuToolbar = menu;
+        cargarAvatarToolbar();
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (menuToolbar != null) cargarAvatarToolbar();
+    }
+
+    /** Si el usuario tiene foto, la pone como icono de "Mi perfil"; si no, queda ic_perfil. */
+    private void cargarAvatarToolbar() {
+        if (menuToolbar == null) return;
+        MenuItem itemPerfil = menuToolbar.findItem(R.id.action_perfil);
+        if (itemPerfil == null) return;
+        ApiApp.client().admin.getCurrentUser().enqueue(new Callback<UserResponse>() {
+            @Override public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                if (isFinishing() || isDestroyed()) return;
+                if (!response.isSuccessful() || response.body() == null
+                        || response.body().photoUrl == null || response.body().photoUrl.isEmpty()) return;
+                int sizePx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32,
+                        getResources().getDisplayMetrics());
+                Glide.with(ActividadFeedAdoptante.this)
+                        .load(response.body().photoUrl)
+                        .circleCrop()
+                        .placeholder(R.drawable.ic_perfil)
+                        .into(new CustomTarget<Drawable>(sizePx, sizePx) {
+                            @Override public void onResourceReady(@NonNull Drawable resource,
+                                    @Nullable Transition<? super Drawable> transition) {
+                                itemPerfil.setIcon(resource);
+                            }
+                            @Override public void onLoadCleared(@Nullable Drawable placeholder) { }
+                        });
+            }
+            @Override public void onFailure(Call<UserResponse> call, Throwable error) { }
+        });
     }
 
     @Override

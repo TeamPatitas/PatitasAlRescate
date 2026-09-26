@@ -1,12 +1,10 @@
 package com.patitasalrescate.controllers.feed;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,10 +12,17 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.patitasalrescate.R;
-import com.patitasalrescate.controllers.management.ActividadRegistrarEvento;
+import com.patitasalrescate.data.remote.dto.ShelterResponse;
+import com.patitasalrescate.utils.ApiApp;
 import com.patitasalrescate.utils.PatitasSessionManager;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class FragmentInicioRefugio extends Fragment {
+
+    private TextView textoBienvenida;
 
     public FragmentInicioRefugio() {
         // Required empty public constructor
@@ -33,21 +38,38 @@ public class FragmentInicioRefugio extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        PatitasSessionManager session = PatitasSessionManager.getInstance(requireContext());
-        String nombreRefugio = session.getUserName();
+        textoBienvenida = view.findViewById(R.id.txtBienvenidoRefugio);
+        textoBienvenida.setGravity(Gravity.CENTER);
+    }
 
-        if (nombreRefugio == null || nombreRefugio.isEmpty()) {
-            nombreRefugio = "Refugio (Modo Prueba)";
+    @Override
+    public void onResume() {
+        super.onResume();
+        cargarNombreRefugio();
+    }
+
+    private void cargarNombreRefugio() {
+        if (textoBienvenida == null) return;
+        String shelterId = PatitasSessionManager.getInstance(requireContext()).getShelterId();
+        if (shelterId == null || shelterId.isEmpty()) {
+            textoBienvenida.setText("Mi Refugio");
+            return;
         }
-
-        TextView textobienvenida = view.findViewById(R.id.txtBienvenidoRefugio);
-        textobienvenida.setText("Bienvenido refugio: " + nombreRefugio);
-        textobienvenida.setGravity(Gravity.CENTER);
-
-        Button btnRegistrar = view.findViewById(R.id.btn_registrar_evento_inicio);
-        btnRegistrar.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), ActividadRegistrarEvento.class);
-            startActivity(intent);
+        textoBienvenida.setText("Cargando refugio…");
+        ApiApp.client().shelters.getShelterById(shelterId).enqueue(new Callback<ShelterResponse>() {
+            @Override public void onResponse(Call<ShelterResponse> call, Response<ShelterResponse> response) {
+                if (!isAdded() || textoBienvenida == null) return;
+                if (response.isSuccessful() && response.body() != null && response.body().name != null
+                        && !response.body().name.isEmpty()) {
+                    textoBienvenida.setText(response.body().name);
+                } else {
+                    textoBienvenida.setText("Mi Refugio");
+                }
+            }
+            @Override public void onFailure(Call<ShelterResponse> call, Throwable error) {
+                if (!isAdded() || textoBienvenida == null) return;
+                textoBienvenida.setText("Mi Refugio");
+            }
         });
     }
 }
