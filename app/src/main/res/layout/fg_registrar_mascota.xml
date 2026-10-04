@@ -211,7 +211,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Toca un recuadro para elegir esa foto. Mantén presionado para quitarla. Se suben al registrar, una por índice (1, 2, 3)."
+                android:text="Toca un recuadro para elegir esa foto. Mantén presionado para quitarla."
                 android:textColor="@color/textoSecundario"
                 android:textSize="12sp"
                 android:layout_marginBottom="8dp"/>
@@ -265,8 +265,18 @@
                 android:id="@+id/switch_disponible"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:checked="false"
+                android:text="Visible"
+                android:textColor="@color/textoPrincipal"
+                android:textSize="16sp" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switch_adoptable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:checked="true"
+                android:checked="false"
                 android:text="Disponible para adopción"
                 android:textColor="@color/textoPrincipal"
                 android:textSize="16sp" />

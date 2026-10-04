@@ -57,6 +57,7 @@ public class AdaptadorEventos extends RecyclerView.Adapter<AdaptadorEventos.Even
 
         holder.txtNombre.setText(evento.getNombre() == null ? "" : evento.getNombre());
         holder.txtFecha.setText(ApiApp.fechaBonita(evento.getFecha()));
+        pintarCuentaAtras(holder, evento.getFecha());
         String descripcion = evento.getDescripcion();
         if (descripcion == null || descripcion.isEmpty()) {
             holder.txtDescripcion.setVisibility(View.GONE);
@@ -90,6 +91,54 @@ public class AdaptadorEventos extends RecyclerView.Adapter<AdaptadorEventos.Even
             intent.putExtra("evento_key", evento);
             context.startActivity(intent);
         });
+    }
+
+    /** "En 3 días" / "En 1 hora" / "En curso": más cerca, más verde. */
+    private void pintarCuentaAtras(EventoViewHolder holder, String isoFecha) {
+        long millis = ApiApp.millisEvento(isoFecha);
+        if (millis < 0) {
+            holder.txtCuentaAtras.setVisibility(View.GONE);
+            return;
+        }
+        holder.txtCuentaAtras.setVisibility(View.VISIBLE);
+        long ahora = System.currentTimeMillis();
+        long diff = millis - ahora;
+        if (diff <= 0) {
+            long diasPasados = -diff / (24L * 60 * 60 * 1000);
+            if (diasPasados >= 1) {
+                holder.txtCuentaAtras.setText("Hace " + diasPasados
+                        + (diasPasados == 1 ? " día" : " días"));
+                holder.txtCuentaAtras.setTextColor(0xFF9E9E9E);
+            } else {
+                holder.txtCuentaAtras.setText("En curso");
+                holder.txtCuentaAtras.setTextColor(context.getColor(R.color.verde_persona));
+            }
+            return;
+        }
+        long minutos = diff / (60 * 1000);
+        String texto;
+        if (minutos < 60) {
+            texto = "En " + Math.max(minutos, 1) + (minutos == 1 ? " minuto" : " minutos");
+        } else if (minutos < 24 * 60) {
+            long horas = minutos / 60;
+            texto = "En " + horas + (horas == 1 ? " hora" : " horas");
+        } else {
+            long dias = minutos / (24 * 60);
+            texto = "En " + dias + (dias == 1 ? " día" : " días");
+        }
+        holder.txtCuentaAtras.setText(texto);
+        // Proximidad 0 (≥7 días) -> gris; 1 (ahora) -> verde de la app.
+        float t = 1f - Math.min((float) diff / (7f * 24 * 60 * 60 * 1000), 1f);
+        holder.txtCuentaAtras.setTextColor(mezclar(0xFF9E9E9E,
+                context.getColor(R.color.verde_persona), t));
+    }
+
+    private int mezclar(int lejos, int cerca, float t) {
+        int a = (int) (((lejos >> 24) & 0xFF) + ((((cerca >> 24) & 0xFF) - ((lejos >> 24) & 0xFF)) * t));
+        int r = (int) (((lejos >> 16) & 0xFF) + ((((cerca >> 16) & 0xFF) - ((lejos >> 16) & 0xFF)) * t));
+        int g = (int) (((lejos >> 8) & 0xFF) + ((((cerca >> 8) & 0xFF) - ((lejos >> 8) & 0xFF)) * t));
+        int b = (int) ((lejos & 0xFF) + (((cerca & 0xFF) - (lejos & 0xFF)) * t));
+        return (a << 24) | (r << 16) | (g << 8) | b;
     }
 
     private void confirmarEliminar(Evento evento) {
@@ -139,13 +188,14 @@ public class AdaptadorEventos extends RecyclerView.Adapter<AdaptadorEventos.Even
     }
 
     static class EventoViewHolder extends RecyclerView.ViewHolder {
-        TextView txtNombre, txtFecha, txtDescripcion;
+        TextView txtNombre, txtCuentaAtras, txtFecha, txtDescripcion;
         ImageView imgFoto;
         Button btnVerDetalles, btnEliminar;
 
         public EventoViewHolder(@NonNull View itemView) {
             super(itemView);
             txtNombre = itemView.findViewById(R.id.txt_nombre_evento);
+            txtCuentaAtras = itemView.findViewById(R.id.txt_cuenta_atras_evento);
             txtFecha = itemView.findViewById(R.id.txt_fecha_evento);
             txtDescripcion = itemView.findViewById(R.id.txt_descripcion_evento);
             imgFoto = itemView.findViewById(R.id.img_foto_evento);

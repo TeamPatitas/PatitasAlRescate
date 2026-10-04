@@ -24,7 +24,6 @@ import androidx.appcompat.widget.Toolbar;
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
 import com.patitasalrescate.R;
-import com.patitasalrescate.controllers.auth.ActividadIngresar;
 import com.patitasalrescate.controllers.feed.ActividadFeedAdoptante;
 import com.patitasalrescate.controllers.feed.ActividadFeedRefugio;
 import com.patitasalrescate.controllers.auth.ActividadRegistrarOrganizacion;
@@ -53,7 +52,7 @@ public class ActividadPerfilUsuario extends com.patitasalrescate.controllers.bas
     private PatitasSessionManager sesion;
 
     // Header
-    private TextView txtNombreUsuario, txtTipoUsuario;
+    private TextView txtNombreUsuario;
     private LinearLayout layoutRolesBadges;
     private com.google.android.material.imageview.ShapeableImageView imgAvatarUsuario;
     private ImageButton btnCambiarFoto;
@@ -96,7 +95,6 @@ public class ActividadPerfilUsuario extends com.patitasalrescate.controllers.bas
         configurarLauncherFoto();
         configurarListeners();
         txtNombreUsuario.setText(sesion.getUserName());
-        txtTipoUsuario.setText("Perfil no disponible");
         findViewById(R.id.btnGuardarPerfil).setEnabled(false);
         btnCambiarFoto.setEnabled(false);
         btnEditarNombres.setEnabled(false);
@@ -108,7 +106,6 @@ public class ActividadPerfilUsuario extends com.patitasalrescate.controllers.bas
 
     private void enlazarVistas() {
         txtNombreUsuario = findViewById(R.id.txtNombreUsuario);
-        txtTipoUsuario = findViewById(R.id.txtTipoUsuario);
         layoutRolesBadges = findViewById(R.id.layoutRolesBadges);
         imgAvatarUsuario = findViewById(R.id.imgAvatarUsuario);
         btnCambiarFoto = findViewById(R.id.btnCambiarFoto);
@@ -176,13 +173,7 @@ public class ActividadPerfilUsuario extends com.patitasalrescate.controllers.bas
         pintarTarjetaRefugio();
         findViewById(R.id.btnCambiarModoRefugio).setOnClickListener(v -> onTarjetaRefugioClick());
 
-        findViewById(R.id.btnCerrarSesion).setOnClickListener(v -> {
-            sesion.logout();
-            ApiApp.client().session.logout();
-            Intent i = new Intent(this, ActividadIngresar.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(i);
-        });
+        findViewById(R.id.btnCerrarSesion).setOnClickListener(v -> ApiApp.cerrarSesion(this));
     }
 
     private void habilitarCampo(EditText campo) {
@@ -490,8 +481,6 @@ public class ActividadPerfilUsuario extends com.patitasalrescate.controllers.bas
                 fechaIsoSeleccionada = birthDateIsoOriginal;
                 genderOriginal = user.gender;
                 sexoSeleccionado = user.gender;
-                String shelterFresco = user.shelterId == null ? "" : user.shelterId;
-                txtTipoUsuario.setText(shelterFresco.isEmpty() ? "Adoptante" : "Refugio");
                 mostrarBadges(user);
                 actualizarTarjetaRefugio(user);
                 if (user.photoUrl != null && !user.photoUrl.isEmpty()) {

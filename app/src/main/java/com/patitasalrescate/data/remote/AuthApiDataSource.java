@@ -3,10 +3,8 @@ package com.patitasalrescate.data.remote;
 import com.patitasalrescate.data.remote.dto.*;
 import retrofit2.Call;
 import com.patitasalrescate.data.source.IAuthApiDataSource;
-
 public final class AuthApiDataSource implements IAuthApiDataSource {
     private final AuthApiService service;
-
     public AuthApiDataSource(retrofit2.Retrofit retrofit) {
         service = retrofit.create(AuthApiService.class);
     }

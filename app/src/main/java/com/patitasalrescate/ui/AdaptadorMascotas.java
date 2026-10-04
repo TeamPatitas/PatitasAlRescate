@@ -93,6 +93,7 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
             params.topMargin = 0;
             holder.txtNombre.setLayoutParams(params);
             holder.txtRaza.setVisibility(View.VISIBLE);
+            holder.txtFecha.setVisibility(View.GONE);
             holder.txtEstado.setVisibility(View.VISIBLE);
             holder.txtEstado.setText(disponible ? "Disponible" : "No disponible");
             holder.txtEstado.setBackgroundResource(R.drawable.bg_badge_pill);
@@ -117,10 +118,27 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
             androidx.constraintlayout.widget.ConstraintLayout.LayoutParams paramsNombre =
                     (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams)
                             holder.txtNombre.getLayoutParams();
-            paramsNombre.topMargin = (int) (30 * density);
+            paramsNombre.topMargin = (int) (8 * density);
             holder.txtNombre.setLayoutParams(paramsNombre);
             holder.txtRaza.setVisibility(View.GONE);
-            holder.txtEstado.setVisibility(View.GONE);
+            // Badge solo si isAdoptable (nuevo atributo); debajo, la fecha de publicación.
+            if (m.esAdoptable()) {
+                holder.txtEstado.setVisibility(View.VISIBLE);
+                holder.txtEstado.setText("Disponible para adopción");
+                holder.txtEstado.setBackgroundResource(R.drawable.bg_badge_pill);
+                holder.txtEstado.setBackgroundTintList(ColorStateList.valueOf(
+                        context.getColor(R.color.verde_persona)));
+                holder.txtEstado.setTextColor(context.getColor(R.color.blanco));
+            } else {
+                holder.txtEstado.setVisibility(View.GONE);
+            }
+            String fechaPub = com.patitasalrescate.utils.ApiApp.fechaCorta(m.getFechaPublicacion());
+            if (fechaPub.isEmpty()) {
+                holder.txtFecha.setVisibility(View.GONE);
+            } else {
+                holder.txtFecha.setVisibility(View.VISIBLE);
+                holder.txtFecha.setText("Publicada el " + fechaPub);
+            }
 
             // Sin "Quiero Adoptar" en la lista: la adopción se hace en el detalle.
             holder.btnPrincipal.setVisibility(View.VISIBLE);
@@ -202,7 +220,7 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
     }
 
     static class MascotaViewHolder extends RecyclerView.ViewHolder {
-        TextView txtNombre, txtRaza, txtEstado;
+        TextView txtNombre, txtRaza, txtEstado, txtFecha;
         ImageView imgFoto;
         Button btnPrincipal, btnRapido, btnRechazar;
         public MascotaViewHolder(@NonNull View itemView) {
@@ -210,6 +228,7 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
             txtNombre = itemView.findViewById(R.id.txt_nombre_mascota);
             txtRaza = itemView.findViewById(R.id.txt_raza_mascota);
             txtEstado = itemView.findViewById(R.id.txt_estado_mascota);
+            txtFecha = itemView.findViewById(R.id.txt_fecha_mascota);
             imgFoto = itemView.findViewById(R.id.img_foto_mascota);
             btnPrincipal = itemView.findViewById(R.id.btn_principal);
             btnRapido = itemView.findViewById(R.id.btn_accion_rapida);

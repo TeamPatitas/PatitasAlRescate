@@ -54,6 +54,7 @@ public class FragmentRegistrarMascota extends Fragment {
     private Spinner spinnerEspecie, spinnerRaza, spinnerSexo;
     private Button btnGuardar;
     private com.google.android.material.switchmaterial.SwitchMaterial switchDisponible;
+    private com.google.android.material.switchmaterial.SwitchMaterial switchAdoptable;
 
     // Una imagen por índice (0, 1, 2): el endpoint de fotos exige índice.
     private String ultimoErrorFoto = "";
@@ -65,7 +66,7 @@ public class FragmentRegistrarMascota extends Fragment {
     // Especies sincronizadas con el enum Species: el spinner se arma desde estos valores,
     // así lo que se envía a la API siempre es un enum válido.
     private final Species[] especiesEnum = {Species.DOG, Species.CAT, Species.OTHER};
-    private final String[] razasPerro = {"Seleccione...", "Perro único (Chusco)", "Schnauzer", "Poodle", "Golden Retriever", "Otro"};
+    private final String[] razasPerro = {"Seleccione...", "Criollo", "Schnauzer", "Poodle", "Golden Retriever", "Otro"};
     private final String[] razasGato = {"Seleccione...", "Persa", "Siamés", "Angora", "Otro"};
     private final String[] sexos = {"Macho", "Hembra"};
 
@@ -86,6 +87,7 @@ public class FragmentRegistrarMascota extends Fragment {
         lyOtraRaza = view.findViewById(R.id.ly_otra_raza);
 
         switchDisponible = view.findViewById(R.id.switch_disponible);
+        switchAdoptable = view.findViewById(R.id.switch_adoptable);
         btnGuardar = view.findViewById(R.id.btn_guardar_mascota);
 
         slotsFotos[0] = view.findViewById(R.id.foto_slot_0);
@@ -229,11 +231,13 @@ public class FragmentRegistrarMascota extends Fragment {
         request.temperament = temperamento.isEmpty() ? null : temperamento;
         request.story = historia.isEmpty() ? null : historia;
         request.available = switchDisponible != null && switchDisponible.isChecked();
+        request.isAdoptable = switchAdoptable != null && switchAdoptable.isChecked();
         // Las fotos van por endpoint separado (PATCH /pet/{id}/photo/{index}): la mascota
         // se crea sin fotos y luego se suben una por índice.
         request.photos = null;
         Log.d(TAG, "request: species=" + request.species + " breed='" + raza + "' gender=" + request.gender
-                + " available=" + request.available + " fotos en slots=" + contarFotos());
+                + " available=" + request.available + " isAdoptable=" + request.isAdoptable
+                + " fotos en slots=" + contarFotos());
         btnGuardar.setEnabled(false);
         verificarPermisoYEnviar(request);
     }

@@ -25,9 +25,10 @@ import retrofit2.Response;
 
 public class ActividadDetalleEvento extends com.patitasalrescate.controllers.base.BaseActivity {
 
-    private ImageView imgDetalle;
+    private ImageView imgDetalle, imgQr;
     private TextView txtNombre, txtFecha, txtDescripcion;
     private Button btnMapa;
+    private android.widget.LinearLayout layoutQr;
     private FloatingActionButton fabEditar;
     private Evento evento;
     private boolean puedeEditar;
@@ -43,6 +44,8 @@ public class ActividadDetalleEvento extends com.patitasalrescate.controllers.bas
         txtDescripcion = findViewById(R.id.txt_detalle_descripcion_evento);
         btnMapa = findViewById(R.id.btn_ver_mapa_evento);
         fabEditar = findViewById(R.id.fab_editar_evento);
+        layoutQr = findViewById(R.id.layout_qr_evento);
+        imgQr = findViewById(R.id.img_qr_evento);
 
         configToolbar();
 
@@ -130,11 +133,36 @@ public class ActividadDetalleEvento extends com.patitasalrescate.controllers.bas
                 puedeEditar = Boolean.TRUE.equals(response.body().isYours);
                 cargarDatos();
                 configurarSegunRol();
+                cargarQrRefugio(response.body().shelterId);
             }
             @Override public void onFailure(Call<EventResponse> call, Throwable error) {
                 if (!isFinishing()) Toast.makeText(ActividadDetalleEvento.this, "Sin conexión con eventos", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /** QR del refugio dueño (yapeQrCode). Sin QR no se muestra la sección. */
+    private void cargarQrRefugio(String shelterId) {
+        if (shelterId == null || shelterId.isEmpty()) return;
+        ApiApp.client().shelters.getShelterById(shelterId).enqueue(
+                new Callback<com.patitasalrescate.data.remote.dto.ShelterResponse>() {
+                    @Override public void onResponse(
+                            Call<com.patitasalrescate.data.remote.dto.ShelterResponse> call,
+                            Response<com.patitasalrescate.data.remote.dto.ShelterResponse> response) {
+                        if (isFinishing() || isDestroyed()) return;
+                        if (!response.isSuccessful() || response.body() == null
+                                || response.body().yapeQrCode == null
+                                || response.body().yapeQrCode.isEmpty()) return;
+                        layoutQr.setVisibility(View.VISIBLE);
+                        Glide.with(ActividadDetalleEvento.this)
+                                .load(response.body().yapeQrCode)
+                                .fitCenter()
+                                .into(imgQr);
+                    }
+                    @Override public void onFailure(
+                            Call<com.patitasalrescate.data.remote.dto.ShelterResponse> call,
+                            Throwable error) { }
+                });
     }
 
     private void verEnMapa() {

@@ -36,7 +36,9 @@ public class ActividadIngresar extends com.patitasalrescate.controllers.base.Bas
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.ingresar), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            Insets teclado = insets.getInsets(WindowInsetsCompat.Type.ime());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right,
+                    Math.max(systemBars.bottom, teclado.bottom));
             return insets;
         });
     }

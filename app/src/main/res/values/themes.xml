@@ -1,6 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="Base.Theme.PatitasAlRescate" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- El teclado redimensiona la pantalla para no tapar los campos de texto. -->
+        <item name="android:windowSoftInputMode">adjustResize</item>
         <item name="colorPrimary">@color/marronPrimario</item>
         <item name="colorOnPrimary">@color/blanco</item>
         <item name="colorPrimaryContainer">@color/marronClaro</item>

@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -43,6 +44,10 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
     private static final String[] MIME_FOTOS = {"image/jpeg", "image/png", "image/webp"};
 
     private EditText txtNombre, txtEspecie, txtRaza, txtSexo, txtTemperamento, txtHistoria;
+    private com.google.android.material.switchmaterial.SwitchMaterial switchDisponible;
+    private com.google.android.material.switchmaterial.SwitchMaterial switchAdoptable;
+    private TextView txtDisponibleVista, txtAdoptableVista;
+    private boolean esModoRefugio = false;
     private ImageView imgFoto;
     private Button btnAccion;
     private Button btnFavorito;
@@ -91,6 +96,10 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
         txtSexo = findViewById(R.id.txt_edit_sexo);
         txtTemperamento = findViewById(R.id.txt_edit_temperamento);
         txtHistoria = findViewById(R.id.txt_edit_historia);
+        switchDisponible = findViewById(R.id.switch_disponible_mascota);
+        switchAdoptable = findViewById(R.id.switch_adoptable_mascota);
+        txtDisponibleVista = findViewById(R.id.txt_disponible_mascota);
+        txtAdoptableVista = findViewById(R.id.txt_adoptable_mascota);
         imgFoto = findViewById(R.id.img_detalle_mascota);
         btnAccion = findViewById(R.id.btn_accion_principal);
         btnFavorito = findViewById(R.id.btn_favorito);
@@ -220,6 +229,24 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
                     .into(imgFoto);
         }
         pintarSlots();
+        pintarDisponibilidad();
+    }
+
+    /** Solo refugio: editando muestra switchs; viendo muestra Sí/No. En adoptante, nada. */
+    private void pintarDisponibilidad() {
+        boolean editando = txtNombre.isEnabled();
+        boolean verTexto = esModoRefugio && !editando;
+        boolean verSwitch = esModoRefugio && editando;
+        txtDisponibleVista.setVisibility(verTexto ? View.VISIBLE : View.GONE);
+        txtAdoptableVista.setVisibility(verTexto ? View.VISIBLE : View.GONE);
+        switchDisponible.setVisibility(verSwitch ? View.VISIBLE : View.GONE);
+        switchAdoptable.setVisibility(verSwitch ? View.VISIBLE : View.GONE);
+        if (verTexto && mascotaActual != null) {
+            txtDisponibleVista.setText("Visible: "
+                    + ("DISPONIBLE".equals(mascotaActual.getEstado()) ? "Sí" : "No"));
+            txtAdoptableVista.setText("Disponible para adopción: "
+                    + (mascotaActual.esAdoptable() ? "Sí" : "No"));
+        }
     }
 
     private String valorSeguro(String s) {
@@ -260,11 +287,16 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
     private void configurarModoVisualPorRol() {
         PatitasSessionManager session = PatitasSessionManager.getInstance(this);
         boolean esRefugio = session.isRefugio();
+        esModoRefugio = esRefugio;
 
         if (esRefugio) {
             btnFavorito.setVisibility(View.GONE);
             layoutFotos.setVisibility(View.VISIBLE);
+            switchDisponible.setChecked("DISPONIBLE".equals(
+                    mascotaActual == null ? null : mascotaActual.getEstado()));
+            switchAdoptable.setChecked(mascotaActual != null && mascotaActual.esAdoptable());
             habilitarCampos(false);
+            pintarDisponibilidad();
             btnAccion.setText("EDITAR MASCOTA");
             btnAccion.setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_orange_dark));
 
@@ -321,9 +353,13 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
 
         txtTemperamento.setEnabled(habilitar);
         txtTemperamento.setBackgroundResource(drawableRes);
-        
+
         txtHistoria.setEnabled(habilitar);
         txtHistoria.setBackgroundResource(drawableRes);
+
+        switchDisponible.setEnabled(habilitar);
+        switchAdoptable.setEnabled(habilitar);
+        pintarDisponibilidad();
     }
 
     private void guardarCambios() {
@@ -335,6 +371,8 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
         update.story = txtHistoria.getText().toString().trim();
         update.species = parseEspecie(txtEspecie.getText().toString());
         update.gender = parseGenero(txtSexo.getText().toString());
+        update.available = switchDisponible.isChecked();
+        update.isAdoptable = switchAdoptable.isChecked();
         if (update.species == null || update.gender == null) {
             Toast.makeText(this, "Especie o sexo inválidos (usa Perro/Gato/Otro y Masculino/Femenino)",
                     Toast.LENGTH_SHORT).show();

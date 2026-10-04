@@ -213,6 +213,19 @@
             android:text="Modo Adoptante"
             android:textColor="@color/blanco"
             app:cornerRadius="16dp" />
+
+        <Button
+            android:id="@+id/btnCerrarSesionRefugio"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="@color/marronOscuro"
+            android:fontFamily="@font/chewy"
+            android:textSize="14sp"
+            android:text="Cerrar sesión"
+            android:textColor="@color/blanco"
+            app:cornerRadius="16dp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

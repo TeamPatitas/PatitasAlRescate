@@ -120,6 +120,7 @@ public class ApiClientTest {
         create.temperament = "Tranquila";
         create.story = "Rescatada";
         create.available = false;
+        create.isAdoptable = true;
         create.photos = Arrays.asList(photo("uno.png"), photo("dos.png"));
         RecordedRequest request = check(api.pets.createPet(create), "POST", "/pet", 201, "{}");
         assertTrue(request.getHeader("Content-Type").startsWith("multipart/form-data; boundary="));
@@ -127,6 +128,7 @@ public class ApiClientTest {
         assertEquals(2, form.split("name=\"photos\"", -1).length - 1);
         assertTrue(form.contains("CAT"));
         assertTrue(form.contains("false"));
+        assertTrue(form.contains("name=\"isAdoptable\""));
         check(api.pets.getAllPets(null, null), "GET", "/pet", 200, "{\"items\":[]}");
         check(api.pets.getPetById(ID), "GET", "/pet/" + ID, 200, "{}");
         UpdatePetRequest update = new UpdatePetRequest();

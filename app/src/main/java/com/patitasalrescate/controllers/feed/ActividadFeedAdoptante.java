@@ -116,10 +116,13 @@ public class ActividadFeedAdoptante extends com.patitasalrescate.controllers.bas
             navigate(destinoExtra);
         }
 
-        // El botón volver del celular no regresa al modo anterior: minimiza la app.
+        // Volver navega entre fragments; solo minimiza si ya está en el inicio (no hay
+        // modo anterior al que regresar gracias al CLEAR_TASK del cambio de modo).
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override public void handleOnBackPressed() {
-                moveTaskToBack(true);
+                if (navController == null || !navController.popBackStack()) {
+                    moveTaskToBack(true);
+                }
             }
         });
     }

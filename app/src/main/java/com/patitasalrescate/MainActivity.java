@@ -51,6 +51,8 @@ public class MainActivity extends com.patitasalrescate.controllers.base.BaseActi
 
         new Handler().postDelayed(() -> {
             PatitasSessionManager session = PatitasSessionManager.getInstance(this);
+            android.util.Log.d("MainActivity", "arranque tokenVálido=" + session.hasValidToken()
+                    + " usuario=" + session.getUserId());
             if (session.hasValidToken()) {
                 String token = session.getAuthToken();
                 ApiApp.client().session.setToken(token);

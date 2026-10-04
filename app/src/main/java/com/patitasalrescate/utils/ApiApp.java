@@ -47,6 +47,29 @@ public final class ApiApp {
                 || caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_ETHERNET));
     }
 
+    /** Cierre de sesión completo y verificado, usado por todos los botones de salir. */
+    public static void cerrarSesion(android.content.Context ctx) {
+        try {
+            android.util.Log.d("ApiApp", "cerrarSesion paso1 prefs");
+            PatitasSessionManager sesion = PatitasSessionManager.getInstance(ctx);
+            boolean limpioPrefs = sesion.logout();
+            android.util.Log.d("ApiApp", "cerrarSesion paso2 memoria+cache");
+            client().session.logout();
+            ApiCache.invalidateAll(ctx);
+            android.util.Log.d("ApiApp", "cerrarSesion paso3 navegar prefsLimpio=" + limpioPrefs
+                    + " sesionAutenticada=" + client().session.isAuthenticated());
+            android.content.Intent i = new android.content.Intent(ctx,
+                    com.patitasalrescate.controllers.auth.ActividadIngresar.class);
+            i.setFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+                    | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            ctx.startActivity(i);
+            android.util.Log.d("ApiApp", "cerrarSesion paso4 ok");
+        } catch (Exception e) {
+            android.util.Log.e("ApiApp", "cerrarSesion FALLÓ: " + e, e);
+            throw e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e);
+        }
+    }
+
     /** False + aviso si no hay internet (para bloquear mutaciones offline). */
     public static boolean exigirOnline(android.content.Context ui) {
         if (esOnline()) return true;
@@ -90,6 +113,8 @@ public final class ApiApp {
         m.setNombre(p.name);
         m.setFotos(p.photos == null ? new ArrayList<>() : p.photos);
         m.setEstado(Boolean.TRUE.equals(p.available) ? "DISPONIBLE" : "NO_DISPONIBLE");
+        m.setAdoptable(Boolean.TRUE.equals(p.isAdoptable));
+        m.setFechaPublicacion(p.createdAt);
         return m;
     }
 
@@ -105,6 +130,8 @@ public final class ApiApp {
         m.setHistoria(p.story);
         m.setFotos(p.photos == null ? new ArrayList<>() : p.photos);
         m.setEstado(Boolean.TRUE.equals(p.available) ? "DISPONIBLE" : "NO_DISPONIBLE");
+        m.setAdoptable(Boolean.TRUE.equals(p.isAdoptable));
+        m.setFechaPublicacion(p.createdAt);
         return m;
     }
 
@@ -137,6 +164,73 @@ public final class ApiApp {
         try { if (e.latitude != null) event.setLatitud(Double.parseDouble(e.latitude)); } catch (NumberFormatException ignored) { }
         try { if (e.longitude != null) event.setLongitud(Double.parseDouble(e.longitude)); } catch (NumberFormatException ignored) { }
         return event;
+    }
+
+    /** True si el ISO es un día anterior a hoy. Si no parsea, false (se muestra como vigente). */
+    public static boolean esPasado(String iso) {
+        if (iso == null || iso.trim().isEmpty()) return false;
+        String[] formatos = {"yyyy-MM-dd'T'HH:mm:ssXXX", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd"};
+        for (String formato : formatos) {
+            try {
+                java.text.SimpleDateFormat entrada =
+                        new java.text.SimpleDateFormat(formato, java.util.Locale.US);
+                entrada.setLenient(false);
+                java.util.Date fecha = entrada.parse(iso.trim());
+                if (fecha == null) continue;
+                java.util.Calendar dia = java.util.Calendar.getInstance();
+                dia.setTime(fecha);
+                dia.set(java.util.Calendar.HOUR_OF_DAY, 0);
+                dia.set(java.util.Calendar.MINUTE, 0);
+                dia.set(java.util.Calendar.SECOND, 0);
+                dia.set(java.util.Calendar.MILLISECOND, 0);
+                java.util.Calendar hoy = java.util.Calendar.getInstance();
+                hoy.set(java.util.Calendar.HOUR_OF_DAY, 0);
+                hoy.set(java.util.Calendar.MINUTE, 0);
+                hoy.set(java.util.Calendar.SECOND, 0);
+                hoy.set(java.util.Calendar.MILLISECOND, 0);
+                return dia.before(hoy);
+            } catch (Exception ignored) { }
+        }
+        return false;
+    }
+
+    /** Millis del ISO (tolera los formatos de la API). -1 si no parsea. */
+    public static long millisEvento(String iso) {
+        if (iso == null || iso.trim().isEmpty()) return -1;
+        String[] formatos = {"yyyy-MM-dd'T'HH:mm:ssXXX", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd"};
+        for (String formato : formatos) {
+            try {
+                java.text.SimpleDateFormat entrada =
+                        new java.text.SimpleDateFormat(formato, java.util.Locale.US);
+                entrada.setLenient(false);
+                java.util.Date fecha = entrada.parse(iso.trim());
+                if (fecha != null) return fecha.getTime();
+            } catch (Exception ignored) { }
+        }
+        return -1;
+    }
+
+    /** "2026-09-30T00:25:00-05:00" -> "30, Sept 2026". Si no parsea, devuelve el original. */
+    public static String fechaCorta(String iso) {
+        if (iso == null || iso.trim().isEmpty()) return "";
+        String[] formatos = {"yyyy-MM-dd'T'HH:mm:ssXXX", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd"};
+        for (String formato : formatos) {
+            try {
+                java.text.SimpleDateFormat entrada =
+                        new java.text.SimpleDateFormat(formato, java.util.Locale.US);
+                entrada.setLenient(false);
+                java.util.Date fecha = entrada.parse(iso.trim());
+                if (fecha == null) continue;
+                java.util.Calendar cal = java.util.Calendar.getInstance();
+                cal.setTime(fecha);
+                String[] meses = {"Ene", "Feb", "Mar", "Abr", "May", "Jun",
+                        "Jul", "Ago", "Sept", "Oct", "Nov", "Dic"};
+                return cal.get(java.util.Calendar.DAY_OF_MONTH) + ", "
+                        + meses[cal.get(java.util.Calendar.MONTH)] + " "
+                        + cal.get(java.util.Calendar.YEAR);
+            } catch (Exception ignored) { }
+        }
+        return iso;
     }
 
     /** "2026-09-30T00:25:00-05:00" -> "30, Sept 2026, a las 12:25 am". Si no parsea, devuelve el original. */

@@ -225,6 +225,8 @@ public class ActividadPerfilRefugio extends com.patitasalrescate.controllers.bas
             startActivity(i);
         });
 
+        findViewById(R.id.btnCerrarSesionRefugio).setOnClickListener(v -> ApiApp.cerrarSesion(this));
+
         // Edición solo en modo refugio (dueño).
         btnEditarRefugio.setVisibility(esModoRefugio ? View.VISIBLE : View.GONE);
         pintarBotonEditar();
@@ -466,9 +468,6 @@ public class ActividadPerfilRefugio extends com.patitasalrescate.controllers.bas
                 }
 
                 if (eventosVisibles) cargarEventos();
-
-                // Imagen QR por defecto (Yape)
-                imgQR.setImageResource(R.drawable.img_yape_default);
             }
             @Override public void onFailure(Call<ShelterResponse> call, Throwable error) {
                 if (!isFinishing()) Toast.makeText(ActividadPerfilRefugio.this, "Sin conexión con refugios", Toast.LENGTH_SHORT).show();
@@ -495,7 +494,10 @@ public class ActividadPerfilRefugio extends com.patitasalrescate.controllers.bas
                     if (isFinishing() || isDestroyed()) return;
                     List<Evento> eventos = new ArrayList<>();
                     for (EventSummaryResponse item : items)
-                        if (idRefugio.equals(item.shelterId)) eventos.add(ApiApp.event(item));
+                        // Del refugio VISITADO (idRefugio), no del logueado: isYours no sirve aquí.
+                        if (item != null && idRefugio.equals(item.shelterId)) {
+                            eventos.add(ApiApp.event(item));
+                        }
                     mostrarEventos(eventos);
                 }, error -> {
                     if (!isFinishing()) txtNoEventos.setText("No se pudieron cargar los eventos");

@@ -15,7 +15,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.patitasalrescate.R;
 import com.patitasalrescate.controllers.feed.ActividadFeedAdoptante;
-import com.patitasalrescate.controllers.feed.ActividadFeedRefugio;
 import com.patitasalrescate.data.remote.dto.AuthResponse;
 import com.patitasalrescate.data.remote.dto.LoginRequest;
 import com.patitasalrescate.data.remote.dto.UserResponse;
@@ -48,7 +47,9 @@ public class ActividadIniciarSesion extends com.patitasalrescate.controllers.bas
         button_Ingresar.setOnClickListener(v -> ejecutarLogin());
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.iniciarsesion), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            Insets teclado = insets.getInsets(WindowInsetsCompat.Type.ime());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right,
+                    Math.max(systemBars.bottom, teclado.bottom));
             return insets;
         });
     }
@@ -103,8 +104,9 @@ public class ActividadIniciarSesion extends com.patitasalrescate.controllers.bas
                         String nombre = ((user.firstName == null ? "" : user.firstName) + " "
                                 + (user.lastName == null ? "" : user.lastName)).trim();
                         boolean owner = user.roles != null && user.roles.contains("ShelterOwner") && user.shelterId != null;
+                        // Siempre se entra en modo usuario; al refugio se cambia desde Mi Perfil.
                         PatitasSessionManager.getInstance(ActividadIniciarSesion.this)
-                                .createSession(user.id, nombre, owner ? "REFUGIO" : "ADOPTANTE",
+                                .createSession(user.id, nombre, "ADOPTANTE",
                                         user.shelterId == null ? "" : user.shelterId, owner);
                         irAPantallaPrincipal();
                     }
@@ -132,8 +134,7 @@ public class ActividadIniciarSesion extends com.patitasalrescate.controllers.bas
     }
 
     public void irAPantallaPrincipal() {
-        PatitasSessionManager session = PatitasSessionManager.getInstance(this);
-        Intent intent = new Intent(this, session.isRefugio() ? ActividadFeedRefugio.class : ActividadFeedAdoptante.class);
+        Intent intent = new Intent(this, ActividadFeedAdoptante.class);
         startActivity(intent);
         finish();
     }

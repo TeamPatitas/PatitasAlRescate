@@ -9,12 +9,17 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 public class PatitasSessionManager {
+    private static final String TAG = "PatitasSession";
     private static PatitasSessionManager instance;
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
+    // El token va en prefs plano separado: el commit del almacén cifrado puede fallar
+    // en silencio según el keystore del dispositivo y el token "sobrevivía" al logout.
+    private SharedPreferences tokenPrefs;
 
     // Keys
     private static final String PREF_NAME = "PatitasSession";
+    private static final String TOKEN_PREF_NAME = "PatitasToken";
     public static final String KEY_USER_ID = "id_user_key";
     public static final String KEY_USER_NAME = "name_user_key";
     public static final String KEY_SESSION_MODE = "session_mode";
@@ -37,6 +42,8 @@ public class PatitasSessionManager {
             throw new RuntimeException("Failed to create EncryptedSharedPreferences", e);
         }
         editor = prefs.edit();
+        tokenPrefs = ctx.getApplicationContext()
+                .getSharedPreferences(TOKEN_PREF_NAME, Context.MODE_PRIVATE);
     }
 
     public static synchronized PatitasSessionManager getInstance(Context context) {
@@ -64,12 +71,17 @@ public class PatitasSessionManager {
     }
 
     public void setAuthToken(String token) {
-        editor.putString(KEY_AUTH_TOKEN, token);
-        editor.apply();
+        tokenPrefs.edit().putString(KEY_AUTH_TOKEN, token == null ? "" : token).commit();
     }
 
     public String getAuthToken() {
-        return prefs.getString(KEY_AUTH_TOKEN, "");
+        String viejo = prefs.getString(KEY_AUTH_TOKEN, "");
+        if (viejo != null && !viejo.isEmpty()
+                && tokenPrefs.getString(KEY_AUTH_TOKEN, "").isEmpty()) {
+            tokenPrefs.edit().putString(KEY_AUTH_TOKEN, viejo).commit();
+            prefs.edit().remove(KEY_AUTH_TOKEN).apply();
+        }
+        return tokenPrefs.getString(KEY_AUTH_TOKEN, "");
     }
 
     public boolean hasValidToken() {
@@ -85,7 +97,6 @@ public class PatitasSessionManager {
         editor.apply();
     }
 
-    /** Momento (millis) en que se solicitó/creó el refugio. 0 = desconocido. */
     public void setShelterRequestAt(long millis) {
         editor.putLong(KEY_SHELTER_REQUEST_AT, millis);
         editor.apply();
@@ -93,7 +104,6 @@ public class PatitasSessionManager {
 
     public long getShelterRequestAt() { return prefs.getLong(KEY_SHELTER_REQUEST_AT, 0); }
 
-    /** True si la solicitud de refugio tiene menos de 24h. */
     public boolean tieneSolicitudReciente() {
         long at = getShelterRequestAt();
         return at > 0 && System.currentTimeMillis() - at < 24L * 60 * 60 * 1000;
@@ -114,8 +124,16 @@ public class PatitasSessionManager {
     public boolean isAdoptante() {
         return getSessionType().equals("ADOPTANTE");
     }
-    public void logout() {
-        editor.clear();
-        editor.apply();
+    public boolean logout() {
+        boolean tokenOk = tokenPrefs.edit().clear().commit();
+        boolean prefsOk = prefs.edit().clear().commit();
+        // Modo siempre definido tras salir: evita estados vacíos que confunden a los fragments.
+        boolean modoOk = prefs.edit().putString(KEY_SESSION_MODE, "ADOPTANTE").commit();
+        editor = prefs.edit();
+        boolean limpio = tokenOk && prefsOk && modoOk && !hasValidToken() && getUserId().isEmpty()
+                && isAdoptante();
+        android.util.Log.d(TAG, "logout limpio=" + limpio
+                + " tokenVálido=" + hasValidToken() + " tokenOk=" + tokenOk + " prefsOk=" + prefsOk);
+        return limpio;
     }
 }
