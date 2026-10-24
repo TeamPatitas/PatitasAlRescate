@@ -120,6 +120,7 @@ public class ApiClientTest {
         create.temperament = "Tranquila";
         create.story = "Rescatada";
         create.available = false;
+        create.isAdoptable = true;
         create.photos = Arrays.asList(photo("uno.png"), photo("dos.png"));
         RecordedRequest request = check(api.pets.createPet(create), "POST", "/pet", 201, "{}");
         assertTrue(request.getHeader("Content-Type").startsWith("multipart/form-data; boundary="));
@@ -127,6 +128,7 @@ public class ApiClientTest {
         assertEquals(2, form.split("name=\"photos\"", -1).length - 1);
         assertTrue(form.contains("CAT"));
         assertTrue(form.contains("false"));
+        assertTrue(form.contains("name=\"isAdoptable\""));
         check(api.pets.getAllPets(null, null), "GET", "/pet", 200, "{\"items\":[]}");
         check(api.pets.getPetById(ID), "GET", "/pet/" + ID, 200, "{}");
         UpdatePetRequest update = new UpdatePetRequest();
@@ -147,21 +149,52 @@ public class ApiClientTest {
         CreateShelterRequest create = new CreateShelterRequest();
         create.name = "Refugio";
         create.address = "Lima";
+        create.phoneNumber = "999888777";
         create.latitude = -12.0;
         create.longitude = -77.0;
         create.photo = photo("refugio.png");
         String form = check(api.shelters.createShelter(create), "POST", "/shelter", 201, "{}")
                 .getBody().readUtf8();
         assertTrue(form.contains("-12.0"));
+        assertTrue(form.contains("999888777"));
         check(api.shelters.getAllShelters(1, 20), "GET", "/shelter?page=1&pageSize=20", 200, "{\"items\":[]}");
         check(api.shelters.getShelterById(ID), "GET", "/shelter/" + ID, 200, "{}");
         UpdateShelterRequest update = new UpdateShelterRequest();
         update.name = "Nuevo nombre";
-        check(api.shelters.updateShelter(ID, update), "PATCH", "/shelter/" + ID, 200, "{}");
+        update.yapeQrImage = photo("yape.png");
+        String patch = check(api.shelters.updateShelter(ID, update), "PATCH", "/shelter/" + ID, 200, "{}")
+                .getBody().readUtf8();
+        assertTrue(patch.contains("name=\"yapeQrImage\"; filename=\"yape.png\""));
+        assertTrue(patch.contains("Content-Type: image/png"));
+        assertTrue(patch.contains("name=\"name\""));
         check(api.shelters.deleteShelter(ID), "DELETE", "/shelter/" + ID, 200, "");
         server.enqueue(new MockResponse().setBody("Hola pez"));
         assertEquals("Hola pez", api.status.getStatus().execute().body());
         assertNull(server.takeRequest().getHeader("Authorization"));
+    }
+
+    @Test public void allFiveEventOperations() throws Exception {
+        CreateEventRequest create = new CreateEventRequest();
+        create.name = "Feria";
+        create.eventDate = "2026-10-01T10:00:00-05:00";
+        create.isActive = true;
+        create.image = photo("feria.png");
+        String body = check(api.events.createEvent(create), "POST", "/event", 201, "{}")
+                .getBody().readUtf8();
+        assertTrue(body.contains("name=\"eventDate\""));
+        assertTrue(body.contains("filename=\"feria.png\""));
+        check(api.events.getAllEvents(1, 20), "GET", "/event?page=1&pageSize=20", 200,
+                "{\"items\":[],\"totalPages\":0}");
+        check(api.events.getEventById(ID), "GET", "/event/" + ID, 200,
+                "{\"id\":\"" + ID + "\",\"name\":\"Feria\",\"isYours\":true}");
+        UpdateEventRequest update = new UpdateEventRequest();
+        update.name = "Feria nueva";
+        update.isActive = false;
+        String patch = check(api.events.updateEvent(ID, update), "PATCH", "/event/" + ID, 200, "{}")
+                .getBody().readUtf8();
+        assertTrue(patch.contains("false"));
+        assertFalse(patch.contains("name=\"description\""));
+        check(api.events.deleteEvent(ID), "DELETE", "/event/" + ID, 200, "\"Eliminado\"");
     }
 
     @Test public void deserializeWireNamesPaginationAndSessionLifecycle() throws Exception {

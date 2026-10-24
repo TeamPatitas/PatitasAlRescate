@@ -24,7 +24,7 @@ for (const [name, schema] of Object.entries(spec.components.schemas)) {
   write(path.join(base, 'remote/dto', name + '.java'), code);
 }
 const names = { 'Borrar Usuario': 'deleteUser', 'Iniciar Sesión': 'login', 'Registrarse': 'register', 'Verificar Correo': 'verifyEmail', 'Enviar Correo de Verificación': 'sendVerificationEmail' };
-const groups = { 'Administración': 'Admin', 'Autenticación': 'Auth', 'Mascotas': 'Pet', 'Refugios': 'Shelter', 'PatitasAPI': 'Status' };
+const groups = { 'Administración': 'Admin', 'Autenticación': 'Auth', 'Mascotas': 'Pet', 'Refugios': 'Shelter', 'PatitasAPI': 'Status', 'Eventos': 'Event' };
 const operations = [];
 for (const [url, verbs] of Object.entries(spec.paths)) for (const [verb, op] of Object.entries(verbs)) {
   const group = groups[op.tags[0]];

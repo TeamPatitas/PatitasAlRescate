@@ -18,6 +18,8 @@ public final class CreatePetRequest {
     public String story;
     @SerializedName("available")
     public Boolean available;
+    @SerializedName("isAdoptable")
+    public Boolean isAdoptable;
     @SerializedName("photos")
     public java.util.List<UploadFile> photos;
 }

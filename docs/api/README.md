@@ -7,7 +7,7 @@ Implementada en la rama `diego-mejoras-cache`, sin cambios de diseño ni flujos 
 - Contrato verificado el 21 de septiembre de 2026: https://api-patitasalrescate.galaxym4.dev/swagger/v1/swagger.json
 - Copia del contrato: `openapi.json`. Inventario completo: `endpoints.md`.
 
-Se implementan las 24 operaciones de las cuatro secciones: administración (9), autenticación (4), mascotas (6) y refugios (5). También se incluye `GET /`, la operación pública de estado, para un total de 25.
+Se implementan 30 operaciones: administración (9), autenticación (4), eventos (5), mascotas (6), refugios (5) y `GET /`.
 
 ## Distribución en el proyecto
 
@@ -23,9 +23,11 @@ Se implementan las 24 operaciones de las cuatro secciones: administración (9), 
 | `data/repository/*ApiRepository` | Acceso tipado a las operaciones por sección. |
 | `data/local`, `data/mock` | Persistencia local existente. |
 
-Los repositorios locales `AdoptanteRepository`, `MascotaRepository` y `RefugioRepository` siguen atendiendo las pantallas actuales. **Esta entrega implementa la capa remota; las pantallas todavía no consumen la API.** Se conserva ese límite para respetar el alcance de datos/API. Sus firmas síncronas (`long`, `int`, listas) y los modelos locales no equivalen al contrato HTTP y no deben reemplazarse por llamadas de red bloqueantes.
+Las pantallas de login, registro, perfil, listas, búsqueda, detalles, alta de mascotas y eventos consumen ahora la API mediante `enqueue`. `ApiApp` comparte un solo cliente y `ApiPages` completa las páginas antes de mostrar un listado. Los repositorios y DAOs locales se mantienen como código heredado; los flujos conectados no los usan para simular un resultado remoto.
 
-Tampoco se inventan equivalencias: el contrato no expone login separado para refugios, consulta de existencia de correo, eventos, favoritos, adopciones ni filtro de mascotas por refugio. Las listas remotas son paginadas y devuelven resúmenes; los detalles requieren sus endpoints por ID.
+El contrato no expone favoritos, solicitudes de adopción, edad de mascotas, teléfono de refugios, búsqueda en servidor ni filtro de mascotas por refugio. El modo refugio filtra consultando cada detalle de mascota; la búsqueda también consulta cada detalle. Esto funciona para probar la integración, pero será lento con catálogos grandes: se necesita `GET /pet?shelterId=...` y filtros de búsqueda/paginación de servidor. Las acciones locales de favoritos y adopción se desactivaron para evitar mostrar confirmaciones falsas.
+
+El género del usuario se declara como entero sin documentar sus valores. El formulario envía provisionalmente `0` para Masculino y `1` para Femenino; **el equipo backend debe confirmar este orden antes de usar registro con datos reales**. El formulario ahora pide fecha de nacimiento `AAAA-MM-DD`, como exige la API. Teléfono no se envía porque no existe en el contrato de registro ni perfil. El alta de refugio requiere iniciar sesión y queda pendiente de habilitación por administrador. Los eventos usan fecha `AAAA-MM-DD HH:MM` convertida a ISO 8601, y permiten seleccionar una imagen binaria.
 
 ## Uso desde la capa que consuma los repositorios
 
@@ -81,9 +83,19 @@ Estas expresiones crean llamadas; solo `enqueue` o `execute` las envían. Cancel
 
 ## Verificación y mantenimiento
 
-`ApiClientTest` verifica las 25 operaciones con MockWebServer: HTTP, JWT, JSON, multipart, paginación, codificación del token de correo, respuestas vacías, errores y sesión. No utiliza cuentas reales ni ejecuta escrituras en producción.
+### Android Studio después de un pull
+
+Abrir la raíz del proyecto que contiene `settings.gradle.kts` y ejecutar **File > Sync Project with Gradle Files**. Descargar cambios con Git actualiza los archivos, pero el editor puede conservar el modelo anterior de dependencias hasta sincronizar Gradle.
+
+Si aparece `Cannot resolve symbol 'retrofit2'`, conservar los imports `retrofit2.*`: la dependencia ya está declarada en `app/build.gradle.kts`. Revisar el resultado de la sincronización antes de modificar Java. La opción Gradle JDK del proyecto debe apuntar al JDK de Android Studio (`GRADLE_LOCAL_JAVA_HOME` en esta máquina). Si la sincronización falla, revisar su error concreto en la ventana Build/Sync.
+
+Compilar por terminal comprueba el código y las dependencias, pero no sustituye la sincronización del modelo del editor.
+
+`ApiClientTest` verifica las 30 operaciones con MockWebServer: HTTP, JWT, JSON, multipart, paginación, codificación del token de correo, respuestas vacías, errores y sesión. No utiliza cuentas reales ni ejecuta escrituras en producción.
 
 Resultado del 21 de septiembre de 2026: `assembleDebug` y `testDebugUnitTest` completados correctamente. Pasaron 10 pruebas de integración HTTP y la prueba unitaria existente, sin fallos. APK generado en `app/build/outputs/apk/debug/app-debug.apk`. Gradle conserva avisos previos de opciones obsoletas; no impidieron la compilación.
+
+Resultado del 23 de septiembre de 2026, en `C:\Users\diego\Documents\PATITASALRESCATE`: `assembleDebug` y `testDebugUnitTest` completados correctamente con 11 pruebas HTTP (incluidos los cinco endpoints de eventos) y la prueba unitaria existente. En pruebas manuales, `/auth/login` aceptó credenciales válidas pero `GET /admin/user` devolvió HTTP 400; la web también queda cargando el perfil. La app permite consultar el feed con acceso limitado, sin habilitar la edición del perfil hasta que ese endpoint funcione. No se realizaron escrituras en producción.
 
 En esta máquina usar el JDK de Android Studio; el JDK 26 configurado globalmente falló en la transformación `androidJdkImage`. `local.properties` apunta al SDK instalado y está ignorado por Git.
 

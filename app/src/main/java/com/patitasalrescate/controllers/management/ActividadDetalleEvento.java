@@ -17,14 +17,21 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.patitasalrescate.R;
 import com.patitasalrescate.model.Evento;
 import com.patitasalrescate.utils.PatitasSessionManager;
+import com.patitasalrescate.utils.ApiApp;
+import com.patitasalrescate.data.remote.dto.EventResponse;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class ActividadDetalleEvento extends AppCompatActivity {
+public class ActividadDetalleEvento extends com.patitasalrescate.controllers.base.BaseActivity {
 
-    private ImageView imgDetalle;
+    private ImageView imgDetalle, imgQr;
     private TextView txtNombre, txtFecha, txtDescripcion;
     private Button btnMapa;
+    private android.widget.LinearLayout layoutQr;
     private FloatingActionButton fabEditar;
     private Evento evento;
+    private boolean puedeEditar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +44,8 @@ public class ActividadDetalleEvento extends AppCompatActivity {
         txtDescripcion = findViewById(R.id.txt_detalle_descripcion_evento);
         btnMapa = findViewById(R.id.btn_ver_mapa_evento);
         fabEditar = findViewById(R.id.fab_editar_evento);
+        layoutQr = findViewById(R.id.layout_qr_evento);
+        imgQr = findViewById(R.id.img_qr_evento);
 
         configToolbar();
 
@@ -44,7 +53,7 @@ public class ActividadDetalleEvento extends AppCompatActivity {
 
         if (evento != null) {
             txtNombre.setText(evento.getNombre());
-            txtFecha.setText(evento.getFecha());
+            txtFecha.setText(ApiApp.fechaBonita(evento.getFecha()));
             txtDescripcion.setText(evento.getDescripcion());
 
             if (evento.getFotoUrl() != null && !evento.getFotoUrl().isEmpty()) {
@@ -61,7 +70,6 @@ public class ActividadDetalleEvento extends AppCompatActivity {
             btnMapa.setOnClickListener(v -> verEnMapa());
           
             cargarDatos();
-            configurarSegunRol();
         } else {
             Toast.makeText(this, "Error al cargar el evento", Toast.LENGTH_SHORT).show();
             finish();
@@ -80,7 +88,7 @@ public class ActividadDetalleEvento extends AppCompatActivity {
 
     private void cargarDatos() {
         txtNombre.setText(evento.getNombre());
-        txtFecha.setText(evento.getFecha());
+        txtFecha.setText(ApiApp.fechaBonita(evento.getFecha()));
         txtDescripcion.setText(evento.getDescripcion());
 
         if (evento.getFotoUrl() != null && !evento.getFotoUrl().isEmpty()) {
@@ -96,8 +104,10 @@ public class ActividadDetalleEvento extends AppCompatActivity {
     }
 
     private void configurarSegunRol() {
-        // Por ahora lo dejamos visible para que puedas probar el diseño y la edición
-        fabEditar.setVisibility(View.VISIBLE);
+        // El lápiz solo existe en modo refugio (aunque isYours diga otra cosa).
+        boolean verLapiz = puedeEditar
+                && com.patitasalrescate.utils.PatitasSessionManager.getInstance(this).isRefugio();
+        fabEditar.setVisibility(verLapiz ? View.VISIBLE : View.GONE);
         fabEditar.setOnClickListener(v -> {
             Intent intent = new Intent(this, ActividadRegistrarEvento.class);
             intent.putExtra("evento_editar_key", evento);
@@ -108,15 +118,51 @@ public class ActividadDetalleEvento extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Recargar datos por si se editó
-        if (evento != null) {
-            com.patitasalrescate.data_access.DAOEvento dao = new com.patitasalrescate.data_access.DAOEvento(this);
-            Evento actualizado = dao.obtenerPorId(evento.getIdEvento());
-            if (actualizado != null) {
-                evento = actualizado;
+        if (evento != null) cargarEventoApi();
+    }
+
+    private void cargarEventoApi() {
+        ApiApp.client().events.getEventById(evento.getIdEvento()).enqueue(new Callback<EventResponse>() {
+            @Override public void onResponse(Call<EventResponse> call, Response<EventResponse> response) {
+                if (isFinishing() || isDestroyed()) return;
+                if (!response.isSuccessful() || response.body() == null) {
+                    Toast.makeText(ActividadDetalleEvento.this, "No se pudo cargar el evento", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                evento = ApiApp.event(response.body());
+                puedeEditar = Boolean.TRUE.equals(response.body().isYours);
                 cargarDatos();
+                configurarSegunRol();
+                cargarQrRefugio(response.body().shelterId);
             }
-        }
+            @Override public void onFailure(Call<EventResponse> call, Throwable error) {
+                if (!isFinishing()) Toast.makeText(ActividadDetalleEvento.this, "Sin conexión con eventos", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /** QR del refugio dueño (yapeQrCode). Sin QR no se muestra la sección. */
+    private void cargarQrRefugio(String shelterId) {
+        if (shelterId == null || shelterId.isEmpty()) return;
+        ApiApp.client().shelters.getShelterById(shelterId).enqueue(
+                new Callback<com.patitasalrescate.data.remote.dto.ShelterResponse>() {
+                    @Override public void onResponse(
+                            Call<com.patitasalrescate.data.remote.dto.ShelterResponse> call,
+                            Response<com.patitasalrescate.data.remote.dto.ShelterResponse> response) {
+                        if (isFinishing() || isDestroyed()) return;
+                        if (!response.isSuccessful() || response.body() == null
+                                || response.body().yapeQrCode == null
+                                || response.body().yapeQrCode.isEmpty()) return;
+                        layoutQr.setVisibility(View.VISIBLE);
+                        Glide.with(ActividadDetalleEvento.this)
+                                .load(response.body().yapeQrCode)
+                                .fitCenter()
+                                .into(imgQr);
+                    }
+                    @Override public void onFailure(
+                            Call<com.patitasalrescate.data.remote.dto.ShelterResponse> call,
+                            Throwable error) { }
+                });
     }
 
     private void verEnMapa() {

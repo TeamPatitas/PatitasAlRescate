@@ -1,6 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="Base.Theme.PatitasAlRescate" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- El teclado redimensiona la pantalla para no tapar los campos de texto. -->
+        <item name="android:windowSoftInputMode">adjustResize</item>
         <item name="colorPrimary">@color/marronPrimario</item>
         <item name="colorOnPrimary">@color/blanco</item>
         <item name="colorPrimaryContainer">@color/marronClaro</item>
@@ -25,4 +27,26 @@
 
     <style name="Theme.PatitasAlRescate.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="Theme.PatitasAlRescate.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!-- Pickers siempre en esquema claro: números oscuros sobre fondo blanco.
+         Cada overlay hereda el tema propio del componente (trae sus estilos internos). -->
+    <style name="ThemeOverlay.Patitas.CalendarLight" parent="ThemeOverlay.Material3.MaterialCalendar">
+        <item name="colorPrimary">@color/marronPrimario</item>
+        <item name="colorOnPrimary">@color/blanco</item>
+        <item name="colorSurface">@color/blanco</item>
+        <item name="colorOnSurface">@color/textoPrincipal</item>
+        <item name="colorOnSurfaceVariant">@color/textoSecundario</item>
+        <item name="colorSecondaryContainer">@color/marronClaro</item>
+        <item name="colorOnSecondaryContainer">@color/marronOscuro</item>
+    </style>
+
+    <style name="ThemeOverlay.Patitas.TimePickerLight" parent="ThemeOverlay.Material3.MaterialTimePicker">
+        <item name="colorPrimary">@color/marronPrimario</item>
+        <item name="colorOnPrimary">@color/blanco</item>
+        <item name="colorSurface">@color/blanco</item>
+        <item name="colorOnSurface">@color/textoPrincipal</item>
+        <item name="colorOnSurfaceVariant">@color/textoSecundario</item>
+        <item name="colorSecondaryContainer">@color/marronClaro</item>
+        <item name="colorOnSecondaryContainer">@color/marronOscuro</item>
+    </style>
 </resources>

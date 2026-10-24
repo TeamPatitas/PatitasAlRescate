@@ -10,6 +10,12 @@ public final class PetSummaryResponse {
     public String name;
     @SerializedName("photos")
     public java.util.List<String> photos;
+    @SerializedName("isYours")
+    public Boolean isYours;
     @SerializedName("available")
     public Boolean available;
+    @SerializedName("isAdoptable")
+    public Boolean isAdoptable;
+    @SerializedName("createdAt")
+    public String createdAt;
 }
