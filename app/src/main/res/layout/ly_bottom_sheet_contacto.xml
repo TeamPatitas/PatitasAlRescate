@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    ly_bottom_sheet_contacto.xml
+    BottomSheet de selección de vía de contacto para el adoptante.
+    Usa colores temáticos dinámicos para soporte completo de Modo Oscuro.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/colorSurface"
+    android:orientation="vertical"
+    android:paddingHorizontal="24dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="32dp">
+
+    <!-- Indicador de arrastre -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:background="?attr/colorOutline"
+        android:backgroundTint="?attr/colorOutline" />
+
+    <!-- Título -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:text="¿Cómo deseas contactar?"
+        android:textColor="?attr/colorOnSurface"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <!-- Subtítulo -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="Elige la vía de contacto con la asociación."
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:textSize="14sp" />
+
+    <!-- Opción 1: WhatsApp -->
+    <Button
+        android:id="@+id/btn_contacto_whatsapp"
+        style="@style/Widget.Material3.Button"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginBottom="12dp"
+        android:backgroundTint="@color/verde_persona"
+        android:drawableStart="@android:drawable/ic_menu_send"
+        android:drawablePadding="10dp"
+        android:text="💬  Mensaje rápido (WhatsApp)"
+        android:textColor="?attr/colorOnPrimary"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+    <!-- Opción 2: Formulario PDF -->
+    <Button
+        android:id="@+id/btn_contacto_formulario"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginBottom="12dp"
+        android:drawableStart="@android:drawable/ic_menu_edit"
+        android:drawablePadding="10dp"
+        android:strokeColor="?attr/colorPrimary"
+        android:text="📋  Formulario formal (PDF)"
+        android:textColor="?attr/colorPrimary"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+    <!-- Cancelar -->
+    <Button
+        android:id="@+id/btn_contacto_cancelar"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Cancelar"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:textSize="14sp" />
+
+</LinearLayout>
