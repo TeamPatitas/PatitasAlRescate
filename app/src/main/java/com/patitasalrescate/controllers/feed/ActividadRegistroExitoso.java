@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.patitasalrescate.R;
 import com.patitasalrescate.controllers.auth.ActividadIniciarSesion;
 
-public class ActividadRegistroExitoso extends AppCompatActivity{
+public class ActividadRegistroExitoso extends com.patitasalrescate.controllers.base.BaseActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

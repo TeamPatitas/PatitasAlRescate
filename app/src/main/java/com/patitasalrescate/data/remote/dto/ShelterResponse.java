@@ -10,6 +10,8 @@ public final class ShelterResponse {
     public String name;
     @SerializedName("address")
     public String address;
+    @SerializedName("phoneNumber")
+    public String phoneNumber;
     @SerializedName("isAvailable")
     public Boolean isAvailable;
     @SerializedName("latitude")
@@ -18,6 +20,8 @@ public final class ShelterResponse {
     public Double longitude;
     @SerializedName("photoUrl")
     public String photoUrl;
+    @SerializedName("yapeQrCode")
+    public String yapeQrCode;
     @SerializedName("owners")
     public java.util.List<String> owners;
 }
