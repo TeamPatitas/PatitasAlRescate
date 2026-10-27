@@ -27,6 +27,7 @@ import com.patitasalrescate.utils.PatitasSessionManager;
 import com.patitasalrescate.model.Mascota;
 import com.patitasalrescate.utils.ApiApp;
 import com.patitasalrescate.data.remote.dto.PetResponse;
+import com.patitasalrescate.data.remote.dto.ShelterResponse;
 import com.patitasalrescate.data.remote.dto.UpdatePetRequest;
 import com.patitasalrescate.data.remote.dto.UploadFile;
 import com.patitasalrescate.data.remote.dto.Species;
@@ -38,7 +39,8 @@ import retrofit2.Response;
 import java.io.IOException;
 import java.util.List;
 
-public class ActividadPerfilMascota extends com.patitasalrescate.controllers.base.BaseActivity {
+public class ActividadPerfilMascota extends com.patitasalrescate.controllers.base.BaseActivity
+        implements BottomSheetContactoAdopcion.OnOpcionSeleccionadaListener {
     private static final String TAG = "PerfilMascota";
     private static final int MAX_FOTOS = 3;
     private static final String[] MIME_FOTOS = {"image/jpeg", "image/png", "image/webp"};
@@ -61,6 +63,8 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
     private Mascota mascotaActual;
     private String idMascota;
     private String idUsuario;
+    private String nombreRefugio = "";
+    private String telefonoRefugio = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,6 +210,7 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
                 mascotaActual = ApiApp.pet(response.body());
                 mostrarMascota();
                 configurarModoVisualPorRol();
+                cargarDatosRefugio(mascotaActual.getIdRefugio());
             }
             @Override public void onFailure(Call<PetResponse> call, Throwable error) {
                 if (!isFinishing()) Toast.makeText(ActividadPerfilMascota.this, "Sin conexión con mascotas", Toast.LENGTH_SHORT).show();
@@ -464,9 +469,77 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
                 });
     }
 
+    private void cargarDatosRefugio(String shelterId) {
+        if (shelterId == null || shelterId.isEmpty()) return;
+        ApiApp.client().shelters.getShelterById(shelterId).enqueue(new Callback<ShelterResponse>() {
+            @Override
+            public void onResponse(Call<ShelterResponse> call, Response<ShelterResponse> response) {
+                if (isFinishing() || isDestroyed()) return;
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().name != null && !response.body().name.isEmpty()) {
+                        nombreRefugio = response.body().name;
+                    }
+                    if (response.body().phoneNumber != null && !response.body().phoneNumber.isEmpty()) {
+                        telefonoRefugio = response.body().phoneNumber;
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ShelterResponse> call, Throwable error) {
+                Log.w(TAG, "No se pudo cargar datos del refugio: " + error.getMessage());
+            }
+        });
+    }
+
     private void irAAdoptar() {
-        Intent i = new Intent(this, ActividadAdopcion.class);
-        i.putExtra("id_mascota_key", mascotaActual.getIdMascota());
-        startActivity(i);
+        if (mascotaActual == null) return;
+        BottomSheetContactoAdopcion sheet = BottomSheetContactoAdopcion.newInstance(
+                mascotaActual.getNombre(),
+                nombreRefugio,
+                telefonoRefugio,
+                mascotaActual.getIdMascota(),
+                mascotaActual.getIdRefugio()
+        );
+        sheet.show(getSupportFragmentManager(), BottomSheetContactoAdopcion.TAG);
+    }
+
+    @Override
+    public void onMensajeRapido(String tel, String nombreMascota) {
+        String telefono = normalizarTelefono(tel);
+        if (telefono == null) {
+            Toast.makeText(this, "El refugio no tiene un número telefónico registrado", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        String mensaje = "👋 ¡Hola" + (nombreRefugio.isEmpty() ? "" : " " + nombreRefugio) + "!\n\n"
+                + "🐾 Estoy interesado en adoptar a *" + (nombreMascota.isEmpty() ? "la mascota" : nombreMascota) + "*.\n\n"
+                + "¿Podrían darme más información sobre los requisitos y el proceso de adopción?";
+
+        String url = "https://api.whatsapp.com/send?phone=" + telefono + "&text=" + Uri.encode(mensaje);
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(this, "Instala WhatsApp para continuar", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onFormularioFormal(String petId, String shelterId,
+                                   String tel, String nombreMascota, String nomRefugio) {
+        Intent intent = new Intent(this, ActividadFormularioAdopcion.class);
+        intent.putExtra(ActividadFormularioAdopcion.KEY_NOMBRE_MASCOTA, nombreMascota);
+        intent.putExtra(ActividadFormularioAdopcion.KEY_NOMBRE_REFUGIO, nomRefugio);
+        intent.putExtra(ActividadFormularioAdopcion.KEY_TELEFONO_REFUGIO, normalizarTelefono(tel));
+        startActivity(intent);
+    }
+
+    private String normalizarTelefono(String crudo) {
+        if (crudo == null) return null;
+        String digitos = crudo.replaceAll("[^0-9]", "");
+        if (digitos.startsWith("51") && digitos.length() > 9) return digitos;
+        if (digitos.length() == 9) return "51" + digitos;
+        return digitos.isEmpty() ? null : digitos;
     }
 }

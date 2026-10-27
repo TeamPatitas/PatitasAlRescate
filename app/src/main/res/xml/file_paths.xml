@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    file_paths.xml
+    Define las rutas de almacenamiento interno compartibles vía FileProvider.
+    Mapea la carpeta cache/pdfs_adopcion/ donde GeneradorPdfAdopcion guarda los PDFs generados.
+-->
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <cache-path
+        name="cache_pdfs"
+        path="pdfs_adopcion/" />
+    <cache-path
+        name="shared_cache"
+        path="." />
+</paths>
