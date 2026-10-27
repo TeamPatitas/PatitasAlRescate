@@ -21,14 +21,77 @@ import okhttp3.RequestBody;
 /** Shared HTTP session and mappings between the server contract and existing UI models. */
 public final class ApiApp {
     private static final ApiClient API = new ApiClient();
+    private static android.content.Context APP_CTX;
 
     private ApiApp() { }
 
     public static ApiClient client() { return API; }
 
+    /** Llamar una vez al arrancar (MainActivity) para caché y estado de red. */
+    public static void init(android.content.Context ctx) {
+        APP_CTX = ctx.getApplicationContext();
+    }
+
+    /** Contexto para caché/red. Público porque lo usa el interceptor (otro paquete). */
+    public static android.content.Context appContext() { return APP_CTX; }
+
+    public static boolean esOnline() {
+        android.content.Context ctx = APP_CTX;
+        if (ctx == null) return true;
+        android.net.ConnectivityManager cm = (android.net.ConnectivityManager)
+                ctx.getSystemService(android.content.Context.CONNECTIVITY_SERVICE);
+        if (cm == null) return true;
+        android.net.NetworkCapabilities caps = cm.getNetworkCapabilities(cm.getActiveNetwork());
+        return caps != null && (caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_WIFI)
+                || caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_CELLULAR)
+                || caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_ETHERNET));
+    }
+
+    /** Cierre de sesión completo y verificado, usado por todos los botones de salir. */
+    public static void cerrarSesion(android.content.Context ctx) {
+        try {
+            android.util.Log.d("ApiApp", "cerrarSesion paso1 prefs");
+            PatitasSessionManager sesion = PatitasSessionManager.getInstance(ctx);
+            boolean limpioPrefs = sesion.logout();
+            android.util.Log.d("ApiApp", "cerrarSesion paso2 memoria+cache");
+            client().session.logout();
+            ApiCache.invalidateAll(ctx);
+            android.util.Log.d("ApiApp", "cerrarSesion paso3 navegar prefsLimpio=" + limpioPrefs
+                    + " sesionAutenticada=" + client().session.isAuthenticated());
+            android.content.Intent i = new android.content.Intent(ctx,
+                    com.patitasalrescate.controllers.auth.ActividadIngresar.class);
+            i.setFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+                    | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            ctx.startActivity(i);
+            android.util.Log.d("ApiApp", "cerrarSesion paso4 ok");
+        } catch (Exception e) {
+            android.util.Log.e("ApiApp", "cerrarSesion FALLÓ: " + e, e);
+            throw e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e);
+        }
+    }
+
+    /** False + aviso si no hay internet (para bloquear mutaciones offline). */
+    public static boolean exigirOnline(android.content.Context ui) {
+        if (esOnline()) return true;
+        android.widget.Toast.makeText(ui, "Sin internet: tus cambios no se guardarán",
+                android.widget.Toast.LENGTH_LONG).show();
+        return false;
+    }
+
     public static UploadFile upload(Context context, Uri uri) throws IOException {
         String mime = context.getContentResolver().getType(uri);
-        if (mime == null) mime = "application/octet-stream";
+        if (mime == null || mime.equals("application/octet-stream")) {
+            // Los Uri file:// no resuelven tipo en el ContentResolver: deducir por extensión.
+            String extUrl = MimeTypeMap.getFileExtensionFromUrl(uri.toString());
+            if (extUrl != null && !extUrl.isEmpty()) {
+                String porExt = MimeTypeMap.getSingleton()
+                        .getMimeTypeFromExtension(extUrl.toLowerCase(java.util.Locale.US));
+                if (porExt != null) mime = porExt;
+            }
+        }
+        if (!"image/jpeg".equals(mime) && !"image/png".equals(mime) && !"image/webp".equals(mime)) {
+            throw new IOException("Tipo de imagen no permitido: " + mime + ". Use jpeg/png/webp.");
+        }
         String ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(mime);
         String name = "photo" + (ext == null ? "" : "." + ext);
         try (InputStream input = context.getContentResolver().openInputStream(uri)) {
@@ -50,6 +113,8 @@ public final class ApiApp {
         m.setNombre(p.name);
         m.setFotos(p.photos == null ? new ArrayList<>() : p.photos);
         m.setEstado(Boolean.TRUE.equals(p.available) ? "DISPONIBLE" : "NO_DISPONIBLE");
+        m.setAdoptable(Boolean.TRUE.equals(p.isAdoptable));
+        m.setFechaPublicacion(p.createdAt);
         return m;
     }
 
@@ -65,6 +130,8 @@ public final class ApiApp {
         m.setHistoria(p.story);
         m.setFotos(p.photos == null ? new ArrayList<>() : p.photos);
         m.setEstado(Boolean.TRUE.equals(p.available) ? "DISPONIBLE" : "NO_DISPONIBLE");
+        m.setAdoptable(Boolean.TRUE.equals(p.isAdoptable));
+        m.setFechaPublicacion(p.createdAt);
         return m;
     }
 
@@ -81,6 +148,7 @@ public final class ApiApp {
         r.setIdRefugio(s.id);
         r.setNombre(s.name);
         r.setDireccion(s.address);
+        r.setNumCelular(s.phoneNumber);
         r.setFotoUrl(s.photoUrl);
         if (s.latitude != null) r.setLatitud(s.latitude);
         if (s.longitude != null) r.setLongitud(s.longitude);
@@ -96,5 +164,102 @@ public final class ApiApp {
         try { if (e.latitude != null) event.setLatitud(Double.parseDouble(e.latitude)); } catch (NumberFormatException ignored) { }
         try { if (e.longitude != null) event.setLongitud(Double.parseDouble(e.longitude)); } catch (NumberFormatException ignored) { }
         return event;
+    }
+
+    /** True si el ISO es un día anterior a hoy. Si no parsea, false (se muestra como vigente). */
+    public static boolean esPasado(String iso) {
+        if (iso == null || iso.trim().isEmpty()) return false;
+        String[] formatos = {"yyyy-MM-dd'T'HH:mm:ssXXX", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd"};
+        for (String formato : formatos) {
+            try {
+                java.text.SimpleDateFormat entrada =
+                        new java.text.SimpleDateFormat(formato, java.util.Locale.US);
+                entrada.setLenient(false);
+                java.util.Date fecha = entrada.parse(iso.trim());
+                if (fecha == null) continue;
+                java.util.Calendar dia = java.util.Calendar.getInstance();
+                dia.setTime(fecha);
+                dia.set(java.util.Calendar.HOUR_OF_DAY, 0);
+                dia.set(java.util.Calendar.MINUTE, 0);
+                dia.set(java.util.Calendar.SECOND, 0);
+                dia.set(java.util.Calendar.MILLISECOND, 0);
+                java.util.Calendar hoy = java.util.Calendar.getInstance();
+                hoy.set(java.util.Calendar.HOUR_OF_DAY, 0);
+                hoy.set(java.util.Calendar.MINUTE, 0);
+                hoy.set(java.util.Calendar.SECOND, 0);
+                hoy.set(java.util.Calendar.MILLISECOND, 0);
+                return dia.before(hoy);
+            } catch (Exception ignored) { }
+        }
+        return false;
+    }
+
+    /** Millis del ISO (tolera los formatos de la API). -1 si no parsea. */
+    public static long millisEvento(String iso) {
+        if (iso == null || iso.trim().isEmpty()) return -1;
+        String[] formatos = {"yyyy-MM-dd'T'HH:mm:ssXXX", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd"};
+        for (String formato : formatos) {
+            try {
+                java.text.SimpleDateFormat entrada =
+                        new java.text.SimpleDateFormat(formato, java.util.Locale.US);
+                entrada.setLenient(false);
+                java.util.Date fecha = entrada.parse(iso.trim());
+                if (fecha != null) return fecha.getTime();
+            } catch (Exception ignored) { }
+        }
+        return -1;
+    }
+
+    /** "2026-09-30T00:25:00-05:00" -> "30, Sept 2026". Si no parsea, devuelve el original. */
+    public static String fechaCorta(String iso) {
+        if (iso == null || iso.trim().isEmpty()) return "";
+        String[] formatos = {"yyyy-MM-dd'T'HH:mm:ssXXX", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd"};
+        for (String formato : formatos) {
+            try {
+                java.text.SimpleDateFormat entrada =
+                        new java.text.SimpleDateFormat(formato, java.util.Locale.US);
+                entrada.setLenient(false);
+                java.util.Date fecha = entrada.parse(iso.trim());
+                if (fecha == null) continue;
+                java.util.Calendar cal = java.util.Calendar.getInstance();
+                cal.setTime(fecha);
+                String[] meses = {"Ene", "Feb", "Mar", "Abr", "May", "Jun",
+                        "Jul", "Ago", "Sept", "Oct", "Nov", "Dic"};
+                return cal.get(java.util.Calendar.DAY_OF_MONTH) + ", "
+                        + meses[cal.get(java.util.Calendar.MONTH)] + " "
+                        + cal.get(java.util.Calendar.YEAR);
+            } catch (Exception ignored) { }
+        }
+        return iso;
+    }
+
+    /** "2026-09-30T00:25:00-05:00" -> "30, Sept 2026, a las 12:25 am". Si no parsea, devuelve el original. */
+    public static String fechaBonita(String iso) {
+        if (iso == null || iso.trim().isEmpty()) return "";
+        String[] formatos = {"yyyy-MM-dd'T'HH:mm:ssXXX", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd"};
+        for (String formato : formatos) {
+            try {
+                java.text.SimpleDateFormat entrada =
+                        new java.text.SimpleDateFormat(formato, java.util.Locale.US);
+                entrada.setLenient(false);
+                java.util.Date fecha = entrada.parse(iso.trim());
+                if (fecha == null) continue;
+                java.util.Calendar cal = java.util.Calendar.getInstance();
+                cal.setTime(fecha);
+                String[] meses = {"Ene", "Feb", "Mar", "Abr", "May", "Jun",
+                        "Jul", "Ago", "Sept", "Oct", "Nov", "Dic"};
+                int hora12 = cal.get(java.util.Calendar.HOUR);
+                if (hora12 == 0) hora12 = 12;
+                String ampm = cal.get(java.util.Calendar.AM_PM)
+                        == java.util.Calendar.AM ? "am" : "pm";
+                return cal.get(java.util.Calendar.DAY_OF_MONTH) + ", "
+                        + meses[cal.get(java.util.Calendar.MONTH)] + " "
+                        + cal.get(java.util.Calendar.YEAR) + ", a las "
+                        + hora12 + ":"
+                        + String.format(java.util.Locale.US, "%02d",
+                        cal.get(java.util.Calendar.MINUTE)) + " " + ampm;
+            } catch (Exception ignored) { }
+        }
+        return iso;
     }
 }

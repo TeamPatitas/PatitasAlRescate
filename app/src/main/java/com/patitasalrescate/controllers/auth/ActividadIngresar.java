@@ -13,7 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.patitasalrescate.R;
 
-public class ActividadIngresar extends AppCompatActivity {
+public class ActividadIngresar extends com.patitasalrescate.controllers.base.BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +36,9 @@ public class ActividadIngresar extends AppCompatActivity {
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.ingresar), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            Insets teclado = insets.getInsets(WindowInsetsCompat.Type.ime());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right,
+                    Math.max(systemBars.bottom, teclado.bottom));
             return insets;
         });
     }

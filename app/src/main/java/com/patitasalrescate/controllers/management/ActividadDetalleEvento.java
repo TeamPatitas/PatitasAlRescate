@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,11 +23,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ActividadDetalleEvento extends AppCompatActivity {
+public class ActividadDetalleEvento extends com.patitasalrescate.controllers.base.BaseActivity {
 
-    private ImageView imgDetalle;
+    private ImageView imgDetalle, imgQr;
     private TextView txtNombre, txtFecha, txtDescripcion;
     private Button btnMapa;
+    private android.widget.LinearLayout layoutQr;
     private FloatingActionButton fabEditar;
     private Evento evento;
     private boolean puedeEditar;
@@ -45,6 +44,8 @@ public class ActividadDetalleEvento extends AppCompatActivity {
         txtDescripcion = findViewById(R.id.txt_detalle_descripcion_evento);
         btnMapa = findViewById(R.id.btn_ver_mapa_evento);
         fabEditar = findViewById(R.id.fab_editar_evento);
+        layoutQr = findViewById(R.id.layout_qr_evento);
+        imgQr = findViewById(R.id.img_qr_evento);
 
         configToolbar();
 
@@ -52,7 +53,7 @@ public class ActividadDetalleEvento extends AppCompatActivity {
 
         if (evento != null) {
             txtNombre.setText(evento.getNombre());
-            txtFecha.setText(evento.getFecha());
+            txtFecha.setText(ApiApp.fechaBonita(evento.getFecha()));
             txtDescripcion.setText(evento.getDescripcion());
 
             if (evento.getFotoUrl() != null && !evento.getFotoUrl().isEmpty()) {
@@ -87,7 +88,7 @@ public class ActividadDetalleEvento extends AppCompatActivity {
 
     private void cargarDatos() {
         txtNombre.setText(evento.getNombre());
-        txtFecha.setText(evento.getFecha());
+        txtFecha.setText(ApiApp.fechaBonita(evento.getFecha()));
         txtDescripcion.setText(evento.getDescripcion());
 
         if (evento.getFotoUrl() != null && !evento.getFotoUrl().isEmpty()) {
@@ -103,7 +104,10 @@ public class ActividadDetalleEvento extends AppCompatActivity {
     }
 
     private void configurarSegunRol() {
-        fabEditar.setVisibility(puedeEditar ? View.VISIBLE : View.GONE);
+        // El lápiz solo existe en modo refugio (aunque isYours diga otra cosa).
+        boolean verLapiz = puedeEditar
+                && com.patitasalrescate.utils.PatitasSessionManager.getInstance(this).isRefugio();
+        fabEditar.setVisibility(verLapiz ? View.VISIBLE : View.GONE);
         fabEditar.setOnClickListener(v -> {
             Intent intent = new Intent(this, ActividadRegistrarEvento.class);
             intent.putExtra("evento_editar_key", evento);
@@ -127,9 +131,9 @@ public class ActividadDetalleEvento extends AppCompatActivity {
                 }
                 evento = ApiApp.event(response.body());
                 puedeEditar = Boolean.TRUE.equals(response.body().isYours);
-                invalidateOptionsMenu();
                 cargarDatos();
                 configurarSegunRol();
+                cargarQrRefugio(response.body().shelterId);
             }
             @Override public void onFailure(Call<EventResponse> call, Throwable error) {
                 if (!isFinishing()) Toast.makeText(ActividadDetalleEvento.this, "Sin conexión con eventos", Toast.LENGTH_SHORT).show();
@@ -137,38 +141,28 @@ public class ActividadDetalleEvento extends AppCompatActivity {
         });
     }
 
-    @Override public boolean onCreateOptionsMenu(Menu menu) {
-        if (puedeEditar) menu.add(0, 9001, 0, "Eliminar evento");
-        return true;
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == 9001 && evento != null && puedeEditar) {
-            new androidx.appcompat.app.AlertDialog.Builder(this)
-                    .setMessage("¿Eliminar este evento de forma permanente?")
-                    .setNegativeButton("Cancelar", null)
-                    .setPositiveButton("Eliminar", (dialog, which) -> eliminarEvento())
-                    .show();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void eliminarEvento() {
-        ApiApp.client().events.deleteEvent(evento.getIdEvento()).enqueue(new Callback<String>() {
-            @Override public void onResponse(Call<String> call, Response<String> response) {
-                if (isFinishing() || isDestroyed()) return;
-                if (response.isSuccessful()) {
-                    Toast.makeText(ActividadDetalleEvento.this, "Evento eliminado", Toast.LENGTH_SHORT).show();
-                    finish();
-                } else Toast.makeText(ActividadDetalleEvento.this,
-                        "No se pudo eliminar (" + response.code() + ")", Toast.LENGTH_LONG).show();
-            }
-            @Override public void onFailure(Call<String> call, Throwable error) {
-                if (!isFinishing()) Toast.makeText(ActividadDetalleEvento.this,
-                        "Sin conexión al eliminar", Toast.LENGTH_LONG).show();
-            }
-        });
+    /** QR del refugio dueño (yapeQrCode). Sin QR no se muestra la sección. */
+    private void cargarQrRefugio(String shelterId) {
+        if (shelterId == null || shelterId.isEmpty()) return;
+        ApiApp.client().shelters.getShelterById(shelterId).enqueue(
+                new Callback<com.patitasalrescate.data.remote.dto.ShelterResponse>() {
+                    @Override public void onResponse(
+                            Call<com.patitasalrescate.data.remote.dto.ShelterResponse> call,
+                            Response<com.patitasalrescate.data.remote.dto.ShelterResponse> response) {
+                        if (isFinishing() || isDestroyed()) return;
+                        if (!response.isSuccessful() || response.body() == null
+                                || response.body().yapeQrCode == null
+                                || response.body().yapeQrCode.isEmpty()) return;
+                        layoutQr.setVisibility(View.VISIBLE);
+                        Glide.with(ActividadDetalleEvento.this)
+                                .load(response.body().yapeQrCode)
+                                .fitCenter()
+                                .into(imgQr);
+                    }
+                    @Override public void onFailure(
+                            Call<com.patitasalrescate.data.remote.dto.ShelterResponse> call,
+                            Throwable error) { }
+                });
     }
 
     private void verEnMapa() {

@@ -14,4 +14,8 @@ public final class PetSummaryResponse {
     public Boolean isYours;
     @SerializedName("available")
     public Boolean available;
+    @SerializedName("isAdoptable")
+    public Boolean isAdoptable;
+    @SerializedName("createdAt")
+    public String createdAt;
 }

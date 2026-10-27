@@ -45,24 +45,26 @@
 
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/imgAvatarUsuario"
-                        android:layout_width="112dp"
-                        android:layout_height="112dp"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
                         android:background="#E0E0E0"
-                        android:scaleType="centerCrop"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="false"
+                        android:padding="6dp"
                         android:src="@drawable/rj_persona"
                         app:shapeAppearanceOverlay="@style/ShapeAppearance.Patitas.Circular"
                         app:strokeColor="@color/blanco"
-                        app:strokeWidth="4dp"
+                        app:strokeWidth="3dp"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent" />
 
                     <ImageButton
                         android:id="@+id/btnCambiarFoto"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
                         android:background="@drawable/bg_boton_circular_marron"
                         android:contentDescription="Cambiar foto de perfil"
-                        android:padding="7dp"
+                        android:padding="8dp"
                         android:src="@android:drawable/ic_menu_camera"
                         app:layout_constraintBottom_toBottomOf="@id/imgAvatarUsuario"
                         app:layout_constraintEnd_toEndOf="@id/imgAvatarUsuario"
@@ -73,21 +75,22 @@
                     android:id="@+id/txtNombreUsuario"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
+                    android:layout_marginTop="16dp"
                     android:fontFamily="@font/chewy"
                     android:textColor="@color/texto_titulo"
-                    android:textSize="22sp"
+                    android:textSize="24sp"
+                    android:letterSpacing="0.02"
                     tools:text="Juan Pérez" />
 
-                <TextView
-                    android:id="@+id/txtTipoUsuario"
+                <LinearLayout
+                    android:id="@+id/layoutRolesBadges"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@color/verde_persona"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    tools:text="Adoptante" />
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
             </LinearLayout>
 
             <com.google.android.material.card.MaterialCardView
@@ -95,15 +98,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 app:cardBackgroundColor="@color/blanco"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="3dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp"
                 app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="8dp">
+                    android:padding="10dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -113,18 +116,18 @@
                         android:textColor="@color/textoSecundario"
                         android:textSize="12sp"
                         android:textStyle="bold"
-                        android:letterSpacing="0.05" />
+                        android:letterSpacing="0.12" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:padding="12dp">
+                        android:padding="14dp">
 
                         <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
                             android:background="@drawable/bg_circulo_icono_claro"
                             android:contentDescription="NombreIcon"
                             android:padding="9dp"
@@ -141,12 +144,12 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Nombre completo"
+                                android:text="Nombres"
                                 android:textColor="@color/textoSecundario"
                                 android:textSize="12sp" />
 
                             <EditText
-                                android:id="@+id/txtNombreUsuarioInput"
+                                android:id="@+id/txtNombresUsuarioInput"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@android:color/transparent"
@@ -156,15 +159,15 @@
                                 android:textColor="@color/texto_busqueda"
                                 android:textSize="16sp"
                                 tools:ignore="TouchTargetSizeCheck"
-                                tools:text="Juan Pérez" />
+                                tools:text="Juan" />
                         </LinearLayout>
 
                         <ImageButton
-                            android:id="@+id/btnEditarNombre"
+                            android:id="@+id/btnEditarNombres"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="Editar nombre"
+                            android:contentDescription="Editar nombres"
                             android:src="@android:drawable/ic_menu_edit"
                             app:tint="@color/marronPrimario" />
                     </LinearLayout>
@@ -181,11 +184,72 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:padding="12dp">
+                        android:padding="14dp">
 
                         <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="@drawable/bg_circulo_icono_claro"
+                            android:contentDescription="ApellidosIcon"
+                            android:padding="9dp"
+                            android:src="@drawable/rj_persona"
+                            app:tint="@color/marronPrimario" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Apellidos"
+                                android:textColor="@color/textoSecundario"
+                                android:textSize="12sp" />
+
+                            <EditText
+                                android:id="@+id/txtApellidosUsuarioInput"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:enabled="false"
+                                android:inputType="textCapWords"
+                                android:padding="0dp"
+                                android:textColor="@color/texto_busqueda"
+                                android:textSize="16sp"
+                                tools:ignore="TouchTargetSizeCheck"
+                                tools:text="Pérez" />
+                        </LinearLayout>
+
+                        <ImageButton
+                            android:id="@+id/btnEditarApellidos"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Editar apellidos"
+                            android:src="@android:drawable/ic_menu_edit"
+                            app:tint="@color/marronPrimario" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="66dp"
+                        android:background="@color/textoSecundario"
+                        android:alpha="0.15" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="14dp">
+
+                        <ImageView
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
                             android:background="@drawable/bg_circulo_icono_claro"
                             android:contentDescription="CorreoIcon"
                             android:padding="9dp"
@@ -242,15 +306,15 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:padding="12dp">
+                        android:padding="14dp">
 
                         <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
                             android:background="@drawable/bg_circulo_icono_claro"
-                            android:contentDescription="TelefonoIcon"
+                            android:contentDescription="NacimientoIcon"
                             android:padding="9dp"
-                            android:src="@drawable/rj_telefono"
+                            android:src="@android:drawable/ic_menu_today"
                             app:tint="@color/marronPrimario" />
 
                         <LinearLayout
@@ -263,33 +327,96 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Teléfono"
+                                android:text="Fecha de nacimiento"
                                 android:textColor="@color/textoSecundario"
                                 android:textSize="12sp" />
 
                             <EditText
-                                android:id="@+id/txtCelularUsuarioInput"
+                                android:id="@+id/txtNacimientoUsuarioInput"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@android:color/transparent"
                                 android:enabled="false"
-                                android:inputType="phone"
+                                android:focusable="false"
+                                android:inputType="none"
                                 android:minWidth="48dp"
                                 android:minHeight="48dp"
                                 android:padding="0dp"
                                 android:textColor="@color/texto_busqueda"
                                 android:textSize="16sp"
-                                tools:text="+51 987 654 321" />
+                                tools:text="6, Ago 2026" />
                         </LinearLayout>
 
                         <ImageButton
-                            android:id="@+id/btnEditarCelular"
+                            android:id="@+id/btnEditarNacimiento"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="Editar teléfono"
+                            android:contentDescription="Editar fecha de nacimiento"
                             android:src="@android:drawable/ic_menu_edit"
-                            app:tint="@color/marronPrimario"/>
+                            app:tint="@color/marronPrimario" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="66dp"
+                        android:background="@color/textoSecundario"
+                        android:alpha="0.15" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="14dp">
+
+                        <ImageView
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="@drawable/bg_circulo_icono_claro"
+                            android:contentDescription="SexoIcon"
+                            android:padding="9dp"
+                            android:src="@drawable/rj_persona"
+                            app:tint="@color/marronPrimario" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Sexo"
+                                android:textColor="@color/textoSecundario"
+                                android:textSize="12sp" />
+
+                            <EditText
+                                android:id="@+id/txtSexoUsuarioInput"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:enabled="false"
+                                android:focusable="false"
+                                android:minWidth="48dp"
+                                android:minHeight="48dp"
+                                android:padding="0dp"
+                                android:textColor="@color/texto_busqueda"
+                                android:textSize="16sp"
+                                tools:text="Masculino" />
+                        </LinearLayout>
+
+                        <ImageButton
+                            android:id="@+id/btnEditarSexo"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Editar sexo"
+                            android:src="@android:drawable/ic_menu_edit"
+                            app:tint="@color/marronPrimario" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -312,8 +439,8 @@
                     android:focusable="true"
                     android:foreground="?attr/selectableItemBackground"
                     app:cardBackgroundColor="@color/blanco"
-                    app:cardCornerRadius="14dp"
-                    app:cardElevation="2dp"
+                    app:cardCornerRadius="18dp"
+                    app:cardElevation="3dp"
                     app:strokeWidth="0dp">
 
                     <LinearLayout
@@ -323,8 +450,8 @@
                         android:padding="14dp">
 
                         <ImageView
-                            android:layout_width="34dp"
-                            android:layout_height="34dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center"
                             android:background="@drawable/bg_circulo_icono_verde"
                             android:contentDescription="FavoritosIcon"
@@ -335,7 +462,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="12dp"
                             android:fontFamily="@font/chewy"
                             android:text="Favoritos"
                             android:layout_gravity="center"
@@ -362,8 +489,8 @@
                     android:focusable="true"
                     android:foreground="?attr/selectableItemBackground"
                     app:cardBackgroundColor="@color/blanco"
-                    app:cardCornerRadius="14dp"
-                    app:cardElevation="2dp"
+                    app:cardCornerRadius="18dp"
+                    app:cardElevation="3dp"
                     app:strokeWidth="0dp">
 
                     <LinearLayout
@@ -373,8 +500,8 @@
                         android:padding="14dp">
 
                         <ImageView
-                            android:layout_width="34dp"
-                            android:layout_height="34dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center"
                             android:background="@drawable/bg_circulo_icono_verde"
                             android:contentDescription="ModoRefugioIcon"
@@ -385,7 +512,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="12dp"
                             android:fontFamily="@font/chewy"
                             android:id="@+id/txtAccesoRefugio"
                             android:text="Modo Refugio"
@@ -416,7 +543,8 @@
                 android:text="Guardar cambios"
                 android:textColor="@color/blanco"
                 android:textSize="16sp"
-                app:cornerRadius="16dp"
+                android:letterSpacing="0.03"
+                app:cornerRadius="28dp"
                 app:icon="@android:drawable/ic_menu_save"
                 app:iconTint="@color/blanco" />
 
@@ -431,7 +559,8 @@
                 android:textSize="14sp"
                 android:text="Cerrar sesión"
                 android:textColor="@color/blanco"
-                app:cornerRadius="16dp" />
+                android:letterSpacing="0.03"
+                app:cornerRadius="28dp" />
 
         </LinearLayout>
     </ScrollView>

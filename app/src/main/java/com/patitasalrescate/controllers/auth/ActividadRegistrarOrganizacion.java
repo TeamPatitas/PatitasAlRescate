@@ -22,8 +22,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /** Creates a shelter for the signed-in user. Approval remains a separate dev action. */
-public class ActividadRegistrarOrganizacion extends AppCompatActivity {
-    private EditText nombre, direccion;
+public class ActividadRegistrarOrganizacion extends com.patitasalrescate.controllers.base.BaseActivity {
+    private EditText nombre, direccion, telefono;
     private Button guardar;
     private Uri foto;
 
@@ -41,8 +41,9 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
         }
         nombre = findViewById(R.id.rj_text_org_nombre);
         direccion = findViewById(R.id.rj_text_org_direccion);
+        telefono = findViewById(R.id.rj_text_org_telefono);
         guardar = findViewById(R.id.rj_button_registrar_organizacion);
-        ocultarCampo(R.id.rj_text_org_telefono);
+        // phoneNumber es requerido por la API: el campo teléfono queda visible.
         ocultarCampo(R.id.rj_text_org_correo);
         ocultarCampo(R.id.rj_text_org_password);
         ActivityResultLauncher<String> elegirFoto = registerForActivityResult(
@@ -64,11 +65,14 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
     }
 
     private void crearRefugio() {
+        if (!ApiApp.exigirOnline(this)) return;
         CreateShelterRequest request = new CreateShelterRequest();
         request.name = nombre.getText().toString().trim();
         request.address = direccion.getText().toString().trim();
+        request.phoneNumber = telefono.getText().toString().trim();
         if (request.name.isEmpty()) { nombre.setError("Ingresa un nombre"); return; }
         if (request.address.isEmpty()) { direccion.setError("Ingresa una dirección"); return; }
+        if (request.phoneNumber.isEmpty()) { telefono.setError("Ingresa un teléfono"); return; }
         try { if (foto != null) request.photo = ApiApp.upload(this, foto); }
         catch (IOException error) { Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show(); return; }
         guardar.setEnabled(false);
@@ -77,6 +81,13 @@ public class ActividadRegistrarOrganizacion extends AppCompatActivity {
                 if (isFinishing() || isDestroyed()) return;
                 guardar.setEnabled(true);
                 if (response.isSuccessful()) {
+                    // Guardar solicitud: shelterId + momento, para ocultar "Solicitar aprobación" por 24h.
+                    PatitasSessionManager session =
+                            PatitasSessionManager.getInstance(ActividadRegistrarOrganizacion.this);
+                    if (response.body() != null && response.body().id != null) {
+                        session.setShelterId(response.body().id);
+                    }
+                    session.setShelterRequestAt(System.currentTimeMillis());
                     Toast.makeText(ActividadRegistrarOrganizacion.this,
                             "Refugio enviado. Un administrador debe habilitarlo.", Toast.LENGTH_LONG).show();
                     finish();

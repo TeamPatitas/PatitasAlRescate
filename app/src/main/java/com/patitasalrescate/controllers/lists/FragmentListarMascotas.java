@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.patitasalrescate.R;
 import com.patitasalrescate.utils.PatitasSessionManager;
-import com.patitasalrescate.data.mock.DAOMascota;
 import com.patitasalrescate.data.remote.dto.PetSummaryResponse;
 import com.patitasalrescate.utils.ApiApp;
 import com.patitasalrescate.utils.ApiPages;
@@ -34,12 +31,9 @@ import java.util.List;
 public class FragmentListarMascotas extends Fragment {
     private RecyclerView recycler;
     private TextView txtVacio;
-    private Button btnEnAdopcion, btnAdoptados;
-    private DAOMascota dao;
     private List<Mascota> listaCacheRefugio;
     private boolean esModoRefugio = false;
     private String idUsuario;
-    private boolean verAdoptadosRefugio = false;
 
     @Nullable
     @Override
@@ -57,12 +51,10 @@ public class FragmentListarMascotas extends Fragment {
             return insets;
         });
 
-        dao = new DAOMascota(requireContext());
-        listaCacheRefugio = new ArrayList<>();
-
         PatitasSessionManager session = PatitasSessionManager.getInstance(requireContext());
         esModoRefugio = session.isRefugio();
         idUsuario = session.getUserId();
+        listaCacheRefugio = new ArrayList<>();
 
         if (!ApiApp.client().session.isAuthenticated()) {
             Toast.makeText(requireContext(), "Error de sesión. Vuelve a ingresar.", Toast.LENGTH_SHORT).show();
@@ -75,30 +67,10 @@ public class FragmentListarMascotas extends Fragment {
         recycler = view.findViewById(R.id.recycler_mascotas);
         recycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         txtVacio = view.findViewById(R.id.txt_lista_vacia);
-        LinearLayout lyFiltros = view.findViewById(R.id.layout_filtros_refugio);
-        btnEnAdopcion = view.findViewById(R.id.btn_filtro_en_adopcion);
-        btnAdoptados = view.findViewById(R.id.btn_filtro_adoptados);
+        // Sin pestañas: se listan todas, cada tarjeta lleva su badge Disponible/No disponible.
+        view.findViewById(R.id.layout_filtros_refugio).setVisibility(View.GONE);
 
-        if (esModoRefugio) {
-            updateTitle("Gestionar Mis Mascotas");
-            lyFiltros.setVisibility(View.VISIBLE);
-
-            btnEnAdopcion.setOnClickListener(v -> {
-                verAdoptadosRefugio = false;
-                actualizarEstiloFiltros();
-                filtrarYMostrarRefugio();
-            });
-
-            btnAdoptados.setOnClickListener(v -> {
-                verAdoptadosRefugio = true;
-                actualizarEstiloFiltros();
-                filtrarYMostrarRefugio();
-            });
-            actualizarEstiloFiltros();
-        } else {
-            updateTitle("Mascotas en Adopción");
-            lyFiltros.setVisibility(View.GONE);
-        }
+        updateTitle(esModoRefugio ? "Mis Mascotas" : "Mascotas en Adopción");
     }
 
     private void updateTitle(String title) {
@@ -130,6 +102,8 @@ public class FragmentListarMascotas extends Fragment {
                     List<Mascota> lista = new ArrayList<>();
                     for (PetSummaryResponse pet : pets) {
                         Mascota item = ApiApp.pet(pet);
+                        // Modo adoptante: solo available=true ("DISPONIBLE").
+                        // Modo refugio: entran todas, se separan abajo por filtro.
                         if (!esModoRefugio && !"DISPONIBLE".equals(item.getEstado())) continue;
                         lista.add(item);
                     }
@@ -148,7 +122,7 @@ public class FragmentListarMascotas extends Fragment {
         if (!isAdded()) return;
         if (index >= resumenes.size()) {
             listaCacheRefugio = propias;
-            filtrarYMostrarRefugio();
+            mostrarListaEnRecycler(listaCacheRefugio);
             return;
         }
         ApiApp.client().pets.getPetById(resumenes.get(index).getIdMascota())
@@ -169,27 +143,11 @@ public class FragmentListarMascotas extends Fragment {
                 });
     }
 
-    private void filtrarYMostrarRefugio() {
-        if (listaCacheRefugio == null) return;
-
-        List<Mascota> listaFiltrada = new ArrayList<>();
-        for (Mascota m : listaCacheRefugio) {
-            String estado = m.getEstado() != null ? m.getEstado() : "DISPONIBLE";
-
-            if (verAdoptadosRefugio) {
-                if ("ADOPTADO".equals(estado)) listaFiltrada.add(m);
-            } else {
-                if (!"ADOPTADO".equals(estado)) listaFiltrada.add(m);
-            }
-        }
-        mostrarListaEnRecycler(listaFiltrada);
-    }
-
     private void mostrarListaEnRecycler(List<Mascota> listaFinal) {
         if (listaFinal == null || listaFinal.isEmpty()) {
             recycler.setVisibility(View.GONE);
             txtVacio.setVisibility(View.VISIBLE);
-            txtVacio.setText(esModoRefugio ? "No tienes mascotas en esta categoría" : "No hay mascotas disponibles 🐾");
+            txtVacio.setText(esModoRefugio ? "No tienes mascotas registradas" : "No hay mascotas disponibles 🐾");
         } else {
             recycler.setVisibility(View.VISIBLE);
             txtVacio.setVisibility(View.GONE);
@@ -197,20 +155,9 @@ public class FragmentListarMascotas extends Fragment {
             AdaptadorMascotas adapter = new AdaptadorMascotas(
                     listaFinal,
                     esModoRefugio,
-                    requireContext(),
-                    dao
+                    requireContext()
             );
             recycler.setAdapter(adapter);
-        }
-    }
-
-    private void actualizarEstiloFiltros() {
-        if (verAdoptadosRefugio) {
-            btnAdoptados.setAlpha(1.0f);
-            btnEnAdopcion.setAlpha(0.5f);
-        } else {
-            btnEnAdopcion.setAlpha(1.0f);
-            btnAdoptados.setAlpha(0.5f);
         }
     }
 }

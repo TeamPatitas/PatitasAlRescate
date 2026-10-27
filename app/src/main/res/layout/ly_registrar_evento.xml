@@ -50,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:hint="Fecha y hora (AAAA-MM-DD HH:MM)"
+                android:hint="Fecha y hora (toca para elegir)"
                 app:boxStrokeColor="@color/marronPrimario"
                 app:hintTextColor="@color/marronOscuro">
 
@@ -58,7 +58,8 @@
                     android:id="@+id/edt_fecha_evento"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
+                    android:focusable="false"
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -83,63 +84,73 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Ubicación (Coordenadas)"
+                android:text="Ubicación"
                 android:textColor="@color/marronOscuro"
                 android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:orientation="horizontal">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    android:hint="Latitud"
-                    app:boxStrokeColor="@color/marronPrimario">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edt_latitud_evento"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal|numberSigned" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="Longitud"
-                    app:boxStrokeColor="@color/marronPrimario">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edt_longitud_evento"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal|numberSigned" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:hint="Toca para seleccionar foto"
+                android:layout_marginBottom="8dp"
+                android:hint="Coordenadas (-7.15, -78.51) o enlace de Maps"
                 app:boxStrokeColor="@color/marronPrimario"
                 app:hintTextColor="@color/marronOscuro">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edt_foto_evento"
+                    android:id="@+id/edt_ubicacion_evento"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textUri" />
+                    android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/btn_mapa_evento"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="Abrir Google Maps"
+                android:textColor="@color/marronPrimario" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Foto"
+                android:textColor="@color/marronOscuro"
+                android:textStyle="bold" />
+
+            <FrameLayout
+                android:id="@+id/frame_foto_evento"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_input_rounded"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <ImageView
+                    android:id="@+id/img_preview_evento"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="Foto del evento"
+                    android:scaleType="centerCrop"
+                    android:src="@android:drawable/ic_menu_gallery" />
+
+                <ImageButton
+                    android:id="@+id/btn_foto_evento"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="bottom|end"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/bg_boton_circular_marron"
+                    android:contentDescription="Agregar foto"
+                    android:padding="11dp"
+                    android:src="@android:drawable/ic_menu_edit"
+                    app:tint="@color/blanco" />
+            </FrameLayout>
 
         </LinearLayout>
     </ScrollView>

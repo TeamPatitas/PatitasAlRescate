@@ -18,4 +18,6 @@ public final class UpdatePetRequest {
     public String story;
     @SerializedName("available")
     public Boolean available;
+    @SerializedName("isAdoptable")
+    public Boolean isAdoptable;
 }

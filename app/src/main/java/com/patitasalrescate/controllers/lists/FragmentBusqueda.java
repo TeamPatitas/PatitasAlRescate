@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.patitasalrescate.R;
-import com.patitasalrescate.data.mock.DAOMascota;
 import com.patitasalrescate.model.Mascota;
 import com.patitasalrescate.ui.AdaptadorMascotas;
 import com.patitasalrescate.utils.ApiApp;
@@ -40,7 +39,6 @@ public class FragmentBusqueda extends Fragment {
     private EditText txtFiltro;
     private Button btnBuscar;
     private RecyclerView recycler;
-    private DAOMascota daoMascota;
 
     @Nullable
     @Override
@@ -59,7 +57,6 @@ public class FragmentBusqueda extends Fragment {
         recycler = view.findViewById(R.id.recycler_mascotas);
 
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        daoMascota = new DAOMascota(getContext());
 
         ArrayAdapter<String> adapterSpinner = new ArrayAdapter<>(
                 requireContext(),
@@ -114,13 +111,15 @@ public class FragmentBusqueda extends Fragment {
                     coincide = m.getNombre() != null && m.getNombre().toLowerCase().contains(texto);
                     break;
                 case "Especie":
-                    coincide = m.getEspecie() != null && m.getEspecie().toLowerCase().contains(texto);
+                    coincide = contiene(m.getEspecie(), texto)
+                            || contiene(etiquetaEspecie(m.getEspecie()), texto);
                     break;
                 case "Raza":
                     coincide = m.getRaza() != null && m.getRaza().toLowerCase().contains(texto);
                     break;
                 case "Sexo":
-                    coincide = m.getSexo() != null && m.getSexo().toLowerCase().contains(texto);
+                    coincide = contiene(m.getSexo(), texto)
+                            || contiene(etiquetaGenero(m.getSexo()), texto);
                     break;
             }
             if (coincide) resultados.add(m);
@@ -129,10 +128,29 @@ public class FragmentBusqueda extends Fragment {
         AdaptadorMascotas adapter = new AdaptadorMascotas(
                 resultados,
                 false,
-                getContext(),
-                daoMascota
+                getContext()
         );
         recycler.setAdapter(adapter);
+    }
+
+    private boolean contiene(String valor, String texto) {
+        return valor != null && valor.toLowerCase().contains(texto);
+    }
+
+    /** Traduce valores crudos del enum para que "perro" también encuentre "DOG". */
+    private String etiquetaEspecie(String crudo) {
+        if (crudo == null) return null;
+        if (crudo.equalsIgnoreCase("DOG") || crudo.equalsIgnoreCase("Perro")) return "Perro";
+        if (crudo.equalsIgnoreCase("CAT") || crudo.equalsIgnoreCase("Gato")) return "Gato";
+        if (crudo.equalsIgnoreCase("OTHER") || crudo.equalsIgnoreCase("Otro")) return "Otro";
+        return crudo;
+    }
+
+    private String etiquetaGenero(String crudo) {
+        if (crudo == null) return null;
+        if (crudo.equalsIgnoreCase("MALE") || crudo.equalsIgnoreCase("Masculino")) return "Masculino";
+        if (crudo.equalsIgnoreCase("FEMALE") || crudo.equalsIgnoreCase("Femenino")) return "Femenino";
+        return crudo;
     }
 
     private void updateTitle(String title) {

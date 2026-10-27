@@ -20,6 +20,8 @@ public class Mascota {
     @SerializedName("historia") @Expose private String historia;
     @SerializedName("fotos") @Expose private List<String> fotos = new ArrayList<>();
     @SerializedName("estado") @Expose private String estado; // Disponible, En proceso, Adoptado
+    private boolean adoptable;
+    private String fechaPublicacion;
 
 
     public Mascota() {}
@@ -64,4 +66,8 @@ public class Mascota {
     public void setFotos(List<String> fotos) { this.fotos = fotos; }
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
+    public boolean esAdoptable() { return adoptable; }
+    public void setAdoptable(boolean adoptable) { this.adoptable = adoptable; }
+    public String getFechaPublicacion() { return fechaPublicacion; }
+    public void setFechaPublicacion(String fechaPublicacion) { this.fechaPublicacion = fechaPublicacion; }
 }

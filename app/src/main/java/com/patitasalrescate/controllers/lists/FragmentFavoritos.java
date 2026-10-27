@@ -19,8 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.patitasalrescate.R;
 import com.patitasalrescate.utils.ApiApp;
 import com.patitasalrescate.utils.PatitasSessionManager;
-import com.patitasalrescate.data.mock.DAOFavoritos;
-import com.patitasalrescate.data.mock.DAOMascota;
 import com.patitasalrescate.model.Mascota;
 import com.patitasalrescate.ui.AdaptadorMascotas;
 
@@ -29,8 +27,6 @@ import java.util.List;
 public class FragmentFavoritos extends Fragment {
     private RecyclerView recycler;
     private TextView txtVacio;
-    private DAOFavoritos daoFavoritos;
-    private DAOMascota daoMascota;
     private String idUsuario;
 
     @Nullable
@@ -52,9 +48,6 @@ public class FragmentFavoritos extends Fragment {
         recycler = view.findViewById(R.id.recycler_mascotas);
         txtVacio = view.findViewById(R.id.txt_lista_vacia);
         recycler.setLayoutManager(new LinearLayoutManager(requireContext()));
-
-        daoFavoritos = new DAOFavoritos(requireContext());
-        daoMascota = new DAOMascota(requireContext());
 
         idUsuario = PatitasSessionManager.getInstance(requireContext()).getUserId();
         if (!ApiApp.client().session.isAuthenticated()) {

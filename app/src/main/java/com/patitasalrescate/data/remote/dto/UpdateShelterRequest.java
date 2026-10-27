@@ -8,10 +8,14 @@ public final class UpdateShelterRequest {
     public String name;
     @SerializedName("address")
     public String address;
+    @SerializedName("phoneNumber")
+    public String phoneNumber;
     @SerializedName("latitude")
     public Double latitude;
     @SerializedName("longitude")
     public Double longitude;
     @SerializedName("photo")
     public UploadFile photo;
+    @SerializedName("yapeQrImage")
+    public UploadFile yapeQrImage;
 }
