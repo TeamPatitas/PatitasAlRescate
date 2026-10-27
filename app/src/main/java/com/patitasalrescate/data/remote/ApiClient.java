@@ -22,6 +22,7 @@ public final class ApiClient {
     public final PetApiRepository pets;
     public final ShelterApiRepository shelters;
     public final StatusApiRepository status;
+    public final EventApiRepository events;
 
     public ApiClient() { this(BASE_URL, new ApiSession(), new OkHttpClient()); }
 
@@ -35,6 +36,7 @@ public final class ApiClient {
                 .retryOnConnectionFailure(false)
                 .followRedirects(false)
                 .followSslRedirects(false)
+                .addInterceptor(new ApiCacheInterceptor())
                 .addInterceptor(chain -> {
                     Request request = chain.request();
                     String path = request.url().encodedPath();
@@ -62,5 +64,6 @@ public final class ApiClient {
         pets = new PetApiRepository(new PetApiDataSource(retrofit));
         shelters = new ShelterApiRepository(new ShelterApiDataSource(retrofit));
         status = new StatusApiRepository(new StatusApiDataSource(retrofit));
+        events = new EventApiRepository(new EventApiDataSource(retrofit));
     }
 }

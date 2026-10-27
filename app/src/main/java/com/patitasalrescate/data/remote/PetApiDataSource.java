@@ -21,6 +21,7 @@ public final class PetApiDataSource implements IPetApiDataSource {
         parts.field("temperament", body.temperament);
         parts.field("story", body.story);
         parts.field("available", body.available);
+        parts.field("isAdoptable", body.isAdoptable);
         parts.files("photos", body.photos);
         return service.createPet(parts.build());
     }

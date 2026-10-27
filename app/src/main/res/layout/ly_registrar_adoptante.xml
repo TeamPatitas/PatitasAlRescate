@@ -46,13 +46,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:hint="\t\t\t\tTu nombre completo"
+                android:hint="\t\t\t\tTus nombres"
                 app:boxStrokeColor="@color/marronPrimario"
                 app:hintTextColor="@color/textoSecundario"
                 app:startIconDrawable="@drawable/rj_persona">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/rj_text_adopt_nombre"
+                    android:id="@+id/rj_text_adopt_nombres"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_input_rounded"
@@ -65,7 +65,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:hint="\t\t\t\tTeléfono"
+                android:hint="\t\t\t\tTus apellidos"
+                app:boxStrokeColor="@color/marronPrimario"
+                app:hintTextColor="@color/textoSecundario"
+                app:startIconDrawable="@drawable/rj_persona">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/rj_text_adopt_apellidos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_rounded"
+                    android:textColor="@color/texto_busqueda"
+                    android:inputType="textCapWords" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:hint="Teléfono (API pendiente)"
+                android:visibility="gone"
                 app:boxStrokeColor="@color/marronPrimario"
                 app:hintTextColor="@color/textoSecundario"
                 app:startIconDrawable="@drawable/rj_telefono">
@@ -130,7 +150,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="Edad"
+                    android:hint="Fecha de nacimiento (toca para elegir)"
                     app:boxStrokeColor="@color/marronPrimario"
                     app:hintTextColor="@color/textoSecundario">
 
@@ -138,10 +158,10 @@
                         android:id="@+id/rj_text_adopt_edad"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="number"
+                        android:focusable="false"
+                        android:inputType="none"
                         android:background="@drawable/bg_input_rounded"
-                        android:textColor="@color/texto_busqueda"
-                        android:maxLength="3" />
+                        android:textColor="@color/texto_busqueda" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <LinearLayout

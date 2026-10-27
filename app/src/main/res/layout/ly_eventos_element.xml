@@ -40,6 +40,19 @@
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <TextView
+            android:id="@+id/txt_cuenta_atras_evento"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="@color/verde_persona"
+            android:layout_marginTop="4dp"
+            tools:text="En 3 días"
+            app:layout_constraintStart_toStartOf="@id/txt_nombre_evento"
+            app:layout_constraintTop_toBottomOf="@id/txt_nombre_evento"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
             android:id="@+id/txt_fecha_evento"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -47,7 +60,7 @@
             android:textColor="@color/texto_card_oscuro"
             tools:text="15 de Octubre, 2023"
             app:layout_constraintStart_toStartOf="@id/txt_nombre_evento"
-            app:layout_constraintTop_toBottomOf="@id/txt_nombre_evento"
+            app:layout_constraintTop_toBottomOf="@id/txt_cuenta_atras_evento"
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <TextView
@@ -74,6 +87,22 @@
             android:textColor="@android:color/white"
             android:backgroundTint="@color/color_navegacion_claro"
             app:layout_constraintTop_toBottomOf="@id/img_foto_evento"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <Button
+            android:id="@+id/btn_eliminar_evento"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Eliminar"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#D32F2F"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:layout_constraintTop_toBottomOf="@id/btn_ver_evento"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 

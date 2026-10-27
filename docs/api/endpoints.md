@@ -17,6 +17,11 @@ Contrato: https://api-patitasalrescate.galaxym4.dev/swagger/v1/swagger.json
 | AuthApiRepository | register | POST | /auth/register | Public |  |
 | AuthApiRepository | verifyEmail | GET | /auth/verify-email | Public |  |
 | AuthApiRepository | sendVerificationEmail | GET | /auth/send-verification-email | User | 1 minuto |
+| EventApiRepository | createEvent | POST | /event | ShelterOwner |  |
+| EventApiRepository | getAllEvents | GET | /event | User |  |
+| EventApiRepository | getEventById | GET | /event/{eventId} | User |  |
+| EventApiRepository | updateEvent | PATCH | /event/{eventId} | ShelterOwner |  |
+| EventApiRepository | deleteEvent | DELETE | /event/{eventId} | ShelterOwner |  |
 | PetApiRepository | createPet | POST | /pet | ShelterOwner |  |
 | PetApiRepository | getAllPets | GET | /pet | User |  |
 | PetApiRepository | getPetById | GET | /pet/{petId} | User |  |
