@@ -29,6 +29,7 @@
         android:background="@color/color_navegacion_claro"
         app:itemIconTint="@color/blanco"
         app:itemTextColor="@color/blanco"
+        app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

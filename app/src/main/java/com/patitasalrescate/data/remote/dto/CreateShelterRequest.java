@@ -6,14 +6,16 @@ import com.google.gson.annotations.SerializedName;
 public final class CreateShelterRequest {
     @SerializedName("name")
     public String name;
-    @SerializedName("address")
-    public String address;
     @SerializedName("phoneNumber")
     public String phoneNumber;
     @SerializedName("latitude")
     public Double latitude;
     @SerializedName("longitude")
     public Double longitude;
+    @SerializedName("showAddress")
+    public Boolean showAddress;
     @SerializedName("photo")
     public UploadFile photo;
+    @SerializedName("yapeQrImage")
+    public UploadFile yapeQrImage;
 }

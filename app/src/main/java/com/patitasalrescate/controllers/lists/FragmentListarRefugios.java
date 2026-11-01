@@ -68,7 +68,10 @@ public class FragmentListarRefugios extends Fragment {
     private void actualizarUI(List<Refugio> lista) {
         if (lista == null || lista.isEmpty()) {
             if (recycler != null) recycler.setVisibility(View.GONE);
-            if (txtVacio != null) txtVacio.setVisibility(View.VISIBLE);
+            if (txtVacio != null) {
+                txtVacio.setText("No hay refugios disponibles");
+                txtVacio.setVisibility(View.VISIBLE);
+            }
         } else {
             if (recycler != null) {
                 recycler.setVisibility(View.VISIBLE);

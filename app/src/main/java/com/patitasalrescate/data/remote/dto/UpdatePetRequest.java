@@ -20,4 +20,8 @@ public final class UpdatePetRequest {
     public Boolean available;
     @SerializedName("isAdoptable")
     public Boolean isAdoptable;
+    @SerializedName("requireForm")
+    public Boolean requireForm;
+    @SerializedName("formId")
+    public String formId;
 }

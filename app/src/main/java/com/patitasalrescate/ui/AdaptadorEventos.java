@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.patitasalrescate.R;
 import com.patitasalrescate.controllers.management.ActividadDetalleEvento;
 import com.patitasalrescate.model.Evento;
@@ -80,7 +82,8 @@ public class AdaptadorEventos extends RecyclerView.Adapter<AdaptadorEventos.Even
                     .load(evento.getFotoUrl())
                     .placeholder(R.drawable.evento_default)
                     .error(R.drawable.evento_default)
-                    .centerCrop()
+                    .transform(new CenterCrop(), new RoundedCorners(
+                            (int) (16 * context.getResources().getDisplayMetrics().density)))
                     .into(holder.imgFoto);
         } else {
             holder.imgFoto.setImageResource(R.drawable.eventos);

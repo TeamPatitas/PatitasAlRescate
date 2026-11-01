@@ -20,6 +20,10 @@ public final class CreatePetRequest {
     public Boolean available;
     @SerializedName("isAdoptable")
     public Boolean isAdoptable;
+    @SerializedName("requireForm")
+    public Boolean requireForm;
+    @SerializedName("formId")
+    public String formId;
     @SerializedName("photos")
     public java.util.List<UploadFile> photos;
 }
