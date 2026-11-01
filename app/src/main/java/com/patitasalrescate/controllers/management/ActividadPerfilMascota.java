@@ -23,9 +23,11 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.patitasalrescate.R;
+import com.patitasalrescate.ui.AdaptadorCarruselFotos;
 import com.patitasalrescate.data.remote.dto.FormResponse;
 import com.patitasalrescate.data.remote.dto.FormResponsePagedResponse;
 import com.patitasalrescate.data.remote.dto.Gender;
@@ -63,6 +65,8 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
     private View lyBotonesAccion;
     private boolean esModoRefugio = false;
     private ImageView imgFoto;
+    private ViewPager2 viewPagerFotos;
+    private TextView txtIndicadorFotos;
     private Button btnAccion;
     private Button btnFavorito;
     private LinearLayout layoutFotos;
@@ -113,6 +117,9 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
         txtNombre.setEllipsize(TextUtils.TruncateAt.END);
         txtEspecie = findViewById(R.id.txt_edit_especie);
         txtRaza = findViewById(R.id.txt_edit_raza);
+        txtRaza.setMaxLines(2);
+        txtRaza.setHorizontallyScrolling(false);
+        txtRaza.setEllipsize(TextUtils.TruncateAt.END);
         txtSexo = findViewById(R.id.txt_edit_sexo);
         txtTemperamento = findViewById(R.id.txt_edit_temperamento);
         txtHistoria = findViewById(R.id.txt_edit_historia);
@@ -129,6 +136,8 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
         txtRequiereFormularioAdoptante = findViewById(R.id.txt_requiere_formulario_adoptante);
         lyBotonesAccion = findViewById(R.id.ly_botones_accion);
         imgFoto = findViewById(R.id.img_detalle_mascota);
+        viewPagerFotos = findViewById(R.id.viewpager_fotos_mascota);
+        txtIndicadorFotos = findViewById(R.id.txt_indicador_fotos);
         btnAccion = findViewById(R.id.btn_accion_principal);
         btnFavorito = findViewById(R.id.btn_favorito);
         layoutFotos = findViewById(R.id.layout_fotos_mascota);
@@ -308,12 +317,40 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
         txtTemperamento.setText(valorSeguro(mascotaActual.getTemperamento()));
         txtHistoria.setText(valorSeguro(mascotaActual.getHistoria()));
 
-        List<String> fotos = mascotaActual.getFotos();
-        if (fotos != null && !fotos.isEmpty()) {
-            Glide.with(this)
-                    .load(fotos.get(0))
-                    .centerCrop()
-                    .into(imgFoto);
+        List<String> fotosValidas = new ArrayList<>();
+        if (mascotaActual != null && mascotaActual.getFotos() != null) {
+            for (String f : mascotaActual.getFotos()) {
+                if (f != null && !f.trim().isEmpty()) {
+                    fotosValidas.add(f.trim());
+                }
+            }
+        }
+
+        if (!esModoRefugio && fotosValidas.size() > 1) {
+            imgFoto.setVisibility(View.GONE);
+            viewPagerFotos.setVisibility(View.VISIBLE);
+            txtIndicadorFotos.setVisibility(View.VISIBLE);
+            txtIndicadorFotos.setText("1/" + fotosValidas.size());
+            viewPagerFotos.setAdapter(new AdaptadorCarruselFotos(this, fotosValidas));
+            viewPagerFotos.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                @Override
+                public void onPageSelected(int position) {
+                    super.onPageSelected(position);
+                    txtIndicadorFotos.setText((position + 1) + "/" + fotosValidas.size());
+                }
+            });
+        } else {
+            viewPagerFotos.setVisibility(View.GONE);
+            txtIndicadorFotos.setVisibility(View.GONE);
+            imgFoto.setVisibility(View.VISIBLE);
+            if (!fotosValidas.isEmpty()) {
+                Glide.with(this)
+                        .load(fotosValidas.get(0))
+                        .centerCrop()
+                        .into(imgFoto);
+            } else {
+                imgFoto.setImageResource(android.R.drawable.ic_menu_gallery);
+            }
         }
         pintarSlots();
         pintarDisponibilidad();
@@ -433,6 +470,9 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
         }
 
         btnFavorito.setVisibility(View.GONE);
+        if (layoutFotos != null) {
+            layoutFotos.setVisibility(View.GONE);
+        }
         habilitarCampos(false);
 
         String estado = mascotaActual.getEstado();
@@ -491,6 +531,9 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
 
         txtRaza.setEnabled(habilitar);
         txtRaza.setBackgroundResource(drawableRes);
+        txtRaza.setMaxLines(2);
+        txtRaza.setHorizontallyScrolling(false);
+        txtRaza.setEllipsize(habilitar ? null : TextUtils.TruncateAt.END);
 
         txtSexo.setEnabled(habilitar);
         txtSexo.setBackgroundResource(drawableRes);
