@@ -1,17 +1,19 @@
 package com.patitasalrescate.controllers.management;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.bumptech.glide.Glide;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -26,23 +28,24 @@ import com.patitasalrescate.utils.ApiApp;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ActividadRegistrarEvento extends com.patitasalrescate.controllers.base.BaseActivity {
-    private static final String TAG = "RegistrarEvento";
-    private static final String[] MIME_FOTOS = {"image/jpeg", "image/png", "image/webp"};
 
-    private EditText edtNombre, edtFecha, edtDescripcion, edtUbicacion;
+    private EditText edtNombre, edtFecha, edtDescripcion;
+    private TextView txtUbicacionSeleccionada;
     private ImageView imgPreview;
     private Button btnGuardar, btnMapa;
     private Evento eventoExistente;
     private Uri fotoSeleccionada;
+    private Double latitudSeleccionada;
+    private Double longitudSeleccionada;
     private ActivityResultLauncher<String> elegirFoto;
+    private ActivityResultLauncher<Intent> selectorUbicacion;
     private Calendar fechaSeleccionada;
 
     @Override protected void onCreate(Bundle state) {
@@ -51,7 +54,7 @@ public class ActividadRegistrarEvento extends com.patitasalrescate.controllers.b
         edtNombre = findViewById(R.id.edt_nombre_evento);
         edtFecha = findViewById(R.id.edt_fecha_evento);
         edtDescripcion = findViewById(R.id.edt_descripcion_evento);
-        edtUbicacion = findViewById(R.id.edt_ubicacion_evento);
+        txtUbicacionSeleccionada = findViewById(R.id.txt_ubicacion_seleccionada);
         imgPreview = findViewById(R.id.img_preview_evento);
         ImageButton btnFoto = findViewById(R.id.btn_foto_evento);
         btnMapa = findViewById(R.id.btn_mapa_evento);
@@ -64,6 +67,25 @@ public class ActividadRegistrarEvento extends com.patitasalrescate.controllers.b
             getSupportActionBar().setTitle(eventoExistente == null ? "Registrar Evento" : "Editar Evento");
         }
         toolbar.setNavigationOnClickListener(v -> finish());
+
+        selectorUbicacion = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        double lat = result.getData().getDoubleExtra(SelectLocation.EXTRA_LATITUD, 0);
+                        double lng = result.getData().getDoubleExtra(SelectLocation.EXTRA_LONGITUD, 0);
+                        String dir = result.getData().getStringExtra(SelectLocation.EXTRA_DIRECCION);
+                        latitudSeleccionada = lat;
+                        longitudSeleccionada = lng;
+                        if (txtUbicacionSeleccionada != null) {
+                            String texto = (dir != null && !dir.trim().isEmpty())
+                                    ? dir.trim()
+                                    : String.format(Locale.US, "%.5f, %.5f", lat, lng);
+                            txtUbicacionSeleccionada.setText(texto);
+                            txtUbicacionSeleccionada.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
 
         elegirFoto = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
             if (uri == null) return;
@@ -84,7 +106,7 @@ public class ActividadRegistrarEvento extends com.patitasalrescate.controllers.b
         btnFoto.setOnClickListener(v -> elegirFoto.launch("image/*"));
 
         edtFecha.setOnClickListener(v -> mostrarCalendario());
-        btnMapa.setOnClickListener(v -> abrirGoogleMaps());
+        btnMapa.setOnClickListener(v -> abrirSelectorUbicacion());
 
         if (eventoExistente != null) {
             edtNombre.setText(eventoExistente.getNombre());
@@ -92,7 +114,9 @@ public class ActividadRegistrarEvento extends com.patitasalrescate.controllers.b
             edtFecha.setText(fechaBonita(fechaSeleccionada));
             edtDescripcion.setText(eventoExistente.getDescripcion());
             if (eventoExistente.getLatitud() != 0 || eventoExistente.getLongitud() != 0) {
-                edtUbicacion.setText(eventoExistente.getLatitud() + ", " + eventoExistente.getLongitud());
+                latitudSeleccionada = eventoExistente.getLatitud();
+                longitudSeleccionada = eventoExistente.getLongitud();
+                resolverYMostrarDireccion(latitudSeleccionada, longitudSeleccionada);
             }
             if (eventoExistente.getFotoUrl() != null && !eventoExistente.getFotoUrl().isEmpty()) {
                 Glide.with(this).load(eventoExistente.getFotoUrl()).centerCrop().into(imgPreview);
@@ -100,6 +124,28 @@ public class ActividadRegistrarEvento extends com.patitasalrescate.controllers.b
             btnGuardar.setText("ACTUALIZAR EVENTO");
         }
         btnGuardar.setOnClickListener(v -> guardar());
+    }
+
+    private void resolverYMostrarDireccion(double lat, double lng) {
+        final String respaldo = String.format(Locale.US, "%.5f, %.5f", lat, lng);
+        if (txtUbicacionSeleccionada != null) {
+            txtUbicacionSeleccionada.setText(respaldo);
+            txtUbicacionSeleccionada.setVisibility(View.VISIBLE);
+        }
+        new Thread(() -> {
+            try {
+                Geocoder geocoder = new Geocoder(ActividadRegistrarEvento.this, new Locale("es", "PE"));
+                List<Address> dirs = geocoder.getFromLocation(lat, lng, 1);
+                if (dirs != null && !dirs.isEmpty() && dirs.get(0).getAddressLine(0) != null) {
+                    final String linea = dirs.get(0).getAddressLine(0).trim();
+                    runOnUiThread(() -> {
+                        if (!isFinishing() && !isDestroyed() && txtUbicacionSeleccionada != null) {
+                            txtUbicacionSeleccionada.setText(linea);
+                        }
+                    });
+                }
+            } catch (Exception ignored) { }
+        }).start();
     }
 
     /** Calendario Material seguido de reloj; muestra "6, Ago 2026 10:30". */
@@ -112,7 +158,6 @@ public class ActividadRegistrarEvento extends com.patitasalrescate.controllers.b
                 .setTheme(R.style.ThemeOverlay_Patitas_CalendarLight)
                 .build();
         datePicker.addOnPositiveButtonClickListener(selection -> {
-            // MaterialDatePicker entrega millis UTC: se reconstruye el día en zona local.
             Calendar utc = Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC"));
             utc.setTimeInMillis(selection);
             mostrarReloj(utc.get(Calendar.YEAR), utc.get(Calendar.MONTH),
@@ -168,125 +213,13 @@ public class ActividadRegistrarEvento extends com.patitasalrescate.controllers.b
         return null;
     }
 
-    /** Abre Google Maps para buscar el lugar; luego se pegan las coordenadas o el enlace aquí. */
-    private void abrirGoogleMaps() {
-        String texto = edtUbicacion.getText().toString().trim();
-        Uri uriMapa = texto.isEmpty()
-                ? Uri.parse("geo:0,0?q=Cajamarca, Perú")
-                : Uri.parse("geo:0,0?q=" + Uri.encode(texto));
-        Intent intent = new Intent(Intent.ACTION_VIEW, uriMapa);
-        intent.setPackage("com.google.android.apps.maps");
-        try {
-            startActivity(intent);
-            Toast.makeText(this, "Busca el lugar, compártelo y pega las coordenadas o el enlace aquí",
-                    Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            try {
-                startActivity(new Intent(Intent.ACTION_VIEW, uriMapa));
-            } catch (Exception ex) {
-                Toast.makeText(this, "No hay aplicación de mapas instalada", Toast.LENGTH_SHORT).show();
-            }
+    private void abrirSelectorUbicacion() {
+        Intent intent = new Intent(this, SelectLocation.class);
+        if (latitudSeleccionada != null && longitudSeleccionada != null) {
+            intent.putExtra(SelectLocation.EXTRA_LATITUD, latitudSeleccionada);
+            intent.putExtra(SelectLocation.EXTRA_LONGITUD, longitudSeleccionada);
         }
-    }
-
-    private boolean esEnlaceMaps(String texto) {
-        if (texto == null) return false;
-        String t = texto.trim().toLowerCase(java.util.Locale.US);
-        return t.startsWith("http") || t.contains("goo.gl") || t.contains("google.")
-                || t.contains("maps.app.goo.gl");
-    }
-
-    /**
-     * Sigue la redirección del enlace corto (ej. maps.app.goo.gl/…) y extrae las
-     * coordenadas de la URL final. Rellena el campo; hay que guardar de nuevo.
-     */
-    private void resolverEnlaceGoogleMaps(String texto) {
-        String url = texto.trim();
-        if (!url.toLowerCase(java.util.Locale.US).startsWith("http")) url = "https://" + url;
-        final String finalUrl = url;
-        Toast.makeText(this, "Resolviendo enlace…", Toast.LENGTH_SHORT).show();
-        Log.d(TAG, "resolviendo " + finalUrl);
-        new Thread(() -> {
-            try {
-                okhttp3.OkHttpClient cliente = new okhttp3.OkHttpClient.Builder()
-                        .followRedirects(true)
-                        .followSslRedirects(true)
-                        .connectTimeout(15, java.util.concurrent.TimeUnit.SECONDS)
-                        .readTimeout(15, java.util.concurrent.TimeUnit.SECONDS)
-                        .build();
-                okhttp3.Request req = new okhttp3.Request.Builder()
-                        .url(finalUrl)
-                        .header("User-Agent", "Mozilla/5.0")
-                        .build();
-                String destino;
-                try (okhttp3.Response resp = cliente.newCall(req).execute()) {
-                    if (!resp.isSuccessful()) throw new java.io.IOException("HTTP " + resp.code());
-                    destino = resp.request().url().toString();
-                }
-                Log.d(TAG, "enlace resuelto: " + destino);
-                String[] coords = extraerCoordsUrl(destino);
-                runOnUiThread(() -> {
-                    if (isFinishing() || isDestroyed()) return;
-                    if (coords != null) {
-                        edtUbicacion.setText(coords[0] + ", " + coords[1]);
-                        edtUbicacion.setError(null);
-                        Toast.makeText(this, "Ubicación detectada, revisa y guarda de nuevo",
-                                Toast.LENGTH_LONG).show();
-                    } else {
-                        edtUbicacion.setError("No se hallaron coordenadas en el enlace");
-                    }
-                });
-            } catch (Exception e) {
-                Log.e(TAG, "no se pudo resolver el enlace: " + e, e);
-                runOnUiThread(() -> {
-                    if (!isFinishing() && !isDestroyed()) {
-                        Toast.makeText(this, "No se pudo abrir el enlace, revisa tu conexión",
-                                Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        }).start();
-    }
-
-    /** Extrae {lat, lng} de una URL de Maps: @lat,lng · !3dlat!4dlng · ll=/q=/query=. */
-    private String[] extraerCoordsUrl(String url) {
-        if (url == null) return null;
-        Matcher arroba = Pattern.compile("@(-?\\d+(\\.\\d+)?),(-?\\d+(\\.\\d+)?)").matcher(url);
-        if (arroba.find()) return validarCoords(arroba.group(1), arroba.group(3));
-        Matcher lugar = Pattern.compile("!3d(-?\\d+(\\.\\d+)?)!4d(-?\\d+(\\.\\d+)?)").matcher(url);
-        if (lugar.find()) return validarCoords(lugar.group(1), lugar.group(3));
-        Matcher param = Pattern.compile("[?&](?:ll|q|query)=(-?\\d+(\\.\\d+)?),(-?\\d+(\\.\\d+)?)")
-                .matcher(url);
-        if (param.find()) return validarCoords(param.group(1), param.group(3));
-        return null;
-    }
-
-    private String[] validarCoords(String latTexto, String lngTexto) {
-        try {
-            double lat = Double.parseDouble(latTexto);
-            double lng = Double.parseDouble(lngTexto);
-            if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
-            return new String[]{String.valueOf(lat), String.valueOf(lng)};
-        } catch (NumberFormatException e) {
-            return null;
-        }
-    }
-
-    /**
-     * Acepta "lat, lng" o enlaces de Maps con "@lat,lng". Devuelve {lat, lng} o null si vacío.
-     * Lanza IllegalArgumentException si hay texto inválido.
-     */
-    private String[] parsearUbicacion(String texto) {
-        if (texto == null || texto.trim().isEmpty()) return null;
-        Matcher matcher = Pattern.compile("(-?\\d+(\\.\\d+)?)\\s*,\\s*(-?\\d+(\\.\\d+)?)")
-                .matcher(texto.trim());
-        if (!matcher.find()) throw new IllegalArgumentException("Ubicación inválida");
-        double lat = Double.parseDouble(matcher.group(1));
-        double lng = Double.parseDouble(matcher.group(3));
-        if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-            throw new IllegalArgumentException("Coordenadas fuera de rango");
-        }
-        return new String[]{String.valueOf(lat), String.valueOf(lng)};
+        selectorUbicacion.launch(intent);
     }
 
     private void guardar() {
@@ -300,21 +233,8 @@ public class ActividadRegistrarEvento extends com.patitasalrescate.controllers.b
         }
         String fecha = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.US)
                 .format(fechaSeleccionada.getTime());
-        String textoUbi = edtUbicacion.getText().toString().trim();
-        if (esEnlaceMaps(textoUbi)) {
-            // Se resuelve en segundo plano y rellena el campo; guardar de nuevo después.
-            resolverEnlaceGoogleMaps(textoUbi);
-            return;
-        }
-        String[] coords;
-        try {
-            coords = parsearUbicacion(textoUbi);
-        } catch (IllegalArgumentException e) {
-            edtUbicacion.setError(e.getMessage() + ": usa -7.15, -78.51");
-            return;
-        }
-        String lat = coords == null ? null : coords[0];
-        String lon = coords == null ? null : coords[1];
+        String lat = latitudSeleccionada == null ? null : String.valueOf(latitudSeleccionada);
+        String lon = longitudSeleccionada == null ? null : String.valueOf(longitudSeleccionada);
         CreateEventRequest data = new CreateEventRequest();
         data.name = nombre;
         data.eventDate = fecha;

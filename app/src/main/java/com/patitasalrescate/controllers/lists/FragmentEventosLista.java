@@ -1,6 +1,5 @@
 package com.patitasalrescate.controllers.lists;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,12 +10,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.patitasalrescate.R;
-import com.patitasalrescate.controllers.management.ActividadRegistrarEvento;
 import com.patitasalrescate.model.Evento;
 import com.patitasalrescate.ui.AdaptadorEventos;
 import com.patitasalrescate.utils.PatitasSessionManager;
@@ -66,10 +65,8 @@ public class FragmentEventosLista extends Fragment {
     private void configurarAccesoPorRol() {
         if (PatitasSessionManager.getInstance(requireContext()).isRefugio()) {
             fabAgregar.setVisibility(View.VISIBLE);
-            fabAgregar.setOnClickListener(v -> {
-                Intent intent = new Intent(requireContext(), ActividadRegistrarEvento.class);
-                startActivity(intent);
-            });
+            fabAgregar.setOnClickListener(v ->
+                    Navigation.findNavController(v).navigate(R.id.fragmentRegistrarEvento));
         } else {
             fabAgregar.setVisibility(View.GONE);
         }

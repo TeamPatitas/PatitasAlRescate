@@ -42,7 +42,8 @@
                     android:id="@+id/edt_nombre_evento"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textCapSentences" />
+                    android:inputType="textCapSentences"
+                    android:textColor="@color/textoPrincipal" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -59,7 +60,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:focusable="false"
-                    android:inputType="none" />
+                    android:inputType="none"
+                    android:textColor="@color/textoPrincipal" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -77,7 +79,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="top"
                     android:inputType="textMultiLine"
-                    android:minLines="4" />
+                    android:minLines="4"
+                    android:textColor="@color/textoPrincipal" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -85,40 +88,36 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="Ubicación"
-                android:textColor="@color/marronOscuro"
+                android:textColor="@color/textoPrincipal"
                 android:textStyle="bold" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:hint="Coordenadas (-7.15, -78.51) o enlace de Maps"
-                app:boxStrokeColor="@color/marronPrimario"
-                app:hintTextColor="@color/marronOscuro">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edt_ubicacion_evento"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
 
             <Button
                 android:id="@+id/btn_mapa_evento"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="Abrir Google Maps"
+                android:layout_marginBottom="4dp"
+                android:text="Seleccionar lugar"
                 android:textColor="@color/marronPrimario" />
+
+            <TextView
+                android:id="@+id/txt_ubicacion_seleccionada"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:paddingHorizontal="4dp"
+                android:textColor="@color/textoSecundario"
+                android:textSize="12sp"
+                android:visibility="gone"
+                tools:text="Coordenadas: -7.16170, -78.51280"
+                tools:visibility="visible" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="Foto"
-                android:textColor="@color/marronOscuro"
+                android:textColor="@color/textoPrincipal"
                 android:textStyle="bold" />
 
             <FrameLayout

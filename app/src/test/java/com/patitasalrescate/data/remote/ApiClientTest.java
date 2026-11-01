@@ -58,6 +58,7 @@ public class ApiClientTest {
     @Test public void allNineAdminOperations() throws Exception {
         check(api.admin.healthCheck(), "GET", "/admin/health", 200, "{\"status\":\"Healthy\",\"services\":{}}");
         check(api.admin.getCurrentUser(), "GET", "/admin/user", 200, "{}");
+        check(api.admin.getUser(ID), "GET", "/admin/user/" + ID, 200, "{}");
         UpdateUserRequest update = new UpdateUserRequest();
         update.firstName = "José";
         update.gender = 0;
@@ -121,6 +122,8 @@ public class ApiClientTest {
         create.story = "Rescatada";
         create.available = false;
         create.isAdoptable = true;
+        create.requireForm = true;
+        create.formId = ID;
         create.photos = Arrays.asList(photo("uno.png"), photo("dos.png"));
         RecordedRequest request = check(api.pets.createPet(create), "POST", "/pet", 201, "{}");
         assertTrue(request.getHeader("Content-Type").startsWith("multipart/form-data; boundary="));
@@ -129,15 +132,19 @@ public class ApiClientTest {
         assertTrue(form.contains("CAT"));
         assertTrue(form.contains("false"));
         assertTrue(form.contains("name=\"isAdoptable\""));
+        assertTrue(form.contains("name=\"requireForm\""));
+        assertTrue(form.contains("name=\"formId\""));
         check(api.pets.getAllPets(null, null), "GET", "/pet", 200, "{\"items\":[]}");
         check(api.pets.getPetById(ID), "GET", "/pet/" + ID, 200, "{}");
         UpdatePetRequest update = new UpdatePetRequest();
         update.species = Species.DOG;
         update.available = false;
+        update.requireForm = false;
         JsonObject json = JsonParser.parseString(check(api.pets.updatePet(ID, update), "PATCH",
                 "/pet/" + ID, 200, "{}").getBody().readUtf8()).getAsJsonObject();
         assertEquals("DOG", json.get("species").getAsString());
         assertFalse(json.get("available").getAsBoolean());
+        assertFalse(json.get("requireForm").getAsBoolean());
         assertFalse(json.has("name"));
         check(api.pets.deletePet(ID), "DELETE", "/pet/" + ID, 204, "");
         String photo = check(api.pets.updatePetPhoto(ID, 1, photo("nueva.png")), "PATCH",
@@ -148,15 +155,17 @@ public class ApiClientTest {
     @Test public void allFiveShelterOperationsAndStatus() throws Exception {
         CreateShelterRequest create = new CreateShelterRequest();
         create.name = "Refugio";
-        create.address = "Lima";
+        create.showAddress = true;
         create.phoneNumber = "999888777";
         create.latitude = -12.0;
         create.longitude = -77.0;
         create.photo = photo("refugio.png");
+        create.yapeQrImage = photo("yape.png");
         String form = check(api.shelters.createShelter(create), "POST", "/shelter", 201, "{}")
                 .getBody().readUtf8();
         assertTrue(form.contains("-12.0"));
         assertTrue(form.contains("999888777"));
+        assertTrue(form.contains("name=\"yapeQrImage\"; filename=\"yape.png\""));
         check(api.shelters.getAllShelters(1, 20), "GET", "/shelter?page=1&pageSize=20", 200, "{\"items\":[]}");
         check(api.shelters.getShelterById(ID), "GET", "/shelter/" + ID, 200, "{}");
         UpdateShelterRequest update = new UpdateShelterRequest();
@@ -168,6 +177,14 @@ public class ApiClientTest {
         assertTrue(patch.contains("Content-Type: image/png"));
         assertTrue(patch.contains("name=\"name\""));
         check(api.shelters.deleteShelter(ID), "DELETE", "/shelter/" + ID, 200, "");
+        UploadFormRequest uploadForm = new UploadFormRequest();
+        uploadForm.name = "Formulario Adopción";
+        uploadForm.file = new UploadFile("form.pdf", RequestBody.create(MediaType.get("application/pdf"), new byte[]{1, 2, 3}));
+        String formMp = check(api.shelters.uploadShelterForm(uploadForm), "POST", "/shelter/form", 201, "{}")
+                .getBody().readUtf8();
+        assertTrue(formMp.contains("name=\"name\""));
+        assertTrue(formMp.contains("filename=\"form.pdf\""));
+        check(api.shelters.getShelterForms(1, 10), "GET", "/shelter/forms?page=1&pageSize=10", 200, "{\"items\":[]}");
         server.enqueue(new MockResponse().setBody("Hola pez"));
         assertEquals("Hola pez", api.status.getStatus().execute().body());
         assertNull(server.takeRequest().getHeader("Authorization"));

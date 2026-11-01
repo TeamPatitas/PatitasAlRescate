@@ -6,22 +6,20 @@
         android:id="@+id/itemInicioRefugio"
         android:icon="@drawable/rj_inicio_refugio_24"
         android:title="Inicio" />
-    <item
-        android:id="@+id/itemRegistrarMascotaRefugio"
-        android:icon="@android:drawable/ic_input_add"
-        android:title="Registrar Mascota"
-        />
 
     <item
         android:id="@+id/itemListarMacostaRefugio"
         android:icon="@android:drawable/ic_menu_sort_by_size"
-        android:title="Listar Mascotas"
-       />
+        android:title="Mis Mascotas" />
 
     <item
         android:id="@+id/itemEventosRefugio"
         android:icon="@android:drawable/ic_menu_today"
-        android:title="Eventos" />
+        android:title="Mis Eventos" />
 
+    <item
+        android:id="@+id/itemFormsRefugio"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="Forms" />
 
 </menu>

@@ -18,6 +18,16 @@ public final class EventApiDataSource implements IEventApiDataSource {
         parts.field("eventDate", body.eventDate);
         parts.field("createdAt", body.createdAt);
         parts.field("description", body.description);
+        if (body.location != null) {
+            parts.field("location.latitude", body.location.latitude);
+            parts.field("location.longitude", body.location.longitude);
+            if (body.latitude == null && body.location.latitude != null) {
+                parts.field("latitude", body.location.latitude);
+            }
+            if (body.longitude == null && body.location.longitude != null) {
+                parts.field("longitude", body.location.longitude);
+            }
+        }
         parts.field("latitude", body.latitude);
         parts.field("longitude", body.longitude);
         parts.field("isActive", body.isActive);

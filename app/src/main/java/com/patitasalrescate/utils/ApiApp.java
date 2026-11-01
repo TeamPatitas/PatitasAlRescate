@@ -107,6 +107,31 @@ public final class ApiApp {
         }
     }
 
+    public static UploadFile uploadPdf(Context context, Uri uri) throws IOException {
+        String mime = context.getContentResolver().getType(uri);
+        if (mime == null || mime.equals("application/octet-stream")) {
+            String extUrl = MimeTypeMap.getFileExtensionFromUrl(uri.toString());
+            if ("pdf".equalsIgnoreCase(extUrl)) {
+                mime = "application/pdf";
+            }
+        }
+        if (!"application/pdf".equals(mime)) {
+            throw new IOException("Tipo de archivo no permitido: " + mime + ". Solo se permite PDF.");
+        }
+        String name = "form.pdf";
+        try (InputStream input = context.getContentResolver().openInputStream(uri)) {
+            if (input == null) throw new IOException("No se pudo abrir el archivo PDF");
+            java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+            byte[] buffer = new byte[8192];
+            int count;
+            while ((count = input.read(buffer)) != -1) {
+                if (out.size() + count > 5 * 1024 * 1024) throw new IOException("Archivo PDF mayor a 5 MB");
+                out.write(buffer, 0, count);
+            }
+            return new UploadFile(name, RequestBody.create(MediaType.get(mime), out.toByteArray()));
+        }
+    }
+
     public static Mascota pet(PetSummaryResponse p) {
         Mascota m = new Mascota();
         m.setIdMascota(p.id);
@@ -131,6 +156,8 @@ public final class ApiApp {
         m.setFotos(p.photos == null ? new ArrayList<>() : p.photos);
         m.setEstado(Boolean.TRUE.equals(p.available) ? "DISPONIBLE" : "NO_DISPONIBLE");
         m.setAdoptable(Boolean.TRUE.equals(p.isAdoptable));
+        m.setRequireForm(Boolean.TRUE.equals(p.requireForm));
+        m.setFormId(p.formId);
         m.setFechaPublicacion(p.createdAt);
         return m;
     }
@@ -147,11 +174,19 @@ public final class ApiApp {
         Refugio r = new Refugio();
         r.setIdRefugio(s.id);
         r.setNombre(s.name);
-        r.setDireccion(s.address);
         r.setNumCelular(s.phoneNumber);
         r.setFotoUrl(s.photoUrl);
-        if (s.latitude != null) r.setLatitud(s.latitude);
-        if (s.longitude != null) r.setLongitud(s.longitude);
+        r.setYapeQrCode(s.yapeQrCode);
+        Boolean sa = s.showAddress;
+        if (sa == null && s.location != null) sa = s.location.showAddress;
+        r.setShowAddress(sa);
+        if (s.location != null) {
+            if (s.location.latitude != null) r.setLatitud(s.location.latitude);
+            if (s.location.longitude != null) r.setLongitud(s.location.longitude);
+        } else {
+            if (s.latitude != null) r.setLatitud(s.latitude);
+            if (s.longitude != null) r.setLongitud(s.longitude);
+        }
         return r;
     }
 

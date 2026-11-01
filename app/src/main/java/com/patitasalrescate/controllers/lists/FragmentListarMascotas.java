@@ -14,9 +14,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.patitasalrescate.R;
 import com.patitasalrescate.utils.PatitasSessionManager;
 import com.patitasalrescate.data.remote.dto.PetSummaryResponse;
@@ -31,6 +33,7 @@ import java.util.List;
 public class FragmentListarMascotas extends Fragment {
     private RecyclerView recycler;
     private TextView txtVacio;
+    private FloatingActionButton fabAgregar;
     private List<Mascota> listaCacheRefugio;
     private boolean esModoRefugio = false;
     private String idUsuario;
@@ -67,10 +70,22 @@ public class FragmentListarMascotas extends Fragment {
         recycler = view.findViewById(R.id.recycler_mascotas);
         recycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         txtVacio = view.findViewById(R.id.txt_lista_vacia);
+        fabAgregar = view.findViewById(R.id.fab_agregar_mascota);
+
+        if (fabAgregar != null) {
+            if (esModoRefugio) {
+                fabAgregar.setVisibility(View.VISIBLE);
+                fabAgregar.setOnClickListener(v ->
+                        Navigation.findNavController(v).navigate(R.id.fragmentRegistrarMascota));
+            } else {
+                fabAgregar.setVisibility(View.GONE);
+            }
+        }
+
         // Sin pestañas: se listan todas, cada tarjeta lleva su badge Disponible/No disponible.
         view.findViewById(R.id.layout_filtros_refugio).setVisibility(View.GONE);
 
-        updateTitle(esModoRefugio ? "Mis Mascotas" : "Mascotas en Adopción");
+        updateTitle(esModoRefugio ? "Mis Mascotas" : "Mascotas");
     }
 
     private void updateTitle(String title) {
@@ -149,6 +164,10 @@ public class FragmentListarMascotas extends Fragment {
             txtVacio.setVisibility(View.VISIBLE);
             txtVacio.setText(esModoRefugio ? "No tienes mascotas registradas" : "No hay mascotas disponibles 🐾");
         } else {
+            listaFinal.sort((a, b) -> Long.compare(
+                    ApiApp.millisEvento(b.getFechaPublicacion()),
+                    ApiApp.millisEvento(a.getFechaPublicacion())
+            ));
             recycler.setVisibility(View.VISIBLE);
             txtVacio.setVisibility(View.GONE);
 

@@ -57,5 +57,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     // Security: EncryptedSharedPreferences para guardar token JWT
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
 }
