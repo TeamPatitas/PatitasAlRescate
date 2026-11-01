@@ -11,6 +11,9 @@ interface AdminApiService {
     @GET("admin/user")
     Call<UserResponse> getCurrentUser();
 
+    @GET("admin/user/{id}")
+    Call<UserResponse> getUser(@Path("id") String id);
+
     @Multipart
     @PATCH("admin/user")
     Call<UserResponse> updateCurrentUser(@Part java.util.List<okhttp3.MultipartBody.Part> parts);

@@ -3,7 +3,6 @@ package com.patitasalrescate.controllers.feed;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -12,13 +11,13 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.NavOptions;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,8 +40,26 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ActividadFeedAdoptante extends com.patitasalrescate.controllers.base.BaseActivity {
+
+    private static final int[] DESTINOS_MENU = {
+            R.id.fragmentInicioAdoptante,
+            R.id.fragmentListarMascotas,
+            R.id.fragmentListarRefugios,
+            R.id.fragmentEventosLista
+    };
+
+    private static final int[] ITEMS_MENU = {
+            R.id.itemInicioAdoptante,
+            R.id.itemListarMascotasAdoptante,
+            R.id.itemListarRefugios,
+            R.id.itemEventosAdoptante
+    };
+
     private NavController navController;
+    private BottomNavigationView menu;
     private Menu menuToolbar;
+    private GestureDetector gestureDetector;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +73,7 @@ public class ActividadFeedAdoptante extends com.patitasalrescate.controllers.bas
         PatitasSessionManager session = PatitasSessionManager.getInstance(this);
         NavHostFragment navHost = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentFeedAdoptante);
 
-        if(navHost != null) navController = navHost.getNavController();
+        if (navHost != null) navController = navHost.getNavController();
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -69,10 +86,13 @@ public class ActividadFeedAdoptante extends com.patitasalrescate.controllers.bas
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
+
+        menu = findViewById(R.id.menuInicioAdoptante);
+
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                
+
                 if (destination.getId() == R.id.fragmentInicioAdoptante) {
                     getSupportActionBar().setTitle("Inicio");
                 } else if (destination.getId() == R.id.fragmentListarMascotas) {
@@ -83,11 +103,16 @@ public class ActividadFeedAdoptante extends com.patitasalrescate.controllers.bas
                     getSupportActionBar().setTitle("Eventos");
                 }
             }
+            int idx = indiceDeDestino(destination.getId());
+            if (idx != -1 && menu != null) {
+                MenuItem item = menu.getMenu().findItem(ITEMS_MENU[idx]);
+                if (item != null && !item.isChecked()) {
+                    item.setChecked(true);
+                }
+            }
         });
 
-        BottomNavigationView menu = findViewById(R.id.menuInicioAdoptante);
         menu.setOnItemSelectedListener(item -> {
-            Intent i;
             if (item.getItemId() == R.id.itemInicioAdoptante) {
                 navigate(R.id.fragmentInicioAdoptante);
                 return true;
@@ -98,7 +123,7 @@ public class ActividadFeedAdoptante extends com.patitasalrescate.controllers.bas
                 return true;
             }
 
-            if(item.getItemId()==R.id.itemListarRefugios){
+            if (item.getItemId() == R.id.itemListarRefugios) {
                 navigate(R.id.fragmentListarRefugios);
                 return true;
             }
@@ -110,6 +135,8 @@ public class ActividadFeedAdoptante extends com.patitasalrescate.controllers.bas
 
             return false;
         });
+
+        configurarGestoDeslizamiento();
 
         int destinoExtra = getIntent().getIntExtra("navegarA", -1);
         if (destinoExtra != -1) {
@@ -125,6 +152,57 @@ public class ActividadFeedAdoptante extends com.patitasalrescate.controllers.bas
                 }
             }
         });
+    }
+
+    private void configurarGestoDeslizamiento() {
+        float density = getResources().getDisplayMetrics().density;
+        final float distanciaMinima = 70f * density;
+        final float velocidadMinima = 100f * density;
+
+        gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onFling(@Nullable MotionEvent e1, @NonNull MotionEvent e2,
+                                   float velocityX, float velocityY) {
+                if (e1 == null || navController == null) return false;
+                float diffX = e2.getX() - e1.getX();
+                float diffY = e2.getY() - e1.getY();
+
+                if (Math.abs(diffX) > Math.abs(diffY) * 1.4f
+                        && Math.abs(diffX) > distanciaMinima
+                        && Math.abs(velocityX) > velocidadMinima) {
+                    NavDestination actual = navController.getCurrentDestination();
+                    if (actual == null) return false;
+                    int idx = indiceDeDestino(actual.getId());
+                    if (idx == -1) return false;
+
+                    if (diffX < 0 && idx < ITEMS_MENU.length - 1) {
+                        // Deslizar hacia la izquierda -> siguiente pestaña a la derecha
+                        menu.setSelectedItemId(ITEMS_MENU[idx + 1]);
+                        return true;
+                    } else if (diffX > 0 && idx > 0) {
+                        // Deslizar hacia la derecha -> pestaña anterior a la izquierda
+                        menu.setSelectedItemId(ITEMS_MENU[idx - 1]);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (gestureDetector != null) {
+            gestureDetector.onTouchEvent(ev);
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    private int indiceDeDestino(int destinationId) {
+        for (int i = 0; i < DESTINOS_MENU.length; i++) {
+            if (DESTINOS_MENU[i] == destinationId) return i;
+        }
+        return -1;
     }
 
     @Override
@@ -186,9 +264,13 @@ public class ActividadFeedAdoptante extends com.patitasalrescate.controllers.bas
         NavDestination destinoActual = navController.getCurrentDestination();
 
         if (destinoActual != null && destinoActual.getId() != id) {
+            int idxActual = indiceDeDestino(destinoActual.getId());
+            int idxNuevo = indiceDeDestino(id);
+            boolean haciaIzquierda = idxActual != -1 && idxNuevo != -1 && idxNuevo < idxActual;
+
             NavOptions opciones = new NavOptions.Builder()
-                    .setEnterAnim(R.anim.slide_in_right)
-                    .setExitAnim(R.anim.slide_out_left)
+                    .setEnterAnim(haciaIzquierda ? R.anim.slide_in_left : R.anim.slide_in_right)
+                    .setExitAnim(haciaIzquierda ? R.anim.slide_out_right : R.anim.slide_out_left)
                     .setPopEnterAnim(R.anim.slide_in_left)
                     .setPopExitAnim(R.anim.slide_out_right)
                     .build();

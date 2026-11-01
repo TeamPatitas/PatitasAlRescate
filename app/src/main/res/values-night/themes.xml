@@ -20,7 +20,41 @@
         <!-- Colores de Texto -->
         <item name="android:textColorPrimary">@color/textoPrincipal</item>
         <item name="android:textColorSecondary">@color/textoSecundario</item>
+        <item name="android:editTextColor">@color/texto_busqueda</item>
+        <item name="editTextColor">@color/texto_busqueda</item>
+        <item name="android:textColorHint">@color/textoSecundario</item>
     </style>
 
     <style name="Theme.PatitasAlRescate" parent="Base.Theme.PatitasAlRescate" />
+
+    <style name="ThemeOverlay.Patitas.CalendarLight" parent="ThemeOverlay.Material3.MaterialCalendar">
+        <item name="colorPrimary">#795548</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">#D7CCC8</item>
+        <item name="colorOnPrimaryContainer">#212121</item>
+        <item name="colorSurface">#FFFFFF</item>
+        <item name="colorSurfaceContainerHigh">#FFFFFF</item>
+        <item name="colorOnSurface">#212121</item>
+        <item name="colorOnSurfaceVariant">#5D4037</item>
+        <item name="colorSecondaryContainer">#D7CCC8</item>
+        <item name="colorOnSecondaryContainer">#212121</item>
+        <item name="android:textColorPrimary">#212121</item>
+        <item name="android:textColorSecondary">#5D4037</item>
+    </style>
+
+    <style name="ThemeOverlay.Patitas.TimePickerLight" parent="ThemeOverlay.Material3.MaterialTimePicker">
+        <item name="colorPrimary">#795548</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">#D7CCC8</item>
+        <item name="colorOnPrimaryContainer">#212121</item>
+        <item name="colorSurface">#FFFFFF</item>
+        <item name="colorSurfaceContainerHigh">#FFFFFF</item>
+        <item name="colorSurfaceContainerHighest">#ECE6E2</item>
+        <item name="colorOnSurface">#212121</item>
+        <item name="colorOnSurfaceVariant">#5D4037</item>
+        <item name="colorSecondaryContainer">#D7CCC8</item>
+        <item name="colorOnSecondaryContainer">#212121</item>
+        <item name="android:textColorPrimary">#212121</item>
+        <item name="android:textColorSecondary">#5D4037</item>
+    </style>
 </resources>

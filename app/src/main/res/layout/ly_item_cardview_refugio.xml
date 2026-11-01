@@ -14,15 +14,16 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="12dp">
+        android:padding="16dp">
 
         <ImageView
             android:id="@+id/img_foto_refugio"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
             android:src="@android:drawable/ic_menu_gallery"
             android:scaleType="centerCrop"
-            android:background="#E0E0E0"
+            android:background="@drawable/bg_rounded_image"
+            android:clipToOutline="true"
             android:contentDescription="Foto del refugio"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -32,11 +33,13 @@
             android:id="@+id/txt_nombre_refugio"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
             tools:text="Refugio Patitas"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:textColor="@color/texto_card_oscuro"
             app:layout_constraintStart_toEndOf="@id/img_foto_refugio"
             app:layout_constraintTop_toTopOf="@id/img_foto_refugio"
@@ -50,7 +53,7 @@
             android:layout_marginEnd="8dp"
             tools:text="Dirección..."
             android:textColor="@color/texto_card_oscuro"
-            android:textSize="13sp"
+            android:textSize="14sp"
             app:layout_constraintStart_toStartOf="@id/txt_nombre_refugio"
             app:layout_constraintTop_toBottomOf="@id/txt_nombre_refugio"
             app:layout_constraintEnd_toStartOf="@id/btn_whatsapp_refugio"/>
@@ -59,26 +62,12 @@
             android:id="@+id/btn_whatsapp_refugio"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginEnd="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Contactar"
-            android:src="@android:drawable/ic_menu_call"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btn_ver_mapa"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="#25D366" />
-
-        <ImageButton
-            android:id="@+id/btn_ver_mapa"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Ver mapa"
-            android:src="@android:drawable/ic_dialog_map"
+            android:contentDescription="Contactar por WhatsApp"
+            android:src="@drawable/ic_whatsapp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/blanco" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

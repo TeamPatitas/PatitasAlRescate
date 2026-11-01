@@ -48,10 +48,6 @@
             android:name=".controllers.management.ActividadPerfilMascota"
             android:exported="false" />
         <activity
-            android:name=".controllers.management.ActividadFormularioAdopcion"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name=".controllers.feed.ActividadRegistroExitoso"
             android:exported="false" />
         <activity
@@ -86,6 +82,12 @@
         <activity
             android:name=".controllers.management.ActividadRegistrarEvento"
             android:exported="false" />
+        <activity
+            android:name=".controllers.management.SelectLocation"
+            android:exported="false" />
+        <activity
+            android:name=".controllers.management.UserPublication"
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -97,6 +99,9 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAuAX9uxpCRdKfq96CZmXvATlTi_bT2RZM" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

@@ -36,10 +36,16 @@ public final class ApiCacheInterceptor implements Interceptor {
         }
         Context ctx = ApiApp.appContext();
         if (ctx == null) return chain.proceed(req);
+
+        String cacheControl = req.header("Cache-Control");
+        boolean noCache = "no-cache".equalsIgnoreCase(cacheControl)
+                || "no-store".equalsIgnoreCase(cacheControl);
         String key = ApiCache.key(req.method(), req.url().toString());
 
-        String fresco = ApiCache.getFresh(ctx, key, TTL_MS);
-        if (fresco != null) return cached(req, fresco);
+        if (!noCache) {
+            String fresco = ApiCache.getFresh(ctx, key, TTL_MS);
+            if (fresco != null) return cached(req, fresco);
+        }
 
         try {
             Response resp = chain.proceed(req);

@@ -24,6 +24,10 @@ public final class PetResponse {
     public Boolean available;
     @SerializedName("isAdoptable")
     public Boolean isAdoptable;
+    @SerializedName("requireForm")
+    public Boolean requireForm;
+    @SerializedName("formId")
+    public String formId;
     @SerializedName("createdAt")
     public String createdAt;
     @SerializedName("isYours")

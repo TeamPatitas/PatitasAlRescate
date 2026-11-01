@@ -29,6 +29,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     private ConnectivityManager.NetworkCallback networkCallback;
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        ApiApp.init(this);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         actualizarBanner();
@@ -145,10 +151,5 @@ public abstract class BaseActivity extends AppCompatActivity {
     private int altoBarraEstado() {
         int id = getResources().getIdentifier("status_bar_height", "dimen", "android");
         return id > 0 ? getResources().getDimensionPixelSize(id) : 0;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 }

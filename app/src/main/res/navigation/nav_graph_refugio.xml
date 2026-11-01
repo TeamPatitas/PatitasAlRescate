@@ -18,6 +18,12 @@
         tools:layout="@layout/fg_registrar_mascota" />
 
     <fragment
+        android:id="@+id/fragmentRegistrarEvento"
+        android:name="com.patitasalrescate.controllers.management.FragmentRegistrarEvento"
+        android:label="fg_registrar_evento"
+        tools:layout="@layout/fg_registrar_evento" />
+
+    <fragment
         android:id="@+id/fragmentListarMascotas"
         android:name="com.patitasalrescate.controllers.lists.FragmentListarMascotas"
         android:label="fg_listar_mascotas"
@@ -28,4 +34,10 @@
         android:name="com.patitasalrescate.controllers.lists.FragmentEventosLista"
         android:label="fg_eventos_lista"
         tools:layout="@layout/fg_eventos_lista" />
+
+    <fragment
+        android:id="@+id/fragmentFormsRefugio"
+        android:name="com.patitasalrescate.controllers.lists.FragmentFormsRefugio"
+        android:label="fg_forms_refugio"
+        tools:layout="@layout/fg_forms_refugio" />
 </navigation>

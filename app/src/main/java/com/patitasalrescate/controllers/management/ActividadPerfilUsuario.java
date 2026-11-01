@@ -174,6 +174,20 @@ public class ActividadPerfilUsuario extends com.patitasalrescate.controllers.bas
         findViewById(R.id.btnCambiarModoRefugio).setOnClickListener(v -> onTarjetaRefugioClick());
 
         findViewById(R.id.btnCerrarSesion).setOnClickListener(v -> ApiApp.cerrarSesion(this));
+
+        android.view.View btnSolicitarCodigo = findViewById(R.id.btnSolicitarCodigoVerificacion);
+        if (btnSolicitarCodigo != null) {
+            btnSolicitarCodigo.setOnClickListener(v -> solicitarCodigoVerificacion());
+        }
+
+        androidx.swiperefreshlayout.widget.SwipeRefreshLayout swipe = findViewById(R.id.swipePerfilUsuario);
+        if (swipe != null) {
+            swipe.setColorSchemeColors(getColor(R.color.marronPrimario), getColor(R.color.naranja_asociacion));
+            swipe.setOnRefreshListener(() -> {
+                com.patitasalrescate.utils.ApiCache.invalidateAll(ActividadPerfilUsuario.this);
+                cargarDatosEnVista();
+            });
+        }
     }
 
     private void habilitarCampo(EditText campo) {
@@ -313,6 +327,57 @@ public class ActividadPerfilUsuario extends com.patitasalrescate.controllers.bas
         hayBadges = true;
 
         layoutRolesBadges.setVisibility(hayBadges ? android.view.View.VISIBLE : android.view.View.GONE);
+
+        android.view.View cardAvisoVerificacion = findViewById(R.id.cardAvisoVerificacionUsuario);
+        if (cardAvisoVerificacion != null) {
+            cardAvisoVerificacion.setVisibility(
+                    Boolean.TRUE.equals(user.isEmailConfirmed)
+                            ? android.view.View.GONE
+                            : android.view.View.VISIBLE);
+        }
+    }
+
+    private void solicitarCodigoVerificacion() {
+        if (!ApiApp.exigirOnline(this)) return;
+        android.widget.Button btn = findViewById(R.id.btnSolicitarCodigoVerificacion);
+        if (btn != null) {
+            btn.setEnabled(false);
+            btn.setText("Enviando solicitud...");
+        }
+        ApiApp.client().auth.sendVerificationEmail().enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (isFinishing() || isDestroyed()) return;
+                androidx.swiperefreshlayout.widget.SwipeRefreshLayout swipe = findViewById(R.id.swipePerfilUsuario);
+                if (swipe != null) swipe.setRefreshing(false);
+                if (btn != null) btn.setEnabled(true);
+                if (response.isSuccessful()) {
+                    if (btn != null) btn.setText("Código enviado al correo");
+                    Toast.makeText(ActividadPerfilUsuario.this,
+                            "Se envió el correo de verificación. Revisa tu bandeja de entrada.",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    if (btn != null) btn.setText("Solicitar código para verificar correo");
+                    String msg = response.code() == 429
+                            ? "Espera 1 minuto antes de volver a solicitar el correo"
+                            : "No se pudo solicitar el correo (" + ApiErrors.describe(response) + ")";
+                    Toast.makeText(ActividadPerfilUsuario.this, msg, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                if (isFinishing() || isDestroyed()) return;
+                androidx.swiperefreshlayout.widget.SwipeRefreshLayout swipe = findViewById(R.id.swipePerfilUsuario);
+                if (swipe != null) swipe.setRefreshing(false);
+                if (btn != null) {
+                    btn.setEnabled(true);
+                    btn.setText("Solicitar código para verificar correo");
+                }
+                Toast.makeText(ActividadPerfilUsuario.this,
+                        "Sin conexión al solicitar verificación", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void agregarBadge(String texto, int colorFondo) {
@@ -453,6 +518,8 @@ public class ActividadPerfilUsuario extends com.patitasalrescate.controllers.bas
         ApiApp.client().admin.getCurrentUser().enqueue(new Callback<UserResponse>() {
             @Override public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                 if (isFinishing() || isDestroyed()) return;
+                androidx.swiperefreshlayout.widget.SwipeRefreshLayout swipe = findViewById(R.id.swipePerfilUsuario);
+                if (swipe != null) swipe.setRefreshing(false);
                 if (!response.isSuccessful() || response.body() == null) {
                     Toast.makeText(ActividadPerfilUsuario.this,
                             "No se pudo cargar el perfil (" + ApiErrors.describe(response) + ")",
@@ -494,7 +561,11 @@ public class ActividadPerfilUsuario extends com.patitasalrescate.controllers.bas
                 }
             }
             @Override public void onFailure(Call<UserResponse> call, Throwable error) {
-                if (!isFinishing()) Toast.makeText(ActividadPerfilUsuario.this, "Sin conexión con perfil", Toast.LENGTH_SHORT).show();
+                if (!isFinishing()) {
+                    androidx.swiperefreshlayout.widget.SwipeRefreshLayout swipe = findViewById(R.id.swipePerfilUsuario);
+                    if (swipe != null) swipe.setRefreshing(false);
+                    Toast.makeText(ActividadPerfilUsuario.this, "Sin conexión con perfil", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -526,6 +597,8 @@ public class ActividadPerfilUsuario extends com.patitasalrescate.controllers.bas
         ApiApp.client().admin.updateCurrentUser(update).enqueue(new Callback<UserResponse>() {
             @Override public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                 if (isFinishing() || isDestroyed()) return;
+                androidx.swiperefreshlayout.widget.SwipeRefreshLayout swipe = findViewById(R.id.swipePerfilUsuario);
+                if (swipe != null) swipe.setRefreshing(false);
                 findViewById(R.id.btnGuardarPerfil).setEnabled(true);
                 if (response.isSuccessful()) {
                     Toast.makeText(ActividadPerfilUsuario.this, "Perfil actualizado", Toast.LENGTH_SHORT).show();
