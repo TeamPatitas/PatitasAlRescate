@@ -18,6 +18,12 @@ public class Refugio {
     @SerializedName(value = "foto", alternate = {"fotoUrl", "FotoUrl"})
     private String fotoUrl;
 
+    @SerializedName(value = "yapeQrCode")
+    private String yapeQrCode;
+
+    @SerializedName(value = "showAddress")
+    private Boolean showAddress;
+
     private transient long lastSync;   // ← Agregado (transient para no enviarlo a la API si no es necesario)
 
     public Refugio() {}
@@ -59,6 +65,12 @@ public class Refugio {
 
     public String getFotoUrl() { return fotoUrl; }
     public void setFotoUrl(String fotoUrl) { this.fotoUrl = fotoUrl; }
+
+    public String getYapeQrCode() { return yapeQrCode; }
+    public void setYapeQrCode(String yapeQrCode) { this.yapeQrCode = yapeQrCode; }
+
+    public Boolean getShowAddress() { return showAddress; }
+    public void setShowAddress(Boolean showAddress) { this.showAddress = showAddress; }
 
     public long getLastSync() { return lastSync; }
     public void setLastSync(long lastSync) { this.lastSync = lastSync; }

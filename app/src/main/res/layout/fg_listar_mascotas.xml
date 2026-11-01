@@ -5,7 +5,7 @@
     android:id="@+id/listarmascotas"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EFEBE9">
+    android:background="@color/fondo_crema">
 
     <LinearLayout
         android:id="@+id/layout_filtros_refugio"
@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="No se encontraron mascotas 🐾"
-        android:textColor="#757575"
+        android:textColor="@color/textoSecundario"
         android:textSize="18sp"
         android:textStyle="italic"
         android:visibility="gone"
@@ -64,5 +64,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_filtros_refugio"
         tools:listitem="@layout/ly_item_cardview_mascota" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_agregar_mascota"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        android:contentDescription="Agregar nueva mascota"
+        android:src="@android:drawable/ic_input_add"
+        android:visibility="gone"
+        app:backgroundTint="@color/marronPrimario"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/blanco" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

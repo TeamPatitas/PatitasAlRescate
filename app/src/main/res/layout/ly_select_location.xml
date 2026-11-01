@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_select_location"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fondo_crema"
+    tools:context=".controllers.management.SelectLocation">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarSelectLocation"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/color_navegacion_claro"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@android:drawable/ic_menu_revert"
+        app:title="Seleccionar Ubicación"
+        app:titleTextColor="@color/blanco" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/map_fragment"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/layout_panel_inferior_mapa"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarSelectLocation" />
+
+    <LinearLayout
+        android:id="@+id/layout_panel_inferior_mapa"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/fondo_crema"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/txt_coordenadas_seleccionadas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:text="Toca el mapa para mover el marcador 📍"
+            android:textColor="@color/textoPrincipal"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btn_confirmar_ubicacion"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:backgroundTint="@color/marronPrimario"
+            android:text="Confirmar ubicación"
+            android:textAllCaps="false"
+            android:textColor="@color/blanco"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:cornerRadius="28dp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

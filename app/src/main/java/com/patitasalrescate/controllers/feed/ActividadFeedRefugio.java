@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
@@ -22,27 +24,42 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
+import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.patitasalrescate.controllers.management.ActividadPerfilRefugio;
-import com.patitasalrescate.controllers.management.ActividadPerfilUsuario;
 import com.patitasalrescate.utils.PatitasSessionManager;
 import com.patitasalrescate.utils.ApiApp;
 import com.patitasalrescate.controllers.auth.ActividadIngresar;
 
 public class ActividadFeedRefugio extends com.patitasalrescate.controllers.base.BaseActivity {
 
+    private static final int[] DESTINOS_MENU = {
+            R.id.fragmentInicioRefugio,
+            R.id.fragmentListarMascotas,
+            R.id.fragmentEventosLista,
+            R.id.fragmentFormsRefugio
+    };
+
+    private static final int[] ITEMS_MENU = {
+            R.id.itemInicioRefugio,
+            R.id.itemListarMacostaRefugio,
+            R.id.itemEventosRefugio,
+            R.id.itemFormsRefugio
+    };
+
     private NavController navController;
+    private BottomNavigationView oMenu;
     private Menu menuToolbar;
     private String nombreRefugio;
+    private GestureDetector gestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +96,8 @@ public class ActividadFeedRefugio extends com.patitasalrescate.controllers.base.
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
 
+        oMenu = findViewById(R.id.menuInicioRefugio);
+
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (getSupportActionBar() != null) {
                 if (destination.getId() == R.id.fragmentInicioRefugio) {
@@ -86,9 +105,20 @@ public class ActividadFeedRefugio extends com.patitasalrescate.controllers.base.
                 } else if (destination.getId() == R.id.fragmentListarMascotas) {
                     getSupportActionBar().setTitle("Mis Mascotas");
                 } else if (destination.getId() == R.id.fragmentRegistrarMascota) {
-                    getSupportActionBar().setTitle("Registrar Mascota");
+                    getSupportActionBar().setTitle("Nueva Mascota");
+                } else if (destination.getId() == R.id.fragmentRegistrarEvento) {
+                    getSupportActionBar().setTitle("Nuevo Evento");
                 } else if (destination.getId() == R.id.fragmentEventosLista) {
-                    getSupportActionBar().setTitle("Eventos");
+                    getSupportActionBar().setTitle("Mis Eventos");
+                } else if (destination.getId() == R.id.fragmentFormsRefugio) {
+                    getSupportActionBar().setTitle("Forms");
+                }
+            }
+            int idx = indiceDeDestino(destination.getId());
+            if (idx != -1 && oMenu != null) {
+                MenuItem item = oMenu.getMenu().findItem(ITEMS_MENU[idx]);
+                if (item != null && !item.isChecked()) {
+                    item.setChecked(true);
                 }
             }
         });
@@ -105,15 +135,9 @@ public class ActividadFeedRefugio extends com.patitasalrescate.controllers.base.
             }
         });
 
-        BottomNavigationView oMenu = findViewById(R.id.menuInicioRefugio);
         oMenu.setOnItemSelectedListener(menuItem -> {
-            Intent oIntento = null;
             if (menuItem.getItemId() == R.id.itemInicioRefugio) {
                 navigate(R.id.fragmentInicioRefugio);
-                return true;
-            }
-            if (menuItem.getItemId() == R.id.itemRegistrarMascotaRefugio) {
-                navigate(R.id.fragmentRegistrarMascota);
                 return true;
             }
             if (menuItem.getItemId() == R.id.itemListarMacostaRefugio) {
@@ -128,8 +152,64 @@ public class ActividadFeedRefugio extends com.patitasalrescate.controllers.base.
                 return true;
             }
 
+            if (menuItem.getItemId() == R.id.itemFormsRefugio) {
+                navigate(R.id.fragmentFormsRefugio);
+                return true;
+            }
+
             return false;
         });
+
+        configurarGestoDeslizamiento();
+    }
+
+    private void configurarGestoDeslizamiento() {
+        float density = getResources().getDisplayMetrics().density;
+        final float distanciaMinima = 70f * density;
+        final float velocidadMinima = 100f * density;
+
+        gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onFling(@Nullable MotionEvent e1, @NonNull MotionEvent e2,
+                                   float velocityX, float velocityY) {
+                if (e1 == null || navController == null) return false;
+                float diffX = e2.getX() - e1.getX();
+                float diffY = e2.getY() - e1.getY();
+
+                if (Math.abs(diffX) > Math.abs(diffY) * 1.4f
+                        && Math.abs(diffX) > distanciaMinima
+                        && Math.abs(velocityX) > velocidadMinima) {
+                    NavDestination actual = navController.getCurrentDestination();
+                    if (actual == null) return false;
+                    int idx = indiceDeDestino(actual.getId());
+                    if (idx == -1) return false;
+
+                    if (diffX < 0 && idx < ITEMS_MENU.length - 1) {
+                        oMenu.setSelectedItemId(ITEMS_MENU[idx + 1]);
+                        return true;
+                    } else if (diffX > 0 && idx > 0) {
+                        oMenu.setSelectedItemId(ITEMS_MENU[idx - 1]);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (gestureDetector != null) {
+            gestureDetector.onTouchEvent(ev);
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    private int indiceDeDestino(int destinationId) {
+        for (int i = 0; i < DESTINOS_MENU.length; i++) {
+            if (DESTINOS_MENU[i] == destinationId) return i;
+        }
+        return -1;
     }
 
     @Override
@@ -213,11 +293,20 @@ public class ActividadFeedRefugio extends com.patitasalrescate.controllers.base.
         navigate(id, null);
     }
 
-
     private void navigate(int id, Bundle args) {
         NavDestination current = navController.getCurrentDestination();
         if (current != null && current.getId() != id) {
-            navController.navigate(id, args);
+            int idxActual = indiceDeDestino(current.getId());
+            int idxNuevo = indiceDeDestino(id);
+            boolean haciaIzquierda = idxActual != -1 && idxNuevo != -1 && idxNuevo < idxActual;
+
+            NavOptions opciones = new NavOptions.Builder()
+                    .setEnterAnim(haciaIzquierda ? R.anim.slide_in_left : R.anim.slide_in_right)
+                    .setExitAnim(haciaIzquierda ? R.anim.slide_out_right : R.anim.slide_out_left)
+                    .setPopEnterAnim(R.anim.slide_in_left)
+                    .setPopExitAnim(R.anim.slide_out_right)
+                    .build();
+            navController.navigate(id, args, opciones);
         }
     }
 }

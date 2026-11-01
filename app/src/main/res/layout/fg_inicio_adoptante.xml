@@ -1,37 +1,338 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fg_inicio_adoptante"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/fondo_crema"
+    android:fillViewport="true"
     tools:context=".controllers.feed.FragmentInicioAdoptante">
 
-    <ImageView
-        android:id="@+id/imgBienvenidaAdoptante"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:contentDescription="Imagen de bienvenida adoptante"
-        app:layout_constraintBottom_toTopOf="@+id/txtBienvenidoAdoptante"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/rj_logo_patitas" />
+        android:orientation="vertical"
+        android:paddingBottom="24dp">
 
-    <TextView
-        android:id="@+id/txtBienvenidoAdoptante"
-        android:clickable="true"
-        android:focusable="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="40dp"
-        android:fontFamily="@font/chewy"
-        android:text="Bienvenido"
-        android:textColor="@color/marronPrimario"
-        android:textSize="33sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgBienvenidaAdoptante"
-        tools:text="BIENVENIDO LUIS" />
+        <!-- Cabecera de Bienvenida -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/naranajBajo"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="4dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    android:id="@+id/imgBienvenidaAdoptante"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:contentDescription="Logo Patitas al Rescate"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/rj_logo_patitas" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txtBienvenidoAdoptante"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/chewy"
+                        android:text="¡Hola!"
+                        android:textColor="@color/marronPrimario"
+                        android:textSize="26sp"
+                        tools:text="¡Hola, Luis!" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Encuentra a tu próximo compañero de vida 🐾"
+                        android:textColor="@color/texto_card_oscuro"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Miniaviso: Cuenta sin verificar -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardAvisoCorreoNoVerificado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="#FFF3E0"
+            android:visibility="gone"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="3dp"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="12dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cuenta no verificada"
+                        android:textColor="#E65100"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Verifica tu correo electrónico para activar todas las funciones."
+                        android:textColor="#5D4037"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnSolicitarVerificacionInicio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="10dp"
+                    android:backgroundTint="@color/naranja_asociacion"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:paddingHorizontal="12dp"
+                    android:text="Verificar"
+                    android:textAllCaps="false"
+                    android:textColor="@color/blanco"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="20dp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Aviso: Quiero adoptar pero no tengo refugio -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardUserPublication"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="@color/naranajBajo"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Quiero publicar pero no tengo refugio"
+                    android:textColor="@color/texto_card_oscuro"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="→"
+                    android:textColor="@color/marronPrimario"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- SECCIÓN 1: Eventos próximos -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Eventos próximos"
+                android:textColor="@color/marronOscuro"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/btnVerTodosEventos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="4dp"
+                android:text="Ver todos →"
+                android:textColor="@color/marronPrimario"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtEstadoProximoEvento"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:padding="12dp"
+            android:text="Cargando próximos eventos..."
+            android:textColor="@color/textoSecundario"
+            android:textSize="14sp"
+            android:textStyle="italic" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerProximoEvento"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:nestedScrollingEnabled="false"
+            android:visibility="gone"
+            tools:itemCount="1"
+            tools:listitem="@layout/ly_eventos_element" />
+
+        <!-- SECCIÓN 2: Últimas mascotas agregadas -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Últimas mascotas agregadas"
+                android:textColor="@color/marronOscuro"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/btnVerTodasMascotas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="4dp"
+                android:text="Ver todas →"
+                android:textColor="@color/marronPrimario"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtEstadoUltimasMascotas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:padding="12dp"
+            android:text="Cargando mascotas recientes..."
+            android:textColor="@color/textoSecundario"
+            android:textSize="14sp"
+            android:textStyle="italic" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerUltimasMascotas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:nestedScrollingEnabled="false"
+            android:visibility="gone"
+            tools:itemCount="2"
+            tools:listitem="@layout/ly_item_cardview_mascota" />
+
+        <!-- SECCIÓN 3: Refugios destacados -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Refugios que puedes apoyar"
+                android:textColor="@color/marronOscuro"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/btnVerTodosRefugios"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="4dp"
+                android:text="Ver todos →"
+                android:textColor="@color/marronPrimario"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtEstadoRefugiosDestacados"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:padding="12dp"
+            android:text="Cargando refugios..."
+            android:textColor="@color/textoSecundario"
+            android:textSize="14sp"
+            android:textStyle="italic" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerRefugiosDestacados"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:nestedScrollingEnabled="false"
+            android:visibility="gone"
+            tools:itemCount="2"
+            tools:listitem="@layout/ly_item_cardview_refugio" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

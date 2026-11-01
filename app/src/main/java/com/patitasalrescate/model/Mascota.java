@@ -21,6 +21,8 @@ public class Mascota {
     @SerializedName("fotos") @Expose private List<String> fotos = new ArrayList<>();
     @SerializedName("estado") @Expose private String estado; // Disponible, En proceso, Adoptado
     private boolean adoptable;
+    private boolean requireForm;
+    private String formId;
     private String fechaPublicacion;
 
 
@@ -68,6 +70,10 @@ public class Mascota {
     public void setEstado(String estado) { this.estado = estado; }
     public boolean esAdoptable() { return adoptable; }
     public void setAdoptable(boolean adoptable) { this.adoptable = adoptable; }
+    public boolean isRequireForm() { return requireForm; }
+    public void setRequireForm(boolean requireForm) { this.requireForm = requireForm; }
+    public String getFormId() { return formId; }
+    public void setFormId(String formId) { this.formId = formId; }
     public String getFechaPublicacion() { return fechaPublicacion; }
     public void setFechaPublicacion(String fechaPublicacion) { this.fechaPublicacion = fechaPublicacion; }
 }

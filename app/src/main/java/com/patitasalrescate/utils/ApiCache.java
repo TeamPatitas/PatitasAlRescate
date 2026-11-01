@@ -56,6 +56,11 @@ public final class ApiCache {
             File[] archivos = d.listFiles();
             if (archivos == null) return;
             for (File f : archivos) {
+                try {
+                    if (f.getName().endsWith(".ts")) {
+                        writeFile(f, "0");
+                    }
+                } catch (Exception ignored) { }
                 if (!f.delete()) {
                     //noinspection ResultOfMethodCallIgnored
                     f.deleteOnExit();

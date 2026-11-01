@@ -17,6 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.patitasalrescate.controllers.management.ActividadPerfilMascota;
 import com.patitasalrescate.R;
 import com.patitasalrescate.data.repository.PetApiRepository;
@@ -46,6 +48,12 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
     public AdaptadorMascotas(List<Mascota> lista, boolean esModoRefugio,
                              Context context) {
         this.lista = lista;
+        if (this.lista != null) {
+            this.lista.sort((a, b) -> Long.compare(
+                    ApiApp.millisEvento(b.getFechaPublicacion()),
+                    ApiApp.millisEvento(a.getFechaPublicacion())
+            ));
+        }
         this.esModoRefugio = esModoRefugio;
         this.context = context;
         this.petApiRepository = ApiApp.client().pets;
@@ -70,19 +78,22 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
         holder.txtNombre.setText(m.getNombre());
         holder.txtRaza.setText(m.getRaza() == null ? "" : m.getRaza());
 
+        float density = context.getResources().getDisplayMetrics().density;
+        int radioPx = (int) (16 * density);
+
         // Primera foto registrada (índice 0). Sin fotos: placeholder para no reciclar
         // la imagen de otra celda.
         if (m.getFotos() != null && !m.getFotos().isEmpty()
                 && m.getFotos().get(0) != null && !m.getFotos().get(0).isEmpty()) {
-            Glide.with(context).load(m.getFotos().get(0))
+            Glide.with(context)
+                    .load(m.getFotos().get(0))
+                    .transform(new CenterCrop(), new RoundedCorners(radioPx))
                     .placeholder(R.drawable.img_default_refugio)
                     .error(R.drawable.img_default_refugio)
-                    .centerCrop().into(holder.imgFoto);
+                    .into(holder.imgFoto);
         } else {
             holder.imgFoto.setImageResource(R.drawable.img_default_refugio);
         }
-
-        float density = context.getResources().getDisplayMetrics().density;
 
         if (esModoRefugio) {
             boolean disponible = "DISPONIBLE".equals(m.getEstado());
@@ -114,11 +125,11 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
 
         } else {
             // Modo adoptante: solo el nombre, más grande y centrado verticalmente junto a la foto.
-            holder.txtNombre.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 24);
+            holder.txtNombre.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 20);
             androidx.constraintlayout.widget.ConstraintLayout.LayoutParams paramsNombre =
                     (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams)
                             holder.txtNombre.getLayoutParams();
-            paramsNombre.topMargin = (int) (8 * density);
+            paramsNombre.topMargin = 0;
             holder.txtNombre.setLayoutParams(paramsNombre);
             holder.txtRaza.setVisibility(View.GONE);
             // Badge solo si isAdoptable (nuevo atributo); debajo, la fecha de publicación.
@@ -137,7 +148,7 @@ public class AdaptadorMascotas extends RecyclerView.Adapter<AdaptadorMascotas.Ma
                 holder.txtFecha.setVisibility(View.GONE);
             } else {
                 holder.txtFecha.setVisibility(View.VISIBLE);
-                holder.txtFecha.setText("Publicada el " + fechaPub);
+                holder.txtFecha.setText(fechaPub);
             }
 
             // Sin "Quiero Adoptar" en la lista: la adopción se hace en el detalle.

@@ -14,10 +14,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.patitasalrescate.R;
 import com.patitasalrescate.data.remote.dto.ShelterResponse;
 import com.patitasalrescate.model.Refugio;
 import com.patitasalrescate.utils.ApiApp;
+import com.patitasalrescate.utils.PatitasSessionManager;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,9 +45,7 @@ public class AdaptadorRefugios extends RecyclerView.Adapter<AdaptadorRefugios.Re
         Refugio r = listaRefugios.get(position);
 
         holder.txtNombre.setText(r.getNombre());
-        // El resumen no trae address: se muestra al abrir el detalle/mapa.
-        holder.txtDireccion.setText(r.getDireccion() == null || r.getDireccion().isEmpty()
-                ? "Toca para ver detalles" : r.getDireccion());
+        holder.txtDireccion.setText("Toca para ver detalles");
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, com.patitasalrescate.controllers.management.ActividadPerfilRefugio.class);
@@ -57,14 +58,13 @@ public class AdaptadorRefugios extends RecyclerView.Adapter<AdaptadorRefugios.Re
                     .load(r.getFotoUrl())
                     .placeholder(R.drawable.img_default_refugio)
                     .error(R.drawable.img_default_refugio)
-                    .centerCrop()
+                    .transform(new CenterCrop(), new RoundedCorners(
+                            (int) (16 * context.getResources().getDisplayMetrics().density)))
                     .into(holder.imgFoto);
         } else {
             holder.imgFoto.setImageResource(R.drawable.img_default_refugio);
         }
         holder.btnWhatsapp.setOnClickListener(v -> contactarRefugio(r));
-
-        holder.btnMapa.setOnClickListener(v -> abrirMapa(r));
     }
 
     /** Normaliza el phoneNumber a formato WhatsApp (51 + 9 dígitos). Null si no hay. */
@@ -118,65 +118,19 @@ public class AdaptadorRefugios extends RecyclerView.Adapter<AdaptadorRefugios.Re
         }
     }
 
-    private void abrirMapa(Refugio r) {
-        String direccion = r.getDireccion();
-        if (direccion != null && !direccion.trim().isEmpty()) {
-            abrirMapaConDireccion(direccion.trim());
-            return;
-        }
-        // El resumen de la lista no trae address: se pide el detalle una sola vez.
-        if (r.getIdRefugio() == null || r.getIdRefugio().isEmpty()) {
-            Toast.makeText(context, "Dirección no disponible", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        Toast.makeText(context, "Obteniendo dirección…", Toast.LENGTH_SHORT).show();
-        ApiApp.client().shelters.getShelterById(r.getIdRefugio()).enqueue(new Callback<ShelterResponse>() {
-            @Override public void onResponse(Call<ShelterResponse> call, Response<ShelterResponse> response) {
-                if (!response.isSuccessful() || response.body() == null
-                        || response.body().address == null || response.body().address.trim().isEmpty()) {
-                    Toast.makeText(context, "Dirección no disponible", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                r.setDireccion(response.body().address);
-                if (response.body().phoneNumber != null) r.setNumCelular(response.body().phoneNumber);
-                abrirMapaConDireccion(response.body().address.trim());
-            }
-            @Override public void onFailure(Call<ShelterResponse> call, Throwable error) {
-                Toast.makeText(context, "Sin conexión al obtener la dirección", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void abrirMapaConDireccion(String direccion) {
-        // Se usa el address tal cual: Maps lo geocodifica (sin ciudad hardcodeada).
-        Uri uriMapa = Uri.parse("geo:0,0?q=" + Uri.encode(direccion));
-        Intent intent = new Intent(Intent.ACTION_VIEW, uriMapa);
-        intent.setPackage("com.google.android.apps.maps");
-        try {
-            context.startActivity(intent);
-        } catch (Exception e) {
-            try {
-                context.startActivity(new Intent(Intent.ACTION_VIEW, uriMapa));
-            } catch (Exception ex) {
-                Toast.makeText(context, "No hay aplicación de mapas instalada", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
     @Override
     public int getItemCount() { return listaRefugios.size(); }
 
     public static class RefugioViewHolder extends RecyclerView.ViewHolder {
         TextView txtNombre, txtDireccion;
         ImageView imgFoto;
-        ImageButton btnMapa, btnWhatsapp;
+        ImageButton btnWhatsapp;
 
         public RefugioViewHolder(@NonNull View itemView) {
             super(itemView);
             txtNombre = itemView.findViewById(R.id.txt_nombre_refugio);
             txtDireccion = itemView.findViewById(R.id.txt_direccion_refugio);
             imgFoto = itemView.findViewById(R.id.img_foto_refugio);
-            btnMapa = itemView.findViewById(R.id.btn_ver_mapa);
             btnWhatsapp = itemView.findViewById(R.id.btn_whatsapp_refugio);
         }
     }
