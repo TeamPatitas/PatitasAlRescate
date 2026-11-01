@@ -21,4 +21,17 @@ interface ShelterApiService {
 
     @DELETE("shelter/{id}")
     Call<Void> deleteShelter(@Path("id") String id);
+
+    @Multipart
+    @POST("shelter/form")
+    Call<FormResponse> uploadShelterForm(@Part java.util.List<okhttp3.MultipartBody.Part> parts);
+
+    @GET("shelter/forms")
+    Call<FormResponsePagedResponse> getShelterForms();
+
+    @GET("shelter/forms")
+    Call<FormResponsePagedResponse> getShelterForms(@Query("page") Integer page, @Query("pageSize") Integer pageSize);
+
+    @GET("shelter/form/{id}")
+    Call<FormResponse> getShelterFormById(@Path("id") String id);
 }

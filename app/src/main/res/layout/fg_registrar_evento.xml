@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/registrar_evento_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fondo_post_login"
+    tools:context=".controllers.management.FragmentRegistrarEvento">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:gravity="center"
+                android:text="Datos del evento"
+                android:textColor="@color/texto_titulo_sobre_crema"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:hint="   Nombre del evento"
+                app:boxStrokeColor="@color/marronPrimario"
+                app:hintTextColor="@color/textoSecundario"
+                app:startIconDrawable="@android:drawable/ic_menu_myplaces"
+                app:startIconTint="@color/textoPrincipal">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_nombre_evento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_rounded"
+                    android:inputType="textCapSentences"
+                    android:textColor="@color/textoPrincipal" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:hint="   Fecha y hora (toca para elegir)"
+                app:boxStrokeColor="@color/marronPrimario"
+                app:hintTextColor="@color/textoSecundario"
+                app:startIconDrawable="@android:drawable/ic_menu_today"
+                app:startIconTint="@color/textoPrincipal">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_fecha_evento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_rounded"
+                    android:focusable="false"
+                    android:inputType="none"
+                    android:textColor="@color/textoPrincipal" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="   Descripción"
+                app:boxStrokeColor="@color/marronPrimario"
+                app:hintTextColor="@color/textoSecundario"
+                app:startIconDrawable="@android:drawable/ic_menu_edit"
+                app:startIconTint="@color/textoPrincipal">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_descripcion_evento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_rounded"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:minLines="4"
+                    android:textColor="@color/textoPrincipal" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="  Ubicación"
+                android:textColor="@color/textoPrincipal"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btn_mapa_evento"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:text="Seleccionar lugar"
+                android:textColor="@color/marronPrimario" />
+
+            <TextView
+                android:id="@+id/txt_ubicacion_seleccionada"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:paddingHorizontal="4dp"
+                android:textColor="@color/textoSecundario"
+                android:textSize="12sp"
+                android:visibility="gone"
+                tools:text="Ubicación seleccionada: -7.161700, -78.512800"
+                tools:visibility="visible" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="  Foto (jpeg/png/webp)"
+                android:textColor="@color/textoPrincipal"
+                android:textStyle="bold" />
+
+            <FrameLayout
+                android:id="@+id/frame_foto_evento"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/bg_input_rounded"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <ImageView
+                    android:id="@+id/img_preview_evento"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="Foto del evento"
+                    android:scaleType="centerCrop"
+                    android:src="@android:drawable/ic_menu_gallery" />
+
+                <ImageButton
+                    android:id="@+id/btn_foto_evento"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="bottom|end"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/bg_boton_circular_marron"
+                    android:contentDescription="Agregar foto"
+                    android:padding="11dp"
+                    android:src="@android:drawable/ic_menu_edit"
+                    app:tint="@color/blanco" />
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/btn_guardar_evento"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:backgroundTint="#FF9800"
+                android:text="REGISTRAR EVENTO"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:cornerRadius="30dp" />
+
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,6 +19,11 @@ public final class AdminApiDataSource implements IAdminApiDataSource {
         return service.getCurrentUser();
     }
 
+    @Override public Call<UserResponse> getUser(String id) {
+        java.util.Objects.requireNonNull(id, "id");
+        return service.getUser(id);
+    }
+
     @Override public Call<UserResponse> updateCurrentUser(UpdateUserRequest body) {
         java.util.Objects.requireNonNull(body, "body");
         FormParts parts = new FormParts();

@@ -10,4 +10,8 @@ public interface IShelterApiDataSource {
     Call<ShelterResponse> updateShelter(String id, UpdateShelterRequest body);
     Call<ShelterResponse> getShelterById(String id);
     Call<Void> deleteShelter(String id);
+    Call<FormResponse> uploadShelterForm(UploadFormRequest body);
+    Call<FormResponsePagedResponse> getShelterForms();
+    Call<FormResponsePagedResponse> getShelterForms(Integer page, Integer pageSize);
+    Call<FormResponse> getShelterFormById(String id);
 }

@@ -5,42 +5,50 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.patitasalrescate.R;
-import com.patitasalrescate.utils.PatitasSessionManager;
-import com.patitasalrescate.model.Mascota;
-import com.patitasalrescate.utils.ApiApp;
+import com.patitasalrescate.ui.AdaptadorCarruselFotos;
+import com.patitasalrescate.data.remote.dto.FormResponse;
+import com.patitasalrescate.data.remote.dto.FormResponsePagedResponse;
+import com.patitasalrescate.data.remote.dto.Gender;
 import com.patitasalrescate.data.remote.dto.PetResponse;
 import com.patitasalrescate.data.remote.dto.ShelterResponse;
+import com.patitasalrescate.data.remote.dto.Species;
 import com.patitasalrescate.data.remote.dto.UpdatePetRequest;
 import com.patitasalrescate.data.remote.dto.UploadFile;
-import com.patitasalrescate.data.remote.dto.Species;
-import com.patitasalrescate.data.remote.dto.Gender;
+import com.patitasalrescate.model.Mascota;
+import com.patitasalrescate.utils.ApiApp;
+import com.patitasalrescate.utils.PatitasSessionManager;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import java.io.IOException;
-import java.util.List;
-
-public class ActividadPerfilMascota extends com.patitasalrescate.controllers.base.BaseActivity
-        implements BottomSheetContactoAdopcion.OnOpcionSeleccionadaListener {
+public class ActividadPerfilMascota extends com.patitasalrescate.controllers.base.BaseActivity {
     private static final String TAG = "PerfilMascota";
     private static final int MAX_FOTOS = 3;
     private static final String[] MIME_FOTOS = {"image/jpeg", "image/png", "image/webp"};
@@ -48,9 +56,17 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
     private EditText txtNombre, txtEspecie, txtRaza, txtSexo, txtTemperamento, txtHistoria;
     private com.google.android.material.switchmaterial.SwitchMaterial switchDisponible;
     private com.google.android.material.switchmaterial.SwitchMaterial switchAdoptable;
-    private TextView txtDisponibleVista, txtAdoptableVista;
+    private com.google.android.material.switchmaterial.SwitchMaterial switchRequiereFormulario;
+    private View layoutSelectorFormulario;
+    private Spinner spinnerFormularioMascota;
+    private TextView txtDisponibleVista, txtAdoptableVista, txtRequiereFormularioVista, txtAvisoNoAdoptable;
+    private View cardRequiereFormulario;
+    private TextView txtRequiereFormularioAdoptante;
+    private View lyBotonesAccion;
     private boolean esModoRefugio = false;
     private ImageView imgFoto;
+    private ViewPager2 viewPagerFotos;
+    private TextView txtIndicadorFotos;
     private Button btnAccion;
     private Button btnFavorito;
     private LinearLayout layoutFotos;
@@ -61,6 +77,7 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
     private String ultimoErrorFoto = "";
     private ActivityResultLauncher<Intent> launcherFotos;
     private Mascota mascotaActual;
+    private final List<FormResponse> formulariosRefugio = new ArrayList<>();
     private String idMascota;
     private String idUsuario;
     private String nombreRefugio = "";
@@ -95,22 +112,49 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
 
     private void initViews() {
         txtNombre = findViewById(R.id.txt_edit_nombre);
+        txtNombre.setMaxLines(2);
+        txtNombre.setHorizontallyScrolling(false);
+        txtNombre.setEllipsize(TextUtils.TruncateAt.END);
         txtEspecie = findViewById(R.id.txt_edit_especie);
         txtRaza = findViewById(R.id.txt_edit_raza);
+        txtRaza.setMaxLines(2);
+        txtRaza.setHorizontallyScrolling(false);
+        txtRaza.setEllipsize(TextUtils.TruncateAt.END);
         txtSexo = findViewById(R.id.txt_edit_sexo);
         txtTemperamento = findViewById(R.id.txt_edit_temperamento);
         txtHistoria = findViewById(R.id.txt_edit_historia);
         switchDisponible = findViewById(R.id.switch_disponible_mascota);
         switchAdoptable = findViewById(R.id.switch_adoptable_mascota);
+        switchRequiereFormulario = findViewById(R.id.switch_requiere_formulario_mascota);
+        layoutSelectorFormulario = findViewById(R.id.layout_selector_formulario);
+        spinnerFormularioMascota = findViewById(R.id.spinner_formulario_mascota);
         txtDisponibleVista = findViewById(R.id.txt_disponible_mascota);
         txtAdoptableVista = findViewById(R.id.txt_adoptable_mascota);
+        txtRequiereFormularioVista = findViewById(R.id.txt_requiere_formulario_mascota);
+        txtAvisoNoAdoptable = findViewById(R.id.txt_aviso_no_adoptable);
+        cardRequiereFormulario = findViewById(R.id.card_requiere_formulario);
+        txtRequiereFormularioAdoptante = findViewById(R.id.txt_requiere_formulario_adoptante);
+        lyBotonesAccion = findViewById(R.id.ly_botones_accion);
         imgFoto = findViewById(R.id.img_detalle_mascota);
+        viewPagerFotos = findViewById(R.id.viewpager_fotos_mascota);
+        txtIndicadorFotos = findViewById(R.id.txt_indicador_fotos);
         btnAccion = findViewById(R.id.btn_accion_principal);
         btnFavorito = findViewById(R.id.btn_favorito);
         layoutFotos = findViewById(R.id.layout_fotos_mascota);
         slotsFotos[0] = findViewById(R.id.foto_mascota_slot_0);
         slotsFotos[1] = findViewById(R.id.foto_mascota_slot_1);
         slotsFotos[2] = findViewById(R.id.foto_mascota_slot_2);
+
+        if (switchRequiereFormulario != null) {
+            switchRequiereFormulario.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (layoutSelectorFormulario != null) {
+                    boolean editando = txtNombre != null && txtNombre.isEnabled();
+                    layoutSelectorFormulario.setVisibility(
+                            esModoRefugio && editando && isChecked ? View.VISIBLE : View.GONE);
+                }
+            });
+        }
+
         for (int i = 0; i < slotsFotos.length; i++) {
             final int indice = i;
             slotsFotos[i].setOnClickListener(v -> {
@@ -208,14 +252,61 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
                     return;
                 }
                 mascotaActual = ApiApp.pet(response.body());
-                mostrarMascota();
                 configurarModoVisualPorRol();
+                mostrarMascota();
                 cargarDatosRefugio(mascotaActual.getIdRefugio());
+                if (esModoRefugio) {
+                    cargarFormulariosRefugio();
+                }
             }
             @Override public void onFailure(Call<PetResponse> call, Throwable error) {
                 if (!isFinishing()) Toast.makeText(ActividadPerfilMascota.this, "Sin conexión con mascotas", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void cargarFormulariosRefugio() {
+        ApiApp.client().shelters.getShelterForms().enqueue(new Callback<FormResponsePagedResponse>() {
+            @Override
+            public void onResponse(Call<FormResponsePagedResponse> call, Response<FormResponsePagedResponse> response) {
+                if (isFinishing() || isDestroyed()) return;
+                formulariosRefugio.clear();
+                if (response.isSuccessful() && response.body() != null && response.body().items != null) {
+                    for (FormResponse f : response.body().items) {
+                        if (f != null && f.id != null) {
+                            formulariosRefugio.add(f);
+                        }
+                    }
+                }
+                poblarSpinnerFormularios();
+            }
+
+            @Override
+            public void onFailure(Call<FormResponsePagedResponse> call, Throwable t) {
+                if (isFinishing() || isDestroyed()) return;
+                poblarSpinnerFormularios();
+            }
+        });
+    }
+
+    private void poblarSpinnerFormularios() {
+        if (spinnerFormularioMascota == null) return;
+        List<String> opciones = new ArrayList<>();
+        opciones.add("Seleccione un formulario...");
+        int seleccion = 0;
+        String formActual = mascotaActual == null ? null : mascotaActual.getFormId();
+        for (int i = 0; i < formulariosRefugio.size(); i++) {
+            FormResponse f = formulariosRefugio.get(i);
+            opciones.add(f.name == null || f.name.isEmpty() ? "Formulario " + (i + 1) : f.name);
+            if (formActual != null && formActual.equals(f.id)) {
+                seleccion = i + 1;
+            }
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_item, opciones);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerFormularioMascota.setAdapter(adapter);
+        spinnerFormularioMascota.setSelection(seleccion);
     }
 
     private void mostrarMascota() {
@@ -226,31 +317,84 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
         txtTemperamento.setText(valorSeguro(mascotaActual.getTemperamento()));
         txtHistoria.setText(valorSeguro(mascotaActual.getHistoria()));
 
-        List<String> fotos = mascotaActual.getFotos();
-        if (fotos != null && !fotos.isEmpty()) {
-            Glide.with(this)
-                    .load(fotos.get(0))
-                    .centerCrop()
-                    .into(imgFoto);
+        List<String> fotosValidas = new ArrayList<>();
+        if (mascotaActual != null && mascotaActual.getFotos() != null) {
+            for (String f : mascotaActual.getFotos()) {
+                if (f != null && !f.trim().isEmpty()) {
+                    fotosValidas.add(f.trim());
+                }
+            }
+        }
+
+        if (!esModoRefugio && fotosValidas.size() > 1) {
+            imgFoto.setVisibility(View.GONE);
+            viewPagerFotos.setVisibility(View.VISIBLE);
+            txtIndicadorFotos.setVisibility(View.VISIBLE);
+            txtIndicadorFotos.setText("1/" + fotosValidas.size());
+            viewPagerFotos.setAdapter(new AdaptadorCarruselFotos(this, fotosValidas));
+            viewPagerFotos.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                @Override
+                public void onPageSelected(int position) {
+                    super.onPageSelected(position);
+                    txtIndicadorFotos.setText((position + 1) + "/" + fotosValidas.size());
+                }
+            });
+        } else {
+            viewPagerFotos.setVisibility(View.GONE);
+            txtIndicadorFotos.setVisibility(View.GONE);
+            imgFoto.setVisibility(View.VISIBLE);
+            if (!fotosValidas.isEmpty()) {
+                Glide.with(this)
+                        .load(fotosValidas.get(0))
+                        .centerCrop()
+                        .into(imgFoto);
+            } else {
+                imgFoto.setImageResource(android.R.drawable.ic_menu_gallery);
+            }
         }
         pintarSlots();
         pintarDisponibilidad();
     }
 
-    /** Solo refugio: editando muestra switchs; viendo muestra Sí/No. En adoptante, nada. */
+    /** En modo refugio: editando muestra switchs; viendo muestra Sí/No. En modo adoptante muestra si requiere formulario. */
     private void pintarDisponibilidad() {
         boolean editando = txtNombre.isEnabled();
         boolean verTexto = esModoRefugio && !editando;
         boolean verSwitch = esModoRefugio && editando;
         txtDisponibleVista.setVisibility(verTexto ? View.VISIBLE : View.GONE);
         txtAdoptableVista.setVisibility(verTexto ? View.VISIBLE : View.GONE);
+        if (txtRequiereFormularioVista != null) {
+            txtRequiereFormularioVista.setVisibility(verTexto ? View.VISIBLE : View.GONE);
+        }
         switchDisponible.setVisibility(verSwitch ? View.VISIBLE : View.GONE);
         switchAdoptable.setVisibility(verSwitch ? View.VISIBLE : View.GONE);
+        if (switchRequiereFormulario != null) {
+            switchRequiereFormulario.setVisibility(verSwitch ? View.VISIBLE : View.GONE);
+        }
+        if (layoutSelectorFormulario != null) {
+            boolean mostrarSelector = verSwitch
+                    && switchRequiereFormulario != null
+                    && switchRequiereFormulario.isChecked();
+            layoutSelectorFormulario.setVisibility(mostrarSelector ? View.VISIBLE : View.GONE);
+        }
         if (verTexto && mascotaActual != null) {
             txtDisponibleVista.setText("Visible: "
                     + ("DISPONIBLE".equals(mascotaActual.getEstado()) ? "Sí" : "No"));
             txtAdoptableVista.setText("Disponible para adopción: "
                     + (mascotaActual.esAdoptable() ? "Sí" : "No"));
+            if (txtRequiereFormularioVista != null) {
+                txtRequiereFormularioVista.setText("Requiere formulario: "
+                        + (mascotaActual.isRequireForm() ? "Sí" : "No"));
+            }
+        }
+        if (cardRequiereFormulario != null) {
+            boolean mostrarCardAdoptante = !esModoRefugio
+                    && mascotaActual != null
+                    && mascotaActual.isRequireForm();
+            cardRequiereFormulario.setVisibility(mostrarCardAdoptante ? View.VISIBLE : View.GONE);
+            if (mostrarCardAdoptante && txtRequiereFormularioAdoptante != null) {
+                txtRequiereFormularioAdoptante.setText("Sí, esta mascota requiere llenar un formulario de adopción");
+            }
         }
     }
 
@@ -295,11 +439,19 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
         esModoRefugio = esRefugio;
 
         if (esRefugio) {
+            txtAvisoNoAdoptable.setVisibility(View.GONE);
+            lyBotonesAccion.setVisibility(View.VISIBLE);
+            btnAccion.setVisibility(View.VISIBLE);
             btnFavorito.setVisibility(View.GONE);
             layoutFotos.setVisibility(View.VISIBLE);
             switchDisponible.setChecked("DISPONIBLE".equals(
                     mascotaActual == null ? null : mascotaActual.getEstado()));
             switchAdoptable.setChecked(mascotaActual != null && mascotaActual.esAdoptable());
+            if (switchRequiereFormulario != null) {
+                boolean req = mascotaActual != null
+                        && mascotaActual.isRequireForm();
+                switchRequiereFormulario.setChecked(req);
+            }
             habilitarCampos(false);
             pintarDisponibilidad();
             btnAccion.setText("EDITAR MASCOTA");
@@ -318,11 +470,27 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
         }
 
         btnFavorito.setVisibility(View.GONE);
+        if (layoutFotos != null) {
+            layoutFotos.setVisibility(View.GONE);
+        }
         habilitarCampos(false);
 
         String estado = mascotaActual.getEstado();
         if (estado == null) estado = "DISPONIBLE";
 
+        boolean disponibleAdopcion = "DISPONIBLE".equals(estado)
+                && mascotaActual != null && mascotaActual.esAdoptable();
+        if (!disponibleAdopcion) {
+            btnAccion.setVisibility(View.GONE);
+            lyBotonesAccion.setVisibility(View.GONE);
+            txtAvisoNoAdoptable.setVisibility(View.VISIBLE);
+            txtAvisoNoAdoptable.setText(
+                    "Esta mascota no está disponible para adopción pero puedes leer su historia");
+            return;
+        }
+        txtAvisoNoAdoptable.setVisibility(View.GONE);
+        lyBotonesAccion.setVisibility(View.VISIBLE);
+        btnAccion.setVisibility(View.VISIBLE);
         switch (estado) {
             case "ADOPTADO":
                 btnAccion.setText("YA FUE ADOPTADO");
@@ -333,26 +501,40 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
                 btnAccion.setEnabled(false);
                 break;
             default:
-                btnAccion.setText("¡QUIERO ADOPTARLO! 🐾");
+                btnAccion.setText("¡QUIERO ADOPTARLO!");
                 btnAccion.setEnabled(true);
-                // La adopción se coordina por WhatsApp con el teléfono del refugio.
                 btnAccion.setOnClickListener(v -> irAAdoptar());
                 break;
         }
     }
 
     private void habilitarCampos(boolean habilitar) {
-        int drawableRes = habilitar ? android.R.drawable.edit_text : android.R.color.transparent;
-        
+        int drawableRes = habilitar ? R.drawable.bg_input_rounded : android.R.color.transparent;
+        int colorCard = ContextCompat.getColor(this,
+                habilitar ? R.color.textoPrincipal : R.color.texto_card_oscuro);
+        txtNombre.setTextColor(ContextCompat.getColor(this,
+                habilitar ? R.color.textoPrincipal : R.color.texto_titulo_sobre_crema));
+        txtEspecie.setTextColor(colorCard);
+        txtRaza.setTextColor(colorCard);
+        txtSexo.setTextColor(colorCard);
+        txtTemperamento.setTextColor(colorCard);
+        txtHistoria.setTextColor(colorCard);
+
         txtNombre.setEnabled(habilitar);
         txtNombre.setBackgroundResource(drawableRes);
-        
+        txtNombre.setMaxLines(2);
+        txtNombre.setHorizontallyScrolling(false);
+        txtNombre.setEllipsize(habilitar ? null : TextUtils.TruncateAt.END);
+
         txtEspecie.setEnabled(habilitar);
         txtEspecie.setBackgroundResource(drawableRes);
-        
+
         txtRaza.setEnabled(habilitar);
         txtRaza.setBackgroundResource(drawableRes);
-        
+        txtRaza.setMaxLines(2);
+        txtRaza.setHorizontallyScrolling(false);
+        txtRaza.setEllipsize(habilitar ? null : TextUtils.TruncateAt.END);
+
         txtSexo.setEnabled(habilitar);
         txtSexo.setBackgroundResource(drawableRes);
 
@@ -364,11 +546,30 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
 
         switchDisponible.setEnabled(habilitar);
         switchAdoptable.setEnabled(habilitar);
+        if (switchRequiereFormulario != null) {
+            switchRequiereFormulario.setEnabled(habilitar);
+        }
+        if (spinnerFormularioMascota != null) {
+            spinnerFormularioMascota.setEnabled(habilitar);
+        }
         pintarDisponibilidad();
     }
 
     private void guardarCambios() {
         if (!ApiApp.exigirOnline(this)) return;
+        boolean requiereForm = switchRequiereFormulario != null && switchRequiereFormulario.isChecked();
+        String formIdElegido = null;
+        if (requiereForm) {
+            int pos = spinnerFormularioMascota == null ? 0 : spinnerFormularioMascota.getSelectedItemPosition();
+            if (pos <= 0 || pos > formulariosRefugio.size()) {
+                Toast.makeText(this,
+                        "Debes seleccionar un formulario de los que agregaste para poder guardar los cambios",
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+            formIdElegido = formulariosRefugio.get(pos - 1).id;
+        }
+
         UpdatePetRequest update = new UpdatePetRequest();
         update.name = txtNombre.getText().toString().trim();
         update.breed = txtRaza.getText().toString().trim();
@@ -378,6 +579,8 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
         update.gender = parseGenero(txtSexo.getText().toString());
         update.available = switchDisponible.isChecked();
         update.isAdoptable = switchAdoptable.isChecked();
+        update.requireForm = requiereForm;
+        update.formId = formIdElegido;
         if (update.species == null || update.gender == null) {
             Toast.makeText(this, "Especie o sexo inválidos (usa Perro/Gato/Otro y Masculino/Femenino)",
                     Toast.LENGTH_SHORT).show();
@@ -494,26 +697,71 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
 
     private void irAAdoptar() {
         if (mascotaActual == null) return;
-        BottomSheetContactoAdopcion sheet = BottomSheetContactoAdopcion.newInstance(
-                mascotaActual.getNombre(),
-                nombreRefugio,
-                telefonoRefugio,
-                mascotaActual.getIdMascota(),
-                mascotaActual.getIdRefugio()
-        );
-        sheet.show(getSupportFragmentManager(), BottomSheetContactoAdopcion.TAG);
+        if (!mascotaActual.isRequireForm()) {
+            abrirWhatsApp(telefonoRefugio, mascotaActual.getNombre());
+            return;
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle("Formulario de adopción requerido")
+                .setMessage("Para adoptar a " + valorSeguro(mascotaActual.getNombre())
+                        + " debes descargar y completar el formulario del refugio. "
+                        + "Cuando lo tengas listo, envíalo por WhatsApp.")
+                .setNegativeButton("Cancelar", null)
+                .setNeutralButton("Descargar formulario", (dialog, which) -> descargarFormulario())
+                .setPositiveButton("Ya tengo el formulario completo", (dialog, which) ->
+                        abrirWhatsApp(telefonoRefugio, mascotaActual.getNombre()))
+                .show();
     }
 
-    @Override
-    public void onMensajeRapido(String tel, String nombreMascota) {
+    /** Obtiene la URL del PDF con GET /shelter/form/{id} y la abre en el navegador. */
+    private void descargarFormulario() {
+        String formId = mascotaActual == null ? null : mascotaActual.getFormId();
+        if (formId == null || formId.isEmpty()) {
+            Toast.makeText(this, "El refugio aún no asoció un formulario a esta mascota",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (!ApiApp.exigirOnline(this)) return;
+        ApiApp.client().shelters.getShelterFormById(formId).enqueue(new Callback<FormResponse>() {
+            @Override
+            public void onResponse(Call<FormResponse> call, Response<FormResponse> response) {
+                if (isFinishing() || isDestroyed()) return;
+                String url = response.isSuccessful() && response.body() != null
+                        ? response.body().fileUrl : null;
+                if (url == null || url.isEmpty()) {
+                    Toast.makeText(ActividadPerfilMascota.this,
+                            "No se pudo obtener el formulario (" + response.code() + ")",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                } catch (Exception e) {
+                    Toast.makeText(ActividadPerfilMascota.this,
+                            "No hay una app para abrir el formulario", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FormResponse> call, Throwable t) {
+                if (isFinishing() || isDestroyed()) return;
+                Toast.makeText(ActividadPerfilMascota.this,
+                        "Sin conexión al obtener el formulario", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void abrirWhatsApp(String tel, String nombreMascota) {
+        if (nombreMascota == null) nombreMascota = "";
         String telefono = normalizarTelefono(tel);
         if (telefono == null) {
             Toast.makeText(this, "El refugio no tiene un número telefónico registrado", Toast.LENGTH_LONG).show();
             return;
         }
 
-        String mensaje = "👋 ¡Hola" + (nombreRefugio.isEmpty() ? "" : " " + nombreRefugio) + "!\n\n"
-                + "🐾 Estoy interesado en adoptar a *" + (nombreMascota.isEmpty() ? "la mascota" : nombreMascota) + "*.\n\n"
+        String mensaje = "¡Hola" + (nombreRefugio.isEmpty() ? "" : " " + nombreRefugio) + "!\n\n"
+                + "Estoy interesado en adoptar a *" + (nombreMascota.isEmpty() ? "la mascota" : nombreMascota) + "*.\n\n"
                 + "¿Podrían darme más información sobre los requisitos y el proceso de adopción?";
 
         String url = "https://api.whatsapp.com/send?phone=" + telefono + "&text=" + Uri.encode(mensaje);
@@ -523,16 +771,6 @@ public class ActividadPerfilMascota extends com.patitasalrescate.controllers.bas
         } catch (Exception e) {
             Toast.makeText(this, "Instala WhatsApp para continuar", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    @Override
-    public void onFormularioFormal(String petId, String shelterId,
-                                   String tel, String nombreMascota, String nomRefugio) {
-        Intent intent = new Intent(this, ActividadFormularioAdopcion.class);
-        intent.putExtra(ActividadFormularioAdopcion.KEY_NOMBRE_MASCOTA, nombreMascota);
-        intent.putExtra(ActividadFormularioAdopcion.KEY_NOMBRE_REFUGIO, nomRefugio);
-        intent.putExtra(ActividadFormularioAdopcion.KEY_TELEFONO_REFUGIO, normalizarTelefono(tel));
-        startActivity(intent);
     }
 
     private String normalizarTelefono(String crudo) {

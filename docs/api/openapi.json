@@ -29,13 +29,24 @@
         "x-cooldown": "30 segundos"
       }
     },
-    "/admin/user": {
+    "/admin/user/{id}": {
       "get": {
         "tags": [
           "Administración"
         ],
-        "description": "Obtiene la información del usuario actual, necesita que el usuario haya iniciado sesión, si eres dev puedes obtener la información de cualquier usuario.",
-        "operationId": "GetCurrentUser",
+        "description": "Obtiene la información del usuario actual si no se pasa ID, si eres dev puedes obtener la información de cualquier usuario pasando su ID.",
+        "operationId": "GetUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -50,6 +61,39 @@
         },
         "x-roles-policy": "User"
       },
+      "delete": {
+        "tags": [
+          "Administración"
+        ],
+        "description": "$important{CUIDADO: Esto es irreversible} usarlo con mucha cautela, elimina en cascada todo lo relacionado al usuario (adopciones, mascotas). si eres dev tambien puedes eliminarlo a cualquiera 🐒",
+        "operationId": "Borrar Usuario",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "User"
+      }
+    },
+    "/admin/user": {
       "patch": {
         "tags": [
           "Administración"
@@ -77,39 +121,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UserResponse"
-                }
-              }
-            }
-          }
-        },
-        "x-roles-policy": "User"
-      }
-    },
-    "/admin/user/{id}": {
-      "delete": {
-        "tags": [
-          "Administración"
-        ],
-        "description": "$important{CUIDADO: Esto es irreversible} usarlo con mucha cautela, elimina en cascada todo lo relacionado al usuario (adopciones, mascotas). si eres dev tambien puedes eliminarlo a cualquiera 🐒",
-        "operationId": "Borrar Usuario",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
                 }
               }
             }
@@ -907,6 +918,97 @@
         "x-roles-policy": "User"
       }
     },
+    "/shelter/form": {
+      "post": {
+        "tags": [
+          "Refugios"
+        ],
+        "description": "Sube un formulario en formato .pdf (máx. 5MB) asociado al refugio del usuario autenticado. Límite máximo de 5 formularios por refugio.",
+        "operationId": "UploadShelterForm",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadFormRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadFormRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FormResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "ShelterOwner"
+      }
+    },
+    "/shelter/forms": {
+      "get": {
+        "tags": [
+          "Refugios"
+        ],
+        "description": "Lista todos los formularios asociados al refugio del usuario autenticado.",
+        "operationId": "GetShelterForms",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FormResponsePagedResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "ShelterOwner"
+      }
+    },
+    "/shelter/form/{id}": {
+      "get": {
+        "tags": [
+          "Refugios"
+        ],
+        "description": "Obtiene un formulario específico del refugio del usuario autenticado.",
+        "operationId": "GetShelterFormById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FormResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-roles-policy": "User"
+      }
+    },
     "/shelter/{id}": {
       "patch": {
         "tags": [
@@ -1057,13 +1159,8 @@
             "type": "string",
             "nullable": true
           },
-          "latitude": {
-            "type": "string",
-            "nullable": true
-          },
-          "longitude": {
-            "type": "string",
-            "nullable": true
+          "location": {
+            "$ref": "#/components/schemas/Location"
           },
           "isActive": {
             "type": "boolean",
@@ -1114,6 +1211,19 @@
             "type": "boolean",
             "nullable": true
           },
+          "isAdoptable": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "requireForm": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "formId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
           "photos": {
             "type": "array",
             "items": {
@@ -1127,8 +1237,8 @@
       },
       "CreateShelterRequest": {
         "required": [
-          "address",
-          "name"
+          "name",
+          "phoneNumber"
         ],
         "type": "object",
         "properties": {
@@ -1136,7 +1246,7 @@
             "type": "string",
             "nullable": true
           },
-          "address": {
+          "phoneNumber": {
             "type": "string",
             "nullable": true
           },
@@ -1150,7 +1260,16 @@
             "format": "double",
             "nullable": true
           },
+          "showAddress": {
+            "type": "boolean",
+            "nullable": true
+          },
           "photo": {
+            "type": "string",
+            "format": "binary",
+            "nullable": true
+          },
+          "yapeQrImage": {
             "type": "string",
             "format": "binary",
             "nullable": true
@@ -1291,6 +1410,75 @@
         },
         "additionalProperties": false
       },
+      "FormResponse": {
+        "required": [
+          "createdAt",
+          "fileUrl",
+          "id",
+          "name",
+          "shelterId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "fileUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "shelterId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FormResponsePagedResponse": {
+        "required": [
+          "items",
+          "page",
+          "pageSize",
+          "totalCount",
+          "totalPages"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FormResponse"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "Gender": {
         "enum": [
           "MALE",
@@ -1341,6 +1529,24 @@
         },
         "additionalProperties": false
       },
+      "Location": {
+        "required": [
+          "latitude",
+          "longitude"
+        ],
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
       "LoginRequest": {
         "required": [
           "email",
@@ -1363,11 +1569,14 @@
         "required": [
           "available",
           "breed",
+          "createdAt",
           "gender",
           "id",
+          "isAdoptable",
           "isYours",
           "name",
           "photos",
+          "requireForm",
           "shelterId",
           "specie",
           "story",
@@ -1411,12 +1620,27 @@
           "available": {
             "type": "boolean"
           },
+          "isAdoptable": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
           "isYours": {
             "type": "boolean"
           },
           "shelterId": {
             "type": "string",
             "format": "uuid"
+          },
+          "requireForm": {
+            "type": "boolean"
+          },
+          "formId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -1424,7 +1648,9 @@
       "PetSummaryResponse": {
         "required": [
           "available",
+          "createdAt",
           "id",
+          "isAdoptable",
           "isYours",
           "name",
           "photos"
@@ -1451,6 +1677,13 @@
           },
           "available": {
             "type": "boolean"
+          },
+          "isAdoptable": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false
@@ -1536,11 +1769,11 @@
       },
       "ShelterResponse": {
         "required": [
-          "address",
           "id",
           "isAvailable",
           "name",
-          "owners"
+          "owners",
+          "phoneNumber"
         ],
         "type": "object",
         "properties": {
@@ -1552,24 +1785,21 @@
             "type": "string",
             "nullable": true
           },
-          "address": {
+          "phoneNumber": {
             "type": "string",
             "nullable": true
           },
           "isAvailable": {
             "type": "boolean"
           },
-          "latitude": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "longitude": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+          "location": {
+            "$ref": "#/components/schemas/Location"
           },
           "photoUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "yapeQrCode": {
             "type": "string",
             "nullable": true
           },
@@ -1744,6 +1974,19 @@
           "available": {
             "type": "boolean",
             "nullable": true
+          },
+          "isAdoptable": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "formId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "requireForm": {
+            "type": "boolean",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -1755,7 +1998,7 @@
             "type": "string",
             "nullable": true
           },
-          "address": {
+          "phoneNumber": {
             "type": "string",
             "nullable": true
           },
@@ -1769,7 +2012,16 @@
             "format": "double",
             "nullable": true
           },
+          "showAddress": {
+            "type": "boolean",
+            "nullable": true
+          },
           "photo": {
+            "type": "string",
+            "format": "binary",
+            "nullable": true
+          },
+          "yapeQrImage": {
             "type": "string",
             "format": "binary",
             "nullable": true
@@ -1799,6 +2051,25 @@
             "nullable": true
           },
           "photo": {
+            "type": "string",
+            "format": "binary",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UploadFormRequest": {
+        "required": [
+          "file",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "file": {
             "type": "string",
             "format": "binary",
             "nullable": true

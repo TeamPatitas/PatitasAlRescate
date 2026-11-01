@@ -20,6 +20,10 @@ public final class AdminApiRepository {
         return source.getCurrentUser();
     }
 
+    public Call<UserResponse> getUser(String id) {
+        return source.getUser(id);
+    }
+
     public Call<UserResponse> updateCurrentUser(UpdateUserRequest body) {
         return source.updateCurrentUser(body);
     }

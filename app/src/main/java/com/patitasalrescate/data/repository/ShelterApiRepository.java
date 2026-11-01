@@ -31,4 +31,20 @@ public final class ShelterApiRepository {
     public Call<Void> deleteShelter(String id) {
         return source.deleteShelter(id);
     }
+
+    public Call<FormResponse> uploadShelterForm(UploadFormRequest body) {
+        return source.uploadShelterForm(body);
+    }
+
+    public Call<FormResponsePagedResponse> getShelterForms() {
+        return source.getShelterForms();
+    }
+
+    public Call<FormResponsePagedResponse> getShelterForms(Integer page, Integer pageSize) {
+        return source.getShelterForms(page, pageSize);
+    }
+
+    public Call<FormResponse> getShelterFormById(String id) {
+        return source.getShelterFormById(id);
+    }
 }

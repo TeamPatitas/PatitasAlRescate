@@ -7,6 +7,7 @@ import retrofit2.Call;
 public interface IAdminApiDataSource {
     Call<HealthResponse> healthCheck();
     Call<UserResponse> getCurrentUser();
+    Call<UserResponse> getUser(String id);
     Call<UserResponse> updateCurrentUser(UpdateUserRequest body);
     Call<Boolean> deleteUser(String id);
     Call<Void> addRoles(SwitchRolesRequest body);

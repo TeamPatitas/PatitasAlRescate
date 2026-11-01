@@ -12,6 +12,8 @@ public final class CreateEventRequest {
     public String createdAt;
     @SerializedName("description")
     public String description;
+    @SerializedName("location")
+    public Location location;
     @SerializedName("latitude")
     public String latitude;
     @SerializedName("longitude")
